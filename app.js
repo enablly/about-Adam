@@ -298,6 +298,9 @@ function animateCounter(el) {
   const target = parseFloat(matchNum[0]);
   const isFloat = rawText.includes('.');
   const prefix = rawText.startsWith('$') ? '$' : '';
+  const hasM = rawText.includes('M') || rawText.includes('m');
+  const hasK = rawText.includes('k') || rawText.includes('K');
+  const midUnit = hasM ? 'M' : hasK ? 'k' : '';
   const suffix = rawText.includes('%') ? '%' : rawText.includes('+') ? '+' : '';
 
   let start = 0;
@@ -311,12 +314,12 @@ function animateCounter(el) {
     const ease = 1 - Math.pow(1 - progress, 3);
     const current = start + (target - start) * ease;
 
-    el.innerHTML = `${prefix}${isFloat ? current.toFixed(1) : Math.floor(current)}<span>${suffix}</span>`;
+    el.innerHTML = `${prefix}${isFloat ? current.toFixed(1) : Math.floor(current)}${midUnit}<span>${suffix}</span>`;
 
     if (progress < 1) {
       requestAnimationFrame(update);
     } else {
-      el.innerHTML = `${prefix}${target}<span>${suffix}</span>`;
+      el.innerHTML = `${prefix}${target}${midUnit}<span>${suffix}</span>`;
     }
   }
   requestAnimationFrame(update);
