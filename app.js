@@ -1637,10 +1637,10 @@ function initHeroGlobe() {
       centerX - radius * 0.25, centerY - radius * 0.25, radius * 0.1,
       centerX, centerY, radius
     );
-    baseGrad.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
-    baseGrad.addColorStop(0.7, 'rgba(248, 250, 252, 0.92)');
-    baseGrad.addColorStop(0.92, 'rgba(238, 242, 246, 0.88)');
-    baseGrad.addColorStop(1, 'rgba(224, 231, 255, 0.35)');
+    baseGrad.addColorStop(0, "rgba(255, 255, 255, 0.01)");
+    baseGrad.addColorStop(0.7, "rgba(255, 255, 255, 0.02)");
+    baseGrad.addColorStop(0.92, "rgba(148, 163, 184, 0.06)");
+    baseGrad.addColorStop(1, "rgba(148, 163, 184, 0.15)");
 
     ctx.save();
     ctx.beginPath();
@@ -1649,12 +1649,8 @@ function initHeroGlobe() {
     ctx.fill();
 
     // Horizon border with crisp technical navy + blue halo
-    ctx.strokeStyle = '#0f172a';
-    ctx.lineWidth = 1.4;
-    ctx.stroke();
-
-    ctx.strokeStyle = 'rgba(29, 99, 255, 0.4)';
-    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = 'rgba(148, 163, 184, 0.4)';
+    ctx.lineWidth = 1.2;
     ctx.stroke();
     ctx.restore();
 
@@ -1665,8 +1661,8 @@ function initHeroGlobe() {
     const axisBottom = projectAxisPoint(-radius - 40);
 
     ctx.save();
-    ctx.strokeStyle = 'rgba(29, 99, 255, 0.6)';
-    ctx.lineWidth = 1.1;
+    ctx.strokeStyle = 'rgba(148, 163, 184, 0.45)';
+    ctx.lineWidth = 1;
     ctx.setLineDash([4, 4]);
 
     // Top extension
@@ -1718,7 +1714,7 @@ function initHeroGlobe() {
       const isEquator = lat === 0;
       const isTropic = Math.abs(lat) === 23.5;
       ctx.save();
-      ctx.strokeStyle = isEquator ? 'rgba(29, 99, 255, 0.7)' : (isTropic ? 'rgba(2, 132, 199, 0.4)' : 'rgba(203, 213, 225, 0.7)');
+      ctx.strokeStyle = isEquator ? 'rgba(255, 255, 255, 0.5)' : (isTropic ? 'rgba(148, 163, 184, 0.35)' : 'rgba(148, 163, 184, 0.22)');
       ctx.lineWidth = isEquator ? 1.5 : (isTropic ? 0.9 : 0.6);
       if (!isEquator) ctx.setLineDash(isTropic ? [3, 4] : [2, 5]);
 
@@ -1755,7 +1751,7 @@ function initHeroGlobe() {
     // Rotating Longitude Degree Markers along the Equator (every 30°)
     ctx.save();
     ctx.font = '600 5.5px "JetBrains Mono", monospace';
-    ctx.fillStyle = 'rgba(29, 99, 255, 0.8)';
+    ctx.fillStyle = 'rgba(226, 232, 240, 0.85)';
     for (let lon = -180; lon < 180; lon += 30) {
       const eqP = project3D(lon, 0, radius, rotation);
       if (eqP.z > 15) {
@@ -1773,7 +1769,7 @@ function initHeroGlobe() {
     for (let lon = -180; lon < 180; lon += 30) {
       const isPrime = lon === 0 || lon === 180;
       ctx.save();
-      ctx.strokeStyle = isPrime ? 'rgba(29, 99, 255, 0.45)' : 'rgba(203, 213, 225, 0.6)';
+      ctx.strokeStyle = isPrime ? 'rgba(203, 213, 225, 0.4)' : 'rgba(148, 163, 184, 0.18)';
       ctx.lineWidth = isPrime ? 1.1 : 0.6;
       ctx.setLineDash([2, 5]);
 
@@ -1836,11 +1832,11 @@ function initHeroGlobe() {
         }
       }
 
-      ctx.strokeStyle = '#0f172a'; // Bold architectural charcoal outline matching small globe
+      ctx.strokeStyle = 'rgba(203, 213, 225, 0.55)'; // Translucent grey continent outlines
       ctx.lineWidth = 1.7;
       ctx.stroke();
 
-      ctx.fillStyle = 'rgba(29, 99, 255, 0.08)';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
       ctx.fill();
     });
     ctx.restore();
@@ -1872,7 +1868,7 @@ function initHeroGlobe() {
           first = true;
         }
       }
-      ctx.strokeStyle = 'rgba(2, 132, 199, 0.7)';
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.75)';
       ctx.lineWidth = 1.3;
       ctx.setLineDash([3, 4]);
       ctx.stroke();

@@ -657,7 +657,7 @@ section {
 }
 
 /* ========================================================
-   HERO & EXECUTIVE DOSSIER (WITH 3D ORBITAL GLOBE BACKDROP)
+   HERO & EXECUTIVE DOSSIER (DARK CAD GLASS & ORBITAL GLOBE)
    ======================================================== */
 #overview {
   position: relative;
@@ -702,33 +702,34 @@ section {
 }
 
 .hero-globe-hud .hud-tag {
-  color: var(--blue-core);
+  color: #38bdf8;
   font-weight: 700;
   display: block;
 }
 
 .hero-globe-hud .hud-data {
-  color: var(--text-faint);
+  color: #94a3b8;
   font-size: 0.62rem;
   display: block;
   margin-top: 2px;
 }
 
+/* HERO PANEL - BLACK FROSTED GLASS DOSSIER */
 .hero-panel {
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid var(--border-medium);
+  background: rgba(8, 12, 22, 0.86);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   padding: 48px;
   position: relative;
   z-index: 2;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(29, 99, 255, 0.04);
+  box-shadow: 0 25px 65px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(29, 99, 255, 0.15);
   transition: border-color 0.25s, box-shadow 0.25s;
 }
 
 .hero-panel:hover {
-  border-color: var(--blue-core);
-  box-shadow: 0 14px 40px rgba(29, 99, 255, 0.08);
+  border-color: rgba(56, 189, 248, 0.45);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 24px rgba(29, 99, 255, 0.22);
 }
 
 .hero-panel::before {
@@ -758,9 +759,9 @@ section {
   gap: 8px;
   font-family: var(--mono);
   font-size: 0.72rem;
-  color: var(--blue-core);
-  background: var(--blue-tint);
-  border: 1px solid rgba(29, 99, 255, 0.2);
+  color: #cbd5e1;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.3);
   padding: 5px 12px;
   margin-bottom: 20px;
   text-transform: uppercase;
@@ -776,31 +777,26 @@ section {
   animation: pulsePing 2s infinite ease-in-out;
 }
 
-@keyframes pulsePing {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(1.3); }
-}
-
 .hero-name {
   font-size: 3.8rem;
   font-weight: 800;
   line-height: 1.05;
   letter-spacing: -0.02em;
   text-transform: uppercase;
-  color: var(--text-hero);
+  color: #ffffff;
   margin-bottom: 14px;
 }
 
 .hero-headline {
   font-size: 1.28rem;
   font-weight: 600;
-  color: var(--blue-core);
+  color: #38bdf8;
   line-height: 1.45;
   margin-bottom: 20px;
 }
 
 .hero-summary {
-  color: var(--text-muted);
+  color: #94a3b8;
   font-size: 0.98rem;
   line-height: 1.75;
   margin-bottom: 28px;
@@ -813,19 +809,42 @@ section {
   gap: 12px;
 }
 
-/* LIVE METRICS TILES WITH HOVER LIFT (5 COLUMNS) */
+.hero-actions .btn {
+  background: rgba(255, 255, 255, 0.08);
+  color: #f1f5f9;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.hero-actions .btn:hover {
+  background: rgba(29, 99, 255, 0.22);
+  border-color: #38bdf8;
+  color: #ffffff;
+}
+
+.hero-actions .btn-primary {
+  background: var(--blue-core, #1d63ff);
+  color: #ffffff;
+  border-color: #1d63ff;
+}
+
+.hero-actions .btn-primary:hover {
+  background: #2563eb;
+  border-color: #38bdf8;
+}
+
+/* LIVE METRICS TILES (DARK GLASS) */
 .metric-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 14px;
   margin-top: 40px;
-  border-top: 1px solid var(--border-subtle);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding-top: 36px;
 }
 
 .metric-card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   padding: 20px 18px;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
@@ -833,16 +852,16 @@ section {
 
 .metric-card:hover {
   border-color: var(--blue-core);
-  background: #ffffff;
+  background: rgba(20, 30, 55, 0.85);
   transform: translateY(-4px);
-  box-shadow: var(--shadow-hover);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(29, 99, 255, 0.15);
 }
 
 .metric-val {
   font-family: var(--mono);
   font-size: clamp(1.85rem, 2vw, 2.2rem);
   font-weight: 700;
-  color: var(--text-hero);
+  color: #ffffff;
   line-height: 1.1;
   margin-bottom: 8px;
   white-space: nowrap;
@@ -856,16 +875,14 @@ section {
   font-family: var(--mono);
   font-size: 0.74rem;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: #94a3b8;
   letter-spacing: 0.04em;
 }
 
-/* ========================================================
-   CLIENT ROSTER / BRANDS SCALED
-   ======================================================== */
+/* CLIENT ROSTER / BRANDS SCALED (DARK THEME) */
 .client-strip {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 26px 36px;
   margin-top: 28px;
 }
@@ -874,7 +891,7 @@ section {
   font-family: var(--mono);
   font-size: 0.72rem;
   text-transform: uppercase;
-  color: var(--text-faint);
+  color: #94a3b8;
   letter-spacing: 0.08em;
   margin-bottom: 16px;
 }
@@ -888,9 +905,9 @@ section {
 .brand-pill {
   font-family: var(--mono);
   font-size: 0.78rem;
-  background: #ffffff;
-  border: 1px solid var(--border-medium);
-  color: var(--text-body);
+  background: rgba(24, 34, 53, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
   padding: 6px 14px;
   letter-spacing: 0.04em;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -898,15 +915,16 @@ section {
 
 .brand-pill:hover {
   border-color: var(--blue-core);
-  color: var(--blue-core);
+  color: #ffffff;
+  background: rgba(29, 99, 255, 0.25);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(29, 99, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(29, 99, 255, 0.2);
 }
 
 .brand-pill.accent {
-  border-color: rgba(29, 99, 255, 0.35);
-  color: var(--blue-core);
-  background: var(--blue-tint);
+  border-color: rgba(56, 189, 248, 0.45);
+  color: #60a5fa;
+  background: rgba(29, 99, 255, 0.18);
 }
 
 /* ========================================================
