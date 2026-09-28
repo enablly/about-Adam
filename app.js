@@ -34,6 +34,9 @@ window.addEventListener('DOMContentLoaded', () => {
   // Initialize 3D Executive Hero Globe with Airline Traffic Radar
   initHeroGlobe();
 
+  // Initialize Dynamic Architectural CAD Telemetry
+  initCadDynamicTelemetry();
+
   // Restore custom photo if previously uploaded
   const savedPhoto = localStorage.getItem(STORAGE_KEY_PHOTO);
   const profileImg = document.getElementById('profileImage');
@@ -2156,3 +2159,95 @@ function initHeroGlobe() {
   requestAnimationFrame(render);
 }
 
+
+
+// ----------------------------------------------------
+// DYNAMIC ARCHITECTURAL CAD TELEMETRY & MEASUREMENTS
+// (Fluctuating precision values, changing coordinates & live CAD readings)
+// ----------------------------------------------------
+function initCadDynamicTelemetry() {
+  const dimXEl = document.getElementById('telemetryDimX');
+  const spanXEl = document.getElementById('telemetrySpanX');
+  const dimYEl = document.getElementById('telemetryDimY');
+  const trEl = document.getElementById('telemetryTR');
+  const blEl = document.getElementById('telemetryBL');
+  const axisEl = document.getElementById('telemetryAxis');
+  const tiltEl = document.getElementById('telemetryTilt');
+
+  let cycle = 0;
+
+  const trCoords = [
+    'TR // 101°41\'22"E',
+    'TR // 101°41\'28"E',
+    'TR // LAT 03°08\'34"N',
+    'TR // LON 101.6869°',
+    'TR // AZ 267.4°',
+    'TR // AZ 268.1°'
+  ];
+
+  const blCoords = [
+    'BL // 03°08\'14"N',
+    'BL // 03°08\'19"N',
+    'BL // GRID A-01',
+    'BL // LAT 03.1390°',
+    'BL // ELEV 0.000',
+    'BL // DATUM 00'
+  ];
+
+  setInterval(() => {
+    cycle++;
+    // Subtle realistic micro-fluctuations (sub-millimeter precision)
+    const deltaX = ((Math.sin(cycle * 0.7) * 0.18) + (Math.cos(cycle * 1.3) * 0.08)).toFixed(2);
+    const currentDimX = (1140.00 + parseFloat(deltaX)).toFixed(2);
+    if (dimXEl) {
+      dimXEl.textContent = `DIM: ${currentDimX} mm`;
+    }
+
+    const deltaY = ((Math.cos(cycle * 0.9) * 0.14) + (Math.sin(cycle * 1.1) * 0.06)).toFixed(2);
+    const currentDimY = (640.00 + parseFloat(deltaY)).toFixed(2);
+    if (dimYEl) {
+      dimYEl.textContent = `ELEV: +${currentDimY} mm`;
+    }
+
+    const tol = (0.020 + (Math.sin(cycle * 0.5) * 0.006)).toFixed(3);
+    if (spanXEl) {
+      spanXEl.textContent = `[SPAN 100% • TOL: ±${tol} • SCALE 1:1]`;
+    }
+
+    if (trEl) {
+      trEl.textContent = trCoords[cycle % trCoords.length];
+    }
+
+    if (blEl) {
+      blEl.textContent = blCoords[cycle % blCoords.length];
+    }
+
+    if (axisEl) {
+      const az = (267.0 + (Math.sin(cycle * 0.4) * 1.2)).toFixed(1);
+      axisEl.textContent = `AXIS: X-Y // ${az}°`;
+    }
+
+    if (tiltEl) {
+      const tilt = (23.46 + (Math.sin(cycle * 0.3) * 0.08)).toFixed(2);
+      tiltEl.textContent = `POLAR TILT: ${tilt}°`;
+    }
+
+    // Dynamic pillar coords
+    const pillarCoords = document.querySelectorAll('.pillar-cad-coord');
+    pillarCoords.forEach((el, idx) => {
+      const pNum = String(idx + 1).padStart(2, '0');
+      const pDelta = (368.00 + ((Math.sin(cycle + idx) * 0.12))).toFixed(2);
+      el.textContent = `P-${pNum} // ${pDelta} mm`;
+    });
+
+    // Dynamic job coords
+    const jobCoords = document.querySelectorAll('.job-cad-coord');
+    const jobYears = ['2026-FDE', '2024-FINTECH', '2023-MARKETS', '2021-DENTSU', '2020-GROWTH', '2018-AGENCY', '2016-MEDIA', '2015-CREATIVE', '2001-FOUNDATIONS'];
+    jobCoords.forEach((el, idx) => {
+      const tag = jobYears[idx] || '2024-CAD';
+      const liveBit = (cycle % 2 === 0) ? 'ACTIVE' : 'SYNC';
+      el.textContent = `SPEC // ${tag} • ${liveBit}`;
+    });
+
+  }, 1800);
+}

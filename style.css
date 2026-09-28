@@ -1867,18 +1867,16 @@ footer.site-footer {
 
 
 /* ========================================================
-   ARCHITECTURAL CAD BLUEPRINT DRAFTING SYSTEM (MASTER SPEC)
-   (CROSSHAIR DATUM CIRCLES, EXTENSION LINES, DIMENSIONS & SKETCHES)
+   ARCHITECTURAL CAD BLUEPRINT DRAFTING SYSTEM (SUBTLE GREY & LIVE TELEMETRY)
+   (SUBTLE GREY DATUM TARGETS, EXTENSION LINES, NO BLACK BOXES, CLEAN SMALL GREY READOUTS)
    ======================================================== */
 
 :root {
-  --cad-red: #ef4444;
-  --cad-red-glow: rgba(239, 68, 68, 0.4);
-  --cad-red-soft: rgba(239, 68, 68, 0.75);
-  --cad-cyan: #38bdf8;
-  --cad-cyan-glow: rgba(56, 189, 248, 0.35);
-  --cad-dim-text: #94a3b8;
-  --cad-dark-bg: rgba(8, 12, 22, 0.94);
+  --cad-grey-line: rgba(148, 163, 184, 0.32);
+  --cad-grey-line-subtle: rgba(148, 163, 184, 0.20);
+  --cad-grey-text: #94a3b8;
+  --cad-grey-text-dim: #64748b;
+  --cad-grey-text-bright: #cbd5e1;
 }
 
 /* Ensure the hero section allows extension lines to project outside */
@@ -1894,63 +1892,60 @@ footer.site-footer {
   inset: 0;
   pointer-events: none;
   overflow: visible;
-  z-index: 10;
+  z-index: 1;
 }
 
-/* Continuous Red Construction & Extension Lines */
+/* Continuous Subtle Grey Construction & Extension Lines */
 .cad-ext-line {
   position: absolute;
-  background: var(--cad-red);
+  background: var(--cad-grey-line);
   pointer-events: none;
-  z-index: 10;
+  z-index: 1;
+  box-shadow: none;
 }
 
 .cad-ext-top {
   top: 0;
-  left: -80px;
-  right: -80px;
-  height: 1.5px;
-  box-shadow: 0 0 8px var(--cad-red-glow);
+  left: -70px;
+  right: -70px;
+  height: 1px;
 }
 
 .cad-ext-bottom {
   bottom: 0;
-  left: -80px;
-  right: -80px;
-  height: 1.5px;
-  box-shadow: 0 0 8px var(--cad-red-glow);
+  left: -70px;
+  right: -70px;
+  height: 1px;
 }
 
 .cad-ext-left {
   left: 0;
-  top: -50px;
-  bottom: -50px;
-  width: 1.5px;
-  box-shadow: 0 0 8px var(--cad-red-glow);
+  top: -45px;
+  bottom: -45px;
+  width: 1px;
 }
 
 .cad-ext-right {
   right: 0;
-  top: -50px;
-  bottom: -50px;
-  width: 1.5px;
-  box-shadow: 0 0 8px var(--cad-red-glow);
+  top: -45px;
+  bottom: -45px;
+  width: 1px;
 }
 
-/* CAD Datum Registration Crosshairs (Circle with Cross in the Middle) */
+/* CAD Datum Registration Crosshairs (Circle with Cross in the Middle) in Subtle Grey */
 .cad-datum-mark {
   position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
   pointer-events: none;
-  z-index: 15;
+  z-index: 3;
 }
 
 .cad-target-svg {
   display: block;
   overflow: visible;
-  filter: drop-shadow(0 0 6px var(--cad-red-glow));
+  filter: none;
 }
 
 .cad-datum-tr {
@@ -1977,103 +1972,105 @@ footer.site-footer {
   transform: translate(50%, 50%);
 }
 
+/* Small, subtle grey coordinates - NO black background */
 .cad-coord-badge {
   font-family: var(--mono);
-  font-size: 0.60rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--cad-red);
-  background: var(--cad-dark-bg);
-  border: 1px solid rgba(239, 68, 68, 0.6);
-  padding: 2px 7px;
-  margin-top: 5px;
+  font-size: 0.56rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--cad-grey-text);
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin-top: 4px;
   white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-  text-shadow: 0 0 5px rgba(239, 68, 68, 0.5);
+  box-shadow: none !important;
+  text-shadow: none !important;
+  opacity: 0.85;
 }
 
-/* Horizontal Top Dimension String (Dotted Lines & Measurements) */
+/* Horizontal Top Dimension String (Dotted Lines & Measurements) - NO black box */
 .cad-dim-bar.cad-dim-top {
   position: absolute;
-  top: -28px;
+  top: -24px;
   left: 0;
   right: 0;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   pointer-events: none;
-  z-index: 12;
+  z-index: 2;
 }
 
 .cad-witness-tick {
-  width: 1.5px;
-  height: 14px;
-  background: var(--cad-red);
+  width: 1px;
+  height: 10px;
+  background: var(--cad-grey-line);
   flex-shrink: 0;
 }
 
 .cad-dim-dots {
   flex: 1;
   height: 0;
-  border-top: 1.5px dotted var(--cad-red-soft);
+  border-top: 1px dotted var(--cad-grey-line);
 }
 
 .cad-dim-reading {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   font-family: var(--mono);
-  font-size: 0.65rem;
-  font-weight: 600;
-  color: #cbd5e1;
-  background: var(--cad-dark-bg);
-  border: 1px solid rgba(239, 68, 68, 0.4);
-  padding: 3px 12px;
-  letter-spacing: 0.06em;
+  font-size: 0.58rem;
+  font-weight: 500;
+  color: var(--cad-grey-text);
+  background: transparent !important;
+  border: none !important;
+  padding: 0 4px !important;
+  letter-spacing: 0.05em;
   white-space: nowrap;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  box-shadow: none !important;
 }
 
 .cad-dim-reading .cad-dim-val {
-  color: #fca5a5;
-  font-weight: 700;
+  color: var(--cad-grey-text-bright);
+  font-weight: 600;
 }
 
 .cad-dim-reading .cad-dim-sub {
-  color: #94a3b8;
-  font-size: 0.58rem;
+  color: var(--cad-grey-text-dim);
+  font-size: 0.54rem;
 }
 
 .cad-dim-reading .cad-dim-icon {
-  color: var(--cad-red);
-  font-size: 0.55rem;
+  color: var(--cad-grey-text-dim);
+  font-size: 0.50rem;
 }
 
-/* Vertical Left Dimension String */
+/* Vertical Left Dimension String - NO black box */
 .cad-dim-bar.cad-dim-side-left {
   position: absolute;
-  left: -54px;
+  left: -44px;
   top: 0;
   bottom: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   pointer-events: none;
-  z-index: 12;
+  z-index: 2;
 }
 
 .cad-witness-tick-v {
-  width: 14px;
-  height: 1.5px;
-  background: var(--cad-red);
+  width: 10px;
+  height: 1px;
+  background: var(--cad-grey-line);
   flex-shrink: 0;
 }
 
 .cad-dim-dots-v {
   flex: 1;
   width: 0;
-  border-left: 1.5px dotted var(--cad-red-soft);
+  border-left: 1px dotted var(--cad-grey-line);
 }
 
 .cad-dim-reading-v {
@@ -2081,57 +2078,58 @@ footer.site-footer {
   transform: rotate(180deg);
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   font-family: var(--mono);
-  font-size: 0.62rem;
-  font-weight: 600;
-  color: #cbd5e1;
-  background: var(--cad-dark-bg);
-  border: 1px solid rgba(239, 68, 68, 0.4);
-  padding: 12px 4px;
-  letter-spacing: 0.06em;
+  font-size: 0.56rem;
+  font-weight: 500;
+  color: var(--cad-grey-text);
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  letter-spacing: 0.05em;
   white-space: nowrap;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  box-shadow: none !important;
 }
 
 .cad-dim-reading-v span:first-child {
-  color: #fca5a5;
-  font-weight: 700;
+  color: var(--cad-grey-text-bright);
+  font-weight: 600;
 }
 
-/* Technical Drafting Sketches & Hairlighting Indicators */
+/* Technical Drafting Sketches & Hairline Notes - Small, grey, no box */
 .cad-sketch-tag {
   position: absolute;
   font-family: var(--mono);
-  font-size: 0.60rem;
-  color: #94a3b8;
-  letter-spacing: 0.08em;
+  font-size: 0.56rem;
+  color: var(--cad-grey-text-dim);
+  letter-spacing: 0.06em;
   display: flex;
-  gap: 14px;
+  gap: 12px;
   pointer-events: none;
-  z-index: 11;
-  opacity: 0.9;
+  z-index: 2;
+  opacity: 0.85;
 }
 
 .cad-tag-top-left {
-  top: -20px;
-  left: 20px;
+  top: -18px;
+  left: 16px;
 }
 
 .cad-tag-bottom-right {
-  bottom: -22px;
-  right: 20px;
+  bottom: -18px;
+  right: 16px;
 }
 
 .cad-tag-top-left span, .cad-tag-bottom-right span {
-  background: rgba(8, 12, 22, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 2px 8px;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  color: var(--cad-grey-text-dim);
 }
 
-/* Hairlighting Luminous Edge Accents on Hero Panel */
+/* Hero Panel Box Shadow (Clean dark glass without red glow) */
 .hero-panel {
-  box-shadow: 0 25px 65px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08), 0 0 20px rgba(239, 68, 68, 0.12) !important;
+  box-shadow: 0 25px 65px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
 }
 
 /* SECTION HEADER CAD BLUEPRINT EXTENSIONS */
@@ -2149,7 +2147,7 @@ footer.site-footer {
   display: inline-block;
   vertical-align: middle;
   flex-shrink: 0;
-  filter: drop-shadow(0 0 4px var(--blue-glow));
+  opacity: 0.7;
 }
 
 .section-cad-dim {
@@ -2157,22 +2155,22 @@ footer.site-footer {
   align-items: center;
   gap: 10px;
   font-family: var(--mono);
-  font-size: 0.65rem;
-  color: var(--text-faint);
+  font-size: 0.60rem;
+  color: var(--cad-grey-text-dim);
   letter-spacing: 0.06em;
   margin-top: 4px;
 }
 
 .section-cad-dim .cad-dim-dots {
-  border-top-color: var(--border-medium);
+  border-top: 1px dotted var(--cad-grey-line-subtle);
 }
 
 .section-cad-dim .cad-dim-label {
-  background: #ffffff;
-  border: 1px solid var(--border-subtle);
-  padding: 2px 8px;
-  color: var(--blue-core);
-  font-weight: 600;
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: var(--cad-grey-text-dim);
+  font-weight: 500;
 }
 
 /* STRATEGIC PILLARS CAD DATUM MARKS & DIMENSION STRIPS */
@@ -2182,29 +2180,31 @@ footer.site-footer {
 
 .pillar-cad-corner-datum {
   position: absolute;
-  top: -12px;
-  right: 14px;
+  top: -9px;
+  right: 12px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   font-family: var(--mono);
-  font-size: 0.60rem;
-  color: var(--blue-core);
-  background: #ffffff;
-  border: 1px solid var(--border-medium);
-  padding: 2px 6px;
+  font-size: 0.55rem;
+  color: var(--cad-grey-text-dim);
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
   z-index: 6;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  box-shadow: none !important;
+  opacity: 0.85;
 }
 
 .pillar-cad-corner-datum svg {
   display: block;
   overflow: visible;
+  opacity: 0.65;
 }
 
 .pillar-cad-corner-datum .pillar-cad-coord {
-  font-weight: 700;
-  letter-spacing: 0.05em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
 }
 
 .pillar-dim-strip {
@@ -2212,8 +2212,8 @@ footer.site-footer {
   align-items: center;
   gap: 8px;
   font-family: var(--mono);
-  font-size: 0.58rem;
-  color: var(--text-faint);
+  font-size: 0.55rem;
+  color: var(--cad-grey-text-dim);
   padding: 3px 10px;
   background: #f8fafc;
   border-bottom: 1px solid var(--border-subtle);
@@ -2222,18 +2222,18 @@ footer.site-footer {
 .pillar-dim-strip .p-dots {
   flex: 1;
   height: 0;
-  border-top: 1px dotted var(--border-strong);
+  border-top: 1px dotted var(--border-subtle);
 }
 
 .pillar-dim-strip .p-tick {
   width: 1px;
-  height: 8px;
-  background: var(--blue-core);
+  height: 7px;
+  background: var(--cad-grey-line);
 }
 
 .pillar-dim-strip .p-dim-text {
-  font-weight: 600;
-  color: var(--text-muted);
+  font-weight: 500;
+  color: var(--cad-grey-text-dim);
 }
 
 /* CAREER EXPERIENCE CARDS CAD DATUM TARGETS & MEASUREMENTS */
@@ -2243,29 +2243,31 @@ footer.site-footer {
 
 .job-cad-corner-target {
   position: absolute;
-  top: -14px;
-  right: 18px;
+  top: -10px;
+  right: 14px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   font-family: var(--mono);
-  font-size: 0.62rem;
-  color: var(--blue-core);
-  background: #ffffff;
-  border: 1px solid var(--border-medium);
-  padding: 2px 8px;
+  font-size: 0.55rem;
+  color: var(--cad-grey-text-dim);
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
   z-index: 6;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  box-shadow: none !important;
+  opacity: 0.85;
 }
 
 .job-cad-corner-target svg {
   display: block;
   overflow: visible;
+  opacity: 0.65;
 }
 
 .job-cad-corner-target .job-cad-coord {
-  font-weight: 700;
-  letter-spacing: 0.05em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
 }
 
 .job-cad-dimension-strip {
@@ -2273,9 +2275,9 @@ footer.site-footer {
   align-items: center;
   gap: 8px;
   font-family: var(--mono);
-  font-size: 0.60rem;
-  color: var(--text-faint);
-  padding: 4px 10px;
+  font-size: 0.56rem;
+  color: var(--cad-grey-text-dim);
+  padding: 3px 10px;
   background: #f8fafc;
   border: 1px solid var(--border-subtle);
   border-bottom: none;
@@ -2285,36 +2287,19 @@ footer.site-footer {
 .job-cad-dimension-strip .j-dots {
   flex: 1;
   height: 0;
-  border-top: 1.5px dotted var(--border-strong);
+  border-top: 1px dotted var(--border-medium);
 }
 
 .job-cad-dimension-strip .j-tick {
-  width: 1.5px;
-  height: 9px;
-  background: var(--blue-core);
+  width: 1px;
+  height: 8px;
+  background: var(--cad-grey-line);
 }
 
 .job-cad-dimension-strip .j-dim-text {
-  font-weight: 600;
-  color: var(--blue-core);
-  letter-spacing: 0.04em;
-}
-
-.job-cad-footer-stamp {
-  margin-top: 18px;
-  padding-top: 12px;
-  border-top: 1px dashed var(--border-subtle);
-  display: flex;
-  justify-content: space-between;
-  font-family: var(--mono);
-  font-size: 0.62rem;
-  color: var(--text-faint);
-  letter-spacing: 0.05em;
-}
-
-.job-cad-footer-stamp .stamp-highlight {
-  color: var(--blue-core);
-  font-weight: 600;
+  font-weight: 500;
+  color: var(--cad-grey-text-dim);
+  letter-spacing: 0.03em;
 }
 
 /* CAD Corner Bracket Hairlighting on Cards */
@@ -2323,10 +2308,10 @@ footer.site-footer {
   position: absolute;
   top: 0;
   left: 0;
-  width: 10px;
-  height: 10px;
-  border-top: 2px solid var(--blue-core);
-  border-left: 2px solid var(--blue-core);
+  width: 8px;
+  height: 8px;
+  border-top: 1.5px solid var(--border-medium);
+  border-left: 1.5px solid var(--border-medium);
   pointer-events: none;
   z-index: 4;
 }
@@ -2336,39 +2321,10 @@ footer.site-footer {
   position: absolute;
   bottom: 0;
   right: 0;
-  width: 10px;
-  height: 10px;
-  border-bottom: 2px solid var(--blue-core);
-  border-right: 2px solid var(--blue-core);
+  width: 8px;
+  height: 8px;
+  border-bottom: 1.5px solid var(--border-medium);
+  border-right: 1.5px solid var(--border-medium);
   pointer-events: none;
   z-index: 4;
-}
-
-/* TECH MATRIX & EDUCATION CAD DETAILS */
-.matrix-card, .info-pane, .contact-box {
-  position: relative;
-}
-
-.matrix-card::before, .info-pane::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 8px;
-  height: 8px;
-  border-top: 1.5px solid var(--blue-core);
-  border-left: 1.5px solid var(--blue-core);
-  pointer-events: none;
-}
-
-.matrix-card::after, .info-pane::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 8px;
-  height: 8px;
-  border-bottom: 1.5px solid var(--blue-core);
-  border-right: 1.5px solid var(--blue-core);
-  pointer-events: none;
 }
