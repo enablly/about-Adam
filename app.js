@@ -1,6 +1,6 @@
 /**
  * ADAM LAU — EXECUTIVE RESUME & GROWTH DOSSIER
- * Interactive Client Engine & In-Situ CMS
+ * Interactive Client Engine, Afternow-Style Motion & Line AI Canvas
  */
 
 // ----------------------------------------------------
@@ -12,13 +12,22 @@ const STORAGE_KEY_DATA = 'adam_resume_edited_content_v1';
 const STORAGE_KEY_PHOTO = 'adam_resume_custom_photo_v1';
 let toastTimer = null;
 
-// Default fallback avatar SVG
-const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='480' viewBox='0 0 400 480'><rect width='400' height='480' fill='%230b0e14'/><circle cx='200' cy='180' r='60' fill='%231d63ff' opacity='0.25'/><circle cx='200' cy='170' r='45' fill='%231d63ff' opacity='0.5'/><path d='M100 360 C100 270, 300 270, 300 360 Z' fill='%231d63ff' opacity='0.3'/><text x='200' y='420' font-family='monospace' font-size='14' fill='%2360a5fa' text-anchor='middle'>ADAM LAU // PORTRAIT</text></svg>";
+// Clean light-mode placeholder avatar
+const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='480' viewBox='0 0 400 480'><rect width='400' height='480' fill='%23f1f5f9'/><circle cx='200' cy='180' r='60' fill='%231d63ff' opacity='0.12'/><circle cx='200' cy='170' r='45' fill='%231d63ff' opacity='0.25'/><path d='M100 360 C100 270, 300 270, 300 360 Z' fill='%231d63ff' opacity='0.18'/><text x='200' y='420' font-family='monospace' font-size='14' fill='%231d63ff' text-anchor='middle'>ADAM LAU // PORTRAIT</text></svg>";
 
 // ----------------------------------------------------
 // 2. INITIALIZATION
 // ----------------------------------------------------
 window.addEventListener('DOMContentLoaded', () => {
+  // Initialize AI/Tech Line Canvas Background
+  initTechBackgroundCanvas();
+
+  // Initialize Scroll Reveal & Header State
+  initScrollAnimations();
+
+  // Initialize Animated Counters
+  initNumberCounters();
+
   // Restore custom photo if previously uploaded
   const savedPhoto = localStorage.getItem(STORAGE_KEY_PHOTO);
   const profileImg = document.getElementById('profileImage');
@@ -44,14 +53,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // Global keyboard shortcuts
   window.addEventListener('keydown', (e) => {
-    // Save on Cmd+S or Ctrl+S if in Admin Mode
     if ((e.metaKey || e.ctrlKey) && e.key === 's') {
       if (isAdmin) {
         e.preventDefault();
         saveAllChanges();
       }
     }
-    // Escape to close login modal
     if (e.key === 'Escape') {
       closeLoginModal();
     }
@@ -59,7 +66,264 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 // ----------------------------------------------------
-// 3. ADMIN AUTHENTICATION
+// 3. AI / TECH-CENTRIC LINE DRAWING BACKGROUND ANIMATION
+// ----------------------------------------------------
+function initTechBackgroundCanvas() {
+  const canvas = document.getElementById('techCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  let width = (canvas.width = window.innerWidth);
+  let height = (canvas.height = window.innerHeight);
+
+  window.addEventListener('resize', () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+    createNodes();
+  });
+
+  const mouse = { x: -1000, y: -1000, radius: 180 };
+  window.addEventListener('mousemove', (e) => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  });
+  window.addEventListener('mouseleave', () => {
+    mouse.x = -1000;
+    mouse.y = -1000;
+  });
+
+  // Circuit & Neural Nodes Configuration
+  const nodeCount = Math.floor((width * height) / 22000);
+  let nodes = [];
+  let pulses = [];
+
+  function createNodes() {
+    nodes = [];
+    const count = Math.max(35, Math.min(85, Math.floor((width * height) / 20000)));
+    for (let i = 0; i < count; i++) {
+      nodes.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.45,
+        vy: (Math.random() - 0.5) * 0.45,
+        baseSize: Math.random() > 0.8 ? 3.5 : 2,
+        isCrosshair: Math.random() > 0.7,
+        connections: []
+      });
+    }
+  }
+  createNodes();
+
+  // Periodic traveling data pulse
+  setInterval(() => {
+    if (nodes.length > 2 && pulses.length < 8) {
+      const startIdx = Math.floor(Math.random() * nodes.length);
+      pulses.push({
+        nodeA: startIdx,
+        nodeB: (startIdx + 1) % nodes.length,
+        progress: 0,
+        speed: 0.015 + Math.random() * 0.015
+      });
+    }
+  }, 900);
+
+  function animate() {
+    ctx.clearRect(0, 0, width, height);
+
+    // Update node positions
+    for (let i = 0; i < nodes.length; i++) {
+      const n = nodes[i];
+      n.x += n.vx;
+      n.y += n.vy;
+
+      // Gentle bounds bounce
+      if (n.x < 20 || n.x > width - 20) n.vx *= -1;
+      if (n.y < 20 || n.y > height - 20) n.vy *= -1;
+
+      // Mouse subtle repulsion/attraction
+      const dx = mouse.x - n.x;
+      const dy = mouse.y - n.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < mouse.radius && dist > 0) {
+        const force = (mouse.radius - dist) / mouse.radius;
+        n.x -= (dx / dist) * force * 0.8;
+        n.y -= (dy / dist) * force * 0.8;
+      }
+    }
+
+    // Draw connecting circuit/neural lines
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const n1 = nodes[i];
+        const n2 = nodes[j];
+        const dx = n1.x - n2.x;
+        const dy = n1.y - n2.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        const maxDist = 170;
+        if (dist < maxDist) {
+          const alpha = (1 - dist / maxDist) * 0.18;
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(29, 99, 255, ${alpha})`;
+          ctx.lineWidth = 1;
+
+          // Technical circuit orthogonal or direct trace
+          ctx.moveTo(n1.x, n1.y);
+          ctx.lineTo(n2.x, n2.y);
+          ctx.stroke();
+        }
+      }
+
+      // Connect to mouse if nearby
+      const dxm = mouse.x - nodes[i].x;
+      const dym = mouse.y - nodes[i].y;
+      const distMouse = Math.sqrt(dxm * dxm + dym * dym);
+      if (distMouse < mouse.radius) {
+        const alpha = (1 - distMouse / mouse.radius) * 0.28;
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(29, 99, 255, ${alpha})`;
+        ctx.lineWidth = 1;
+        ctx.moveTo(nodes[i].x, nodes[i].y);
+        ctx.lineTo(mouse.x, mouse.y);
+        ctx.stroke();
+      }
+    }
+
+    // Draw Data Pulses traveling along lines
+    for (let p = pulses.length - 1; p >= 0; p--) {
+      const pulse = pulses[p];
+      const n1 = nodes[pulse.nodeA];
+      const n2 = nodes[pulse.nodeB];
+      pulse.progress += pulse.speed;
+
+      if (pulse.progress >= 1) {
+        pulses.splice(p, 1);
+        continue;
+      }
+
+      const px = n1.x + (n2.x - n1.x) * pulse.progress;
+      const py = n1.y + (n2.y - n1.y) * pulse.progress;
+
+      ctx.fillStyle = '#1d63ff';
+      ctx.fillRect(px - 2, py - 2, 4, 4); // Sharp square data pulse
+    }
+
+    // Draw Nodes (Square data nodes & crosshairs)
+    for (let i = 0; i < nodes.length; i++) {
+      const n = nodes[i];
+      if (n.isCrosshair) {
+        // Technical crosshair mark
+        ctx.strokeStyle = 'rgba(29, 99, 255, 0.45)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(n.x - 4, n.y);
+        ctx.lineTo(n.x + 4, n.y);
+        ctx.moveTo(n.x, n.y - 4);
+        ctx.lineTo(n.x, n.y + 4);
+        ctx.stroke();
+      } else {
+        // Sharp micro square node
+        ctx.fillStyle = 'rgba(29, 99, 255, 0.5)';
+        ctx.fillRect(n.x - 1.5, n.y - 1.5, 3, 3);
+      }
+    }
+
+    requestAnimationFrame(animate);
+  }
+  requestAnimationFrame(animate);
+}
+
+// ----------------------------------------------------
+// 4. AFTERNOW-STYLE SCROLL REVEALS & HEADER EFFECTS
+// ----------------------------------------------------
+function initScrollAnimations() {
+  const header = document.querySelector('header.site-header');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 40) {
+      if (header) header.classList.add('scrolled');
+    } else {
+      if (header) header.classList.remove('scrolled');
+    }
+  });
+
+  // Assign reveal classes to sections and cards
+  const revealElements = document.querySelectorAll(
+    'section, .hero-panel, .pillar-box, .job-card, .matrix-card, .info-pane, .contact-box'
+  );
+  revealElements.forEach((el, index) => {
+    el.classList.add('reveal-init');
+  });
+
+  const observer = new IntersectionObserver(
+    (entries, obs) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+          obs.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+  );
+
+  revealElements.forEach((el) => observer.observe(el));
+}
+
+// ----------------------------------------------------
+// 5. ANIMATED NUMBERS COUNTER
+// ----------------------------------------------------
+function initNumberCounters() {
+  const metricCards = document.querySelectorAll('.metric-card');
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const valEl = entry.target.querySelector('.metric-val');
+        if (valEl && !valEl.dataset.counted) {
+          valEl.dataset.counted = 'true';
+          animateCounter(valEl);
+        }
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  metricCards.forEach(c => observer.observe(c));
+}
+
+function animateCounter(el) {
+  const rawText = el.innerText.trim();
+  const matchNum = rawText.match(/\d+(\.\d+)?/);
+  if (!matchNum) return;
+
+  const target = parseFloat(matchNum[0]);
+  const isFloat = rawText.includes('.');
+  const prefix = rawText.startsWith('$') ? '$' : '';
+  const suffix = rawText.includes('%') ? '%' : rawText.includes('+') ? '+' : '';
+
+  let start = 0;
+  const duration = 1200;
+  const startTime = performance.now();
+
+  function update(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    // Ease-out cubic
+    const ease = 1 - Math.pow(1 - progress, 3);
+    const current = start + (target - start) * ease;
+
+    el.innerHTML = `${prefix}${isFloat ? current.toFixed(1) : Math.floor(current)}<span>${suffix}</span>`;
+
+    if (progress < 1) {
+      requestAnimationFrame(update);
+    } else {
+      el.innerHTML = `${prefix}${target}<span>${suffix}</span>`;
+    }
+  }
+  requestAnimationFrame(update);
+}
+
+// ----------------------------------------------------
+// 6. ADMIN AUTHENTICATION
 // ----------------------------------------------------
 function openLoginModal() {
   const modal = document.getElementById('loginModal');
@@ -83,7 +347,6 @@ function submitAdminLogin() {
   const email = emailInput ? emailInput.value.trim() : '';
   const pass = passInput ? passInput.value.trim() : '';
 
-  // Allows login with email adamlau.creatif@gmail.com and password admin123 (or any 4+ char password)
   if ((email.toLowerCase() === 'adamlau.creatif@gmail.com' || email.includes('@')) && (pass === 'admin123' || pass.length >= 4)) {
     localStorage.setItem(STORAGE_KEY_AUTH, 'true');
     closeLoginModal();
@@ -103,7 +366,6 @@ function activateAdminMode() {
   const loginBtn = document.getElementById('adminLoginBtn');
   if (loginBtn) loginBtn.style.display = 'none';
 
-  // Enable contenteditable on all designated text elements
   document.querySelectorAll('[data-editable="true"]').forEach(el => {
     el.setAttribute('contenteditable', 'true');
     el.setAttribute('spellcheck', 'false');
@@ -128,7 +390,7 @@ function logoutAdmin() {
 }
 
 // ----------------------------------------------------
-// 4. LIVE CONTENT PERSISTENCE & EXPORT
+// 7. LIVE CONTENT PERSISTENCE & EXPORT
 // ----------------------------------------------------
 function saveAllChanges() {
   const edits = [];
@@ -153,7 +415,7 @@ function applySavedEdits(editsList) {
 }
 
 function resetToOriginalDefaults() {
-  if (confirm('Are you sure you want to reset all customized text back to the default resume?')) {
+  if (confirm('Are you sure you want to reset all customized text back to default?')) {
     localStorage.removeItem(STORAGE_KEY_DATA);
     localStorage.removeItem(STORAGE_KEY_PHOTO);
     location.reload();
@@ -161,14 +423,12 @@ function resetToOriginalDefaults() {
 }
 
 function exportUpdatedHTML() {
-  // Temporarily strip editing markup before extracting clean production HTML
   const wasAdmin = isAdmin;
   document.body.classList.remove('admin-mode');
   document.querySelectorAll('[data-editable="true"]').forEach(el => el.removeAttribute('contenteditable'));
 
   const cleanHTML = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
 
-  // Restore active editing state
   if (wasAdmin) {
     document.body.classList.add('admin-mode');
     document.querySelectorAll('[data-editable="true"]').forEach(el => el.setAttribute('contenteditable', 'true'));
@@ -187,7 +447,7 @@ function exportUpdatedHTML() {
 }
 
 // ----------------------------------------------------
-// 5. EXECUTIVE PHOTO UPLOADER
+// 8. EXECUTIVE PHOTO UPLOADER
 // ----------------------------------------------------
 function triggerPhotoUpload() {
   const input = document.getElementById('photoFileInput');
@@ -234,7 +494,7 @@ function resetProfilePhoto() {
 }
 
 // ----------------------------------------------------
-// 6. INTERACTIVE FILTERS & TAG HIGHLIGHTING
+// 9. INTERACTIVE FILTERS & TAG HIGHLIGHTING
 // ----------------------------------------------------
 function filterJobs(category, btn) {
   document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
@@ -251,7 +511,6 @@ function filterJobs(category, btn) {
 }
 
 function filterByTag(tagName) {
-  // Highlight matching tags
   document.querySelectorAll('.tag').forEach(t => {
     if (t.innerText.toLowerCase().includes(tagName.toLowerCase())) {
       t.classList.add('highlighted');
@@ -260,7 +519,6 @@ function filterByTag(tagName) {
     }
   });
 
-  // Highlight and show matching job cards
   const cards = document.querySelectorAll('.job-card');
   let matchedCount = 0;
   cards.forEach(card => {
@@ -291,7 +549,7 @@ function toggleDetails(dossierId, btn) {
 }
 
 // ----------------------------------------------------
-// 7. IN-SITU BULLET & TAG ADDITION
+// 10. IN-SITU BULLET & TAG ADDITION
 // ----------------------------------------------------
 function addBulletPoint(btn) {
   const ul = btn.previousElementSibling;
@@ -333,7 +591,7 @@ function addEducation(btn) {
 }
 
 // ----------------------------------------------------
-// 8. CLIPBOARD & TOAST NOTIFICATION UTILITIES
+// 11. CLIPBOARD & TOAST NOTIFICATION UTILITIES
 // ----------------------------------------------------
 function copyContact(text, msg) {
   navigator.clipboard.writeText(text).then(() => {
