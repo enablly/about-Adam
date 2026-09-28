@@ -88,6 +88,91 @@
       </div>
 
       <div class="hero-panel">
+        <!-- CAD ARCHITECTURAL DRAFTING RIG (RED EXTENSION LINES, DATUM CROSSHAIRS, DIMENSIONS & SKETCHES) -->
+        <div class="cad-hero-drafting-rig" aria-hidden="true">
+          <!-- Continuous Red Construction & Extension Lines -->
+          <div class="cad-ext-line cad-ext-top"></div>
+          <div class="cad-ext-line cad-ext-bottom"></div>
+          <div class="cad-ext-line cad-ext-left"></div>
+          <div class="cad-ext-line cad-ext-right"></div>
+          
+          <!-- CAD Registration Crosshair Circles (Circle with cross in the middle) -->
+          <div class="cad-datum-mark cad-datum-tr" title="CAD REGISTRATION TR">
+            <svg class="cad-target-svg" viewBox="0 0 44 44" width="44" height="44">
+              <line x1="22" y1="0" x2="22" y2="44" stroke="#ef4444" stroke-width="1.6" />
+              <line x1="0" y1="22" x2="44" y2="22" stroke="#ef4444" stroke-width="1.6" />
+              <circle cx="22" cy="22" r="15" fill="none" stroke="#ef4444" stroke-width="1.6" />
+              <circle cx="22" cy="22" r="6" fill="none" stroke="#ef4444" stroke-width="1" opacity="0.6" />
+              <circle cx="22" cy="22" r="2.2" fill="#ef4444" />
+            </svg>
+            <span class="cad-coord-badge">DATUM // TR-01</span>
+          </div>
+
+          <div class="cad-datum-mark cad-datum-bl" title="CAD REGISTRATION BL">
+            <svg class="cad-target-svg" viewBox="0 0 44 44" width="44" height="44">
+              <line x1="22" y1="0" x2="22" y2="44" stroke="#ef4444" stroke-width="1.6" />
+              <line x1="0" y1="22" x2="44" y2="22" stroke="#ef4444" stroke-width="1.6" />
+              <circle cx="22" cy="22" r="15" fill="none" stroke="#ef4444" stroke-width="1.6" />
+              <circle cx="22" cy="22" r="6" fill="none" stroke="#ef4444" stroke-width="1" opacity="0.6" />
+              <circle cx="22" cy="22" r="2.2" fill="#ef4444" />
+            </svg>
+            <span class="cad-coord-badge">DATUM // BL-02</span>
+          </div>
+
+          <div class="cad-datum-mark cad-datum-tl" title="CAD REGISTRATION TL">
+            <svg class="cad-target-svg" viewBox="0 0 32 32" width="32" height="32">
+              <line x1="16" y1="0" x2="16" y2="32" stroke="#ef4444" stroke-width="1.2" />
+              <line x1="0" y1="16" x2="32" y2="16" stroke="#ef4444" stroke-width="1.2" />
+              <circle cx="16" cy="16" r="9" fill="none" stroke="#ef4444" stroke-width="1.2" stroke-dasharray="2 2" />
+              <circle cx="16" cy="16" r="1.5" fill="#ef4444" />
+            </svg>
+          </div>
+
+          <div class="cad-datum-mark cad-datum-br" title="CAD REGISTRATION BR">
+            <svg class="cad-target-svg" viewBox="0 0 32 32" width="32" height="32">
+              <line x1="16" y1="0" x2="16" y2="32" stroke="#ef4444" stroke-width="1.2" />
+              <line x1="0" y1="16" x2="32" y2="16" stroke="#ef4444" stroke-width="1.2" />
+              <circle cx="16" cy="16" r="9" fill="none" stroke="#ef4444" stroke-width="1.2" stroke-dasharray="2 2" />
+              <circle cx="16" cy="16" r="1.5" fill="#ef4444" />
+            </svg>
+          </div>
+
+          <!-- Dotted Dimension Lines & Technical Measurements -->
+          <div class="cad-dim-bar cad-dim-top">
+            <div class="cad-witness-tick cad-tick-start"></div>
+            <div class="cad-dim-dots"></div>
+            <div class="cad-dim-reading">
+              <span class="cad-dim-icon">◀</span>
+              <span class="cad-dim-val">DIM: 1140.00 mm</span>
+              <span class="cad-dim-sub">[SPAN 100% • TOL: ±0.05 • SCALE 1:1]</span>
+              <span class="cad-dim-icon">▶</span>
+            </div>
+            <div class="cad-dim-dots"></div>
+            <div class="cad-witness-tick cad-tick-end"></div>
+          </div>
+
+          <div class="cad-dim-bar cad-dim-side-left">
+            <div class="cad-witness-tick-v cad-tick-top"></div>
+            <div class="cad-dim-dots-v"></div>
+            <div class="cad-dim-reading-v">
+              <span>ELEV: +640.00 mm</span>
+              <span class="cad-dim-sub">[DATUM 0.00]</span>
+            </div>
+            <div class="cad-dim-dots-v"></div>
+            <div class="cad-witness-tick-v cad-tick-bottom"></div>
+          </div>
+
+          <!-- Drafting Sketches & Hairlighting Indicators -->
+          <div class="cad-sketch-tag cad-tag-top-left">
+            <span>SEC // 01-A</span>
+            <span>AXIS: X-Y</span>
+          </div>
+          <div class="cad-sketch-tag cad-tag-bottom-right">
+            <span>DWG NO: AL-2026-FDE</span>
+            <span>POLAR TILT: 23.5°</span>
+          </div>
+        </div>
+
         
         <div class="hero-top-row">
           
@@ -187,6 +272,13 @@
       <div class="section-header">
         <div class="section-title-wrap">
           <span class="section-num">// 01</span>
+            <svg class="cad-section-crosshair" viewBox="0 0 24 24" width="20" height="20">
+              <line x1="12" y1="0" x2="12" y2="24" stroke="var(--blue-core)" stroke-width="1.3" />
+              <line x1="0" y1="12" x2="24" y2="12" stroke="var(--blue-core)" stroke-width="1.3" />
+              <circle cx="12" cy="12" r="8" fill="none" stroke="var(--blue-core)" stroke-width="1.3" />
+              <circle cx="12" cy="12" r="3.5" fill="none" stroke="var(--blue-core)" stroke-width="0.8" opacity="0.6" />
+              <circle cx="12" cy="12" r="1.5" fill="var(--blue-core)" />
+            </svg>
           <h2 class="section-heading" data-editable="true">Strategic Core Pillars</h2>
         </div>
         <div class="section-tag">ARCHITECTURAL DISCIPLINES</div>
@@ -196,6 +288,15 @@
         <div class="pillars-grid">
         
         <div class="pillar-box">
+          <div class="pillar-cad-corner-datum" title="CAD DATUM">
+            <svg viewBox="0 0 24 24" width="18" height="18">
+              <line x1="12" y1="0" x2="12" y2="24" stroke="var(--blue-core)" stroke-width="1.2" />
+              <line x1="0" y1="12" x2="24" y2="12" stroke="var(--blue-core)" stroke-width="1.2" />
+              <circle cx="12" cy="12" r="7.5" fill="none" stroke="var(--blue-core)" stroke-width="1.2" />
+              <circle cx="12" cy="12" r="1.5" fill="var(--blue-core)" />
+            </svg>
+            <span class="pillar-cad-coord">P-01 // 368.00 mm</span>
+          </div>
           <!-- CAD UPPERFOLD: AGENTIC GRAPH & PIPELINE -->
           <div class="pillar-cad-viewport">
             <div class="cad-header-strip">
@@ -264,6 +365,15 @@
         </div>
 
         <div class="pillar-box">
+          <div class="pillar-cad-corner-datum" title="CAD DATUM">
+            <svg viewBox="0 0 24 24" width="18" height="18">
+              <line x1="12" y1="0" x2="12" y2="24" stroke="var(--blue-core)" stroke-width="1.2" />
+              <line x1="0" y1="12" x2="24" y2="12" stroke="var(--blue-core)" stroke-width="1.2" />
+              <circle cx="12" cy="12" r="7.5" fill="none" stroke="var(--blue-core)" stroke-width="1.2" />
+              <circle cx="12" cy="12" r="1.5" fill="var(--blue-core)" />
+            </svg>
+            <span class="pillar-cad-coord">P-02 // 368.00 mm</span>
+          </div>
           <!-- CAD UPPERFOLD: ACQUISITION FUNNEL & DSP WAVE -->
           <div class="pillar-cad-viewport">
             <div class="cad-header-strip">
@@ -321,6 +431,15 @@
         </div>
 
         <div class="pillar-box">
+          <div class="pillar-cad-corner-datum" title="CAD DATUM">
+            <svg viewBox="0 0 24 24" width="18" height="18">
+              <line x1="12" y1="0" x2="12" y2="24" stroke="var(--blue-core)" stroke-width="1.2" />
+              <line x1="0" y1="12" x2="24" y2="12" stroke="var(--blue-core)" stroke-width="1.2" />
+              <circle cx="12" cy="12" r="7.5" fill="none" stroke="var(--blue-core)" stroke-width="1.2" />
+              <circle cx="12" cy="12" r="1.5" fill="var(--blue-core)" />
+            </svg>
+            <span class="pillar-cad-coord">P-03 // 368.00 mm</span>
+          </div>
           <!-- CAD UPPERFOLD: 3D SLANTED SPINNING GEOMETRY GLOBE -->
           <div class="pillar-cad-viewport">
             <div class="cad-header-strip">
@@ -351,6 +470,15 @@
         </div>
 
         <div class="pillar-box">
+          <div class="pillar-cad-corner-datum" title="CAD DATUM">
+            <svg viewBox="0 0 24 24" width="18" height="18">
+              <line x1="12" y1="0" x2="12" y2="24" stroke="var(--blue-core)" stroke-width="1.2" />
+              <line x1="0" y1="12" x2="24" y2="12" stroke="var(--blue-core)" stroke-width="1.2" />
+              <circle cx="12" cy="12" r="7.5" fill="none" stroke="var(--blue-core)" stroke-width="1.2" />
+              <circle cx="12" cy="12" r="1.5" fill="var(--blue-core)" />
+            </svg>
+            <span class="pillar-cad-coord">P-04 // 368.00 mm</span>
+          </div>
           <!-- CAD UPPERFOLD: FOREX CANDLESTICKS & ANTI-DETECT SHIELD -->
           <div class="pillar-cad-viewport">
             <div class="cad-header-strip">
@@ -422,6 +550,13 @@
       <div class="section-header">
         <div class="section-title-wrap">
           <span class="section-num">// 02</span>
+            <svg class="cad-section-crosshair" viewBox="0 0 24 24" width="20" height="20">
+              <line x1="12" y1="0" x2="12" y2="24" stroke="var(--blue-core)" stroke-width="1.3" />
+              <line x1="0" y1="12" x2="24" y2="12" stroke="var(--blue-core)" stroke-width="1.3" />
+              <circle cx="12" cy="12" r="8" fill="none" stroke="var(--blue-core)" stroke-width="1.3" />
+              <circle cx="12" cy="12" r="3.5" fill="none" stroke="var(--blue-core)" stroke-width="0.8" opacity="0.6" />
+              <circle cx="12" cy="12" r="1.5" fill="var(--blue-core)" />
+            </svg>
           <h2 class="section-heading" data-editable="true">Career Experience</h2>
         </div>
         <div class="section-tag">VERIFIED WORK HISTORY (16+ YEARS)</div>
@@ -445,10 +580,27 @@
 
         <!-- 1. STEELCASE -->
         <div class="job-card current" data-category="fde" data-skills="FDE,Copilot,Claude,Gemini,Antigravity,HubSpot,Salesforce,Cloud Run">
-          <div class="job-layout-grid">
+        <div class="job-cad-corner-target" title="CAD DATUM">
+          <svg viewBox="0 0 28 28" width="20" height="20">
+            <line x1="14" y1="0" x2="14" y2="28" stroke="var(--blue-core)" stroke-width="1.3" />
+            <line x1="0" y1="14" x2="28" y2="14" stroke="var(--blue-core)" stroke-width="1.3" />
+            <circle cx="14" cy="14" r="9" fill="none" stroke="var(--blue-core)" stroke-width="1.3" />
+            <circle cx="14" cy="14" r="4" fill="none" stroke="var(--blue-core)" stroke-width="0.8" opacity="0.6" />
+            <circle cx="14" cy="14" r="1.6" fill="var(--blue-core)" />
+          </svg>
+          <span class="job-cad-coord">SPEC // 2026-FDE</span>
+        </div>
+            <div class="job-layout-grid">
             <!-- LEFT: ROLE-SPECIFIC CAD SVG ANIMATION -->
             <div class="job-visual-col">
-              <div class="job-cad-viewport">
+                        <div class="job-cad-dimension-strip">
+            <span class="j-tick"></span>
+            <span class="j-dots"></span>
+            <span class="j-dim-text">CAD SIMULATION // WIDTH: 280.00 mm // SCALE: 1:1</span>
+            <span class="j-dots"></span>
+            <span class="j-tick"></span>
+          </div>
+            <div class="job-cad-viewport">
                 <div class="cad-header-strip">
                   <span class="cad-id">ROLE.01 // FDE_AI</span>
                   <span class="cad-metric">COPILOT // LIVE</span>
@@ -695,10 +847,27 @@
 
         <!-- 2. PEPPERSTONE -->
         <div class="job-card" data-category="forex" data-skills="Ollama,n8n,Meta,Google,Predictive Analytics,Forex">
+        <div class="job-cad-corner-target" title="CAD DATUM">
+          <svg viewBox="0 0 28 28" width="20" height="20">
+            <line x1="14" y1="0" x2="14" y2="28" stroke="var(--blue-core)" stroke-width="1.3" />
+            <line x1="0" y1="14" x2="28" y2="14" stroke="var(--blue-core)" stroke-width="1.3" />
+            <circle cx="14" cy="14" r="9" fill="none" stroke="var(--blue-core)" stroke-width="1.3" />
+            <circle cx="14" cy="14" r="4" fill="none" stroke="var(--blue-core)" stroke-width="0.8" opacity="0.6" />
+            <circle cx="14" cy="14" r="1.6" fill="var(--blue-core)" />
+          </svg>
+          <span class="job-cad-coord">SPEC // 2024-CAD</span>
+        </div>
           <div class="job-layout-grid">
             <!-- LEFT: ROLE-SPECIFIC CAD SVG ANIMATION -->
             <div class="job-visual-col">
-              <div class="job-cad-viewport">
+                        <div class="job-cad-dimension-strip">
+            <span class="j-tick"></span>
+            <span class="j-dots"></span>
+            <span class="j-dim-text">CAD SIMULATION // WIDTH: 280.00 mm // SCALE: 1:1</span>
+            <span class="j-dots"></span>
+            <span class="j-tick"></span>
+          </div>
+            <div class="job-cad-viewport">
                 <div class="cad-header-strip">
                   <span class="cad-id">ROLE.02 // FX_MEDIA</span>
                   <span class="cad-metric">OLLAMA // LOCAL</span>
@@ -942,10 +1111,27 @@
 
         <!-- 3. VT MARKETS -->
         <div class="job-card" data-category="forex" data-skills="Forex,RedTrack,Voluum,SEO,Anti-detect">
+        <div class="job-cad-corner-target" title="CAD DATUM">
+          <svg viewBox="0 0 28 28" width="20" height="20">
+            <line x1="14" y1="0" x2="14" y2="28" stroke="var(--blue-core)" stroke-width="1.3" />
+            <line x1="0" y1="14" x2="28" y2="14" stroke="var(--blue-core)" stroke-width="1.3" />
+            <circle cx="14" cy="14" r="9" fill="none" stroke="var(--blue-core)" stroke-width="1.3" />
+            <circle cx="14" cy="14" r="4" fill="none" stroke="var(--blue-core)" stroke-width="0.8" opacity="0.6" />
+            <circle cx="14" cy="14" r="1.6" fill="var(--blue-core)" />
+          </svg>
+          <span class="job-cad-coord">SPEC // 2024-CAD</span>
+        </div>
           <div class="job-layout-grid">
             <!-- LEFT: ROLE-SPECIFIC CAD SVG ANIMATION -->
             <div class="job-visual-col">
-              <div class="job-cad-viewport">
+                        <div class="job-cad-dimension-strip">
+            <span class="j-tick"></span>
+            <span class="j-dots"></span>
+            <span class="j-dim-text">CAD SIMULATION // WIDTH: 280.00 mm // SCALE: 1:1</span>
+            <span class="j-dots"></span>
+            <span class="j-tick"></span>
+          </div>
+            <div class="job-cad-viewport">
                 <div class="cad-header-strip">
                   <span class="cad-id">ROLE.03 // ATTR_FLOW</span>
                   <span class="cad-metric">REDTRACK // 100%</span>
@@ -1121,10 +1307,27 @@
 
         <!-- 4. DENTSU -->
         <div class="job-card" data-category="agency" data-skills="dentsu,DV360,LinkedIn,Affiliate,Enterprise">
+        <div class="job-cad-corner-target" title="CAD DATUM">
+          <svg viewBox="0 0 28 28" width="20" height="20">
+            <line x1="14" y1="0" x2="14" y2="28" stroke="var(--blue-core)" stroke-width="1.3" />
+            <line x1="0" y1="14" x2="28" y2="14" stroke="var(--blue-core)" stroke-width="1.3" />
+            <circle cx="14" cy="14" r="9" fill="none" stroke="var(--blue-core)" stroke-width="1.3" />
+            <circle cx="14" cy="14" r="4" fill="none" stroke="var(--blue-core)" stroke-width="0.8" opacity="0.6" />
+            <circle cx="14" cy="14" r="1.6" fill="var(--blue-core)" />
+          </svg>
+          <span class="job-cad-coord">SPEC // 2024-CAD</span>
+        </div>
           <div class="job-layout-grid">
             <!-- LEFT: ROLE-SPECIFIC CAD SVG ANIMATION -->
             <div class="job-visual-col">
-              <div class="job-cad-viewport">
+                        <div class="job-cad-dimension-strip">
+            <span class="j-tick"></span>
+            <span class="j-dots"></span>
+            <span class="j-dim-text">CAD SIMULATION // WIDTH: 280.00 mm // SCALE: 1:1</span>
+            <span class="j-dots"></span>
+            <span class="j-tick"></span>
+          </div>
+            <div class="job-cad-viewport">
                 <div class="cad-header-strip">
                   <span class="cad-id">ROLE.04 // DV360_DSP</span>
                   <span class="cad-metric">ROAS // 200%</span>
@@ -1325,10 +1528,27 @@
 
         <!-- 5. ULTIMA MARKETS -->
         <div class="job-card" data-category="forex" data-skills="Forex,Social,LeadGen">
+        <div class="job-cad-corner-target" title="CAD DATUM">
+          <svg viewBox="0 0 28 28" width="20" height="20">
+            <line x1="14" y1="0" x2="14" y2="28" stroke="var(--blue-core)" stroke-width="1.3" />
+            <line x1="0" y1="14" x2="28" y2="14" stroke="var(--blue-core)" stroke-width="1.3" />
+            <circle cx="14" cy="14" r="9" fill="none" stroke="var(--blue-core)" stroke-width="1.3" />
+            <circle cx="14" cy="14" r="4" fill="none" stroke="var(--blue-core)" stroke-width="0.8" opacity="0.6" />
+            <circle cx="14" cy="14" r="1.6" fill="var(--blue-core)" />
+          </svg>
+          <span class="job-cad-coord">SPEC // 2024-CAD</span>
+        </div>
           <div class="job-layout-grid">
             <!-- LEFT: ROLE-SPECIFIC CAD SVG ANIMATION -->
             <div class="job-visual-col">
-              <div class="job-cad-viewport">
+                        <div class="job-cad-dimension-strip">
+            <span class="j-tick"></span>
+            <span class="j-dots"></span>
+            <span class="j-dim-text">CAD SIMULATION // WIDTH: 280.00 mm // SCALE: 1:1</span>
+            <span class="j-dots"></span>
+            <span class="j-tick"></span>
+          </div>
+            <div class="job-cad-viewport">
                 <div class="cad-header-strip">
                   <span class="cad-id">ROLE.05 // FTD_FUNNEL</span>
                   <span class="cad-metric">KYC // READY</span>
@@ -1480,10 +1700,27 @@
 
         <!-- 6. ENABLLY.COM -->
         <div class="job-card" data-category="agency" data-skills="Leadership,eCommerce,Team25,Growth">
+        <div class="job-cad-corner-target" title="CAD DATUM">
+          <svg viewBox="0 0 28 28" width="20" height="20">
+            <line x1="14" y1="0" x2="14" y2="28" stroke="var(--blue-core)" stroke-width="1.3" />
+            <line x1="0" y1="14" x2="28" y2="14" stroke="var(--blue-core)" stroke-width="1.3" />
+            <circle cx="14" cy="14" r="9" fill="none" stroke="var(--blue-core)" stroke-width="1.3" />
+            <circle cx="14" cy="14" r="4" fill="none" stroke="var(--blue-core)" stroke-width="0.8" opacity="0.6" />
+            <circle cx="14" cy="14" r="1.6" fill="var(--blue-core)" />
+          </svg>
+          <span class="job-cad-coord">SPEC // 2024-CAD</span>
+        </div>
           <div class="job-layout-grid">
             <!-- LEFT: ROLE-SPECIFIC CAD SVG ANIMATION -->
             <div class="job-visual-col">
-              <div class="job-cad-viewport">
+                        <div class="job-cad-dimension-strip">
+            <span class="j-tick"></span>
+            <span class="j-dots"></span>
+            <span class="j-dim-text">CAD SIMULATION // WIDTH: 280.00 mm // SCALE: 1:1</span>
+            <span class="j-dots"></span>
+            <span class="j-tick"></span>
+          </div>
+            <div class="job-cad-viewport">
                 <div class="cad-header-strip">
                   <span class="cad-id">ROLE.06 // TEAM_ORCH</span>
                   <span class="cad-metric">TEAM // 25 DIR</span>
@@ -1659,10 +1896,27 @@
 
         <!-- 7. FOUNDATIONS: PRETTY GROUP, JOBSDB, TWINCREST -->
         <div class="job-card" data-category="foundations" data-skills="Foundations,SEO,eCommerce,RealEstate">
+        <div class="job-cad-corner-target" title="CAD DATUM">
+          <svg viewBox="0 0 28 28" width="20" height="20">
+            <line x1="14" y1="0" x2="14" y2="28" stroke="var(--blue-core)" stroke-width="1.3" />
+            <line x1="0" y1="14" x2="28" y2="14" stroke="var(--blue-core)" stroke-width="1.3" />
+            <circle cx="14" cy="14" r="9" fill="none" stroke="var(--blue-core)" stroke-width="1.3" />
+            <circle cx="14" cy="14" r="4" fill="none" stroke="var(--blue-core)" stroke-width="0.8" opacity="0.6" />
+            <circle cx="14" cy="14" r="1.6" fill="var(--blue-core)" />
+          </svg>
+          <span class="job-cad-coord">SPEC // 2024-CAD</span>
+        </div>
           <div class="job-layout-grid">
             <!-- LEFT: ROLE-SPECIFIC CAD SVG ANIMATION -->
             <div class="job-visual-col">
-              <div class="job-cad-viewport">
+                        <div class="job-cad-dimension-strip">
+            <span class="j-tick"></span>
+            <span class="j-dots"></span>
+            <span class="j-dim-text">CAD SIMULATION // WIDTH: 280.00 mm // SCALE: 1:1</span>
+            <span class="j-dots"></span>
+            <span class="j-tick"></span>
+          </div>
+            <div class="job-cad-viewport">
                 <div class="cad-header-strip">
                   <span class="cad-id">ROLE.07 // 2001_2015</span>
                   <span class="cad-metric">14 YRS // CORE</span>
@@ -1840,6 +2094,13 @@
       <div class="section-header">
         <div class="section-title-wrap">
           <span class="section-num">// 03</span>
+            <svg class="cad-section-crosshair" viewBox="0 0 24 24" width="20" height="20">
+              <line x1="12" y1="0" x2="12" y2="24" stroke="var(--blue-core)" stroke-width="1.3" />
+              <line x1="0" y1="12" x2="24" y2="12" stroke="var(--blue-core)" stroke-width="1.3" />
+              <circle cx="12" cy="12" r="8" fill="none" stroke="var(--blue-core)" stroke-width="1.3" />
+              <circle cx="12" cy="12" r="3.5" fill="none" stroke="var(--blue-core)" stroke-width="0.8" opacity="0.6" />
+              <circle cx="12" cy="12" r="1.5" fill="var(--blue-core)" />
+            </svg>
           <h2 class="section-heading" data-editable="true">AI & Technical Matrix</h2>
         </div>
         <div class="section-tag">COMPREHENSIVE TOOLING STACK</div>
@@ -1918,6 +2179,13 @@
       <div class="section-header">
         <div class="section-title-wrap">
           <span class="section-num">// 04</span>
+            <svg class="cad-section-crosshair" viewBox="0 0 24 24" width="20" height="20">
+              <line x1="12" y1="0" x2="12" y2="24" stroke="var(--blue-core)" stroke-width="1.3" />
+              <line x1="0" y1="12" x2="24" y2="12" stroke="var(--blue-core)" stroke-width="1.3" />
+              <circle cx="12" cy="12" r="8" fill="none" stroke="var(--blue-core)" stroke-width="1.3" />
+              <circle cx="12" cy="12" r="3.5" fill="none" stroke="var(--blue-core)" stroke-width="0.8" opacity="0.6" />
+              <circle cx="12" cy="12" r="1.5" fill="var(--blue-core)" />
+            </svg>
           <h2 class="section-heading" data-editable="true">Education & Certifications</h2>
         </div>
         <div class="section-tag">FORMAL CREDENTIALS</div>
