@@ -202,8 +202,8 @@ body.admin-mode .admin-add-btn {
    ======================================================== */
 .photo-wrapper {
   position: relative;
-  width: 210px;
-  height: 250px;
+  width: 240px;
+  align-self: stretch;
   background: #f1f5f9;
   border: 1px solid var(--border-medium);
   overflow: hidden;
@@ -745,7 +745,7 @@ section {
 .hero-top-row {
   display: flex;
   gap: 40px;
-  align-items: flex-start;
+  align-items: stretch;
   margin-bottom: 36px;
 }
 
@@ -1926,6 +1926,7 @@ footer.site-footer {
   .photo-wrapper {
     width: 180px;
     height: 220px;
+    align-self: flex-start;
   }
   .metric-grid {
     grid-template-columns: repeat(2, 1fr);
