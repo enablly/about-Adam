@@ -1635,10 +1635,126 @@ section {
 /* ========================================================
    AI & TECHNICAL MATRIX (DARK CAD GLASS & TRANSLUCENT TREATMENT)
    ======================================================== */
+#skills {
+  position: relative;
+  padding: 42px 36px 48px 36px;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  background: rgba(7, 11, 20, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+#skills::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  border-top: 2px solid #38bdf8;
+  border-left: 2px solid #38bdf8;
+  pointer-events: none;
+  z-index: 5;
+}
+
+#skills::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 14px;
+  height: 14px;
+  border-bottom: 2px solid #38bdf8;
+  border-right: 2px solid #38bdf8;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.skills-animation-backdrop {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+#marketingAiCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+.skills-bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(56, 189, 248, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.03) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+}
+
+.skills-ambient-telemetry {
+  position: absolute;
+  bottom: 12px;
+  left: 36px;
+  right: 36px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.05em;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.skills-ambient-telemetry .sat-tag {
+  color: #38bdf8;
+  font-weight: 700;
+  margin-right: 8px;
+}
+
+.skills-ambient-telemetry .sat-metric {
+  color: #94a3b8;
+}
+
+#skills .section-header {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 14px;
+}
+
+#skills .section-heading {
+  color: #ffffff;
+}
+
+#skills .section-tag {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: #94a3b8;
+}
+
+#skills .section-num {
+  color: #38bdf8;
+}
+
 .tech-matrix-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
+  position: relative;
+  z-index: 2;
 }
 
 .matrix-card {
@@ -1751,6 +1867,21 @@ section {
   border-color: #38bdf8 !important;
   color: #ffffff !important;
   box-shadow: 0 0 16px rgba(29, 99, 255, 0.5) !important;
+}
+
+body.admin-mode .matrix-card .tag[data-editable="true"]:hover {
+  outline: 1px dashed #38bdf8 !important;
+  background: rgba(56, 189, 248, 0.25) !important;
+  color: #ffffff !important;
+  cursor: text !important;
+  transform: none !important;
+}
+
+body.admin-mode .matrix-card .tag[data-editable="true"]:focus {
+  outline: 2px solid #38bdf8 !important;
+  background: rgba(56, 189, 248, 0.35) !important;
+  color: #ffffff !important;
+  transform: none !important;
 }
 
 .matrix-card .admin-add-btn {

@@ -37,6 +37,9 @@ window.addEventListener('DOMContentLoaded', () => {
   // Initialize Dynamic Architectural CAD Telemetry
   initCadDynamicTelemetry();
 
+  // Initialize Marketing / AI / Business Growth Matrix Background Canvas
+  initMarketingAiCanvas();
+
   // Restore custom photo if previously uploaded
   const savedPhoto = localStorage.getItem(STORAGE_KEY_PHOTO);
   const profileImg = document.getElementById('profileImage');
@@ -661,6 +664,7 @@ function filterJobs(category, btn) {
 }
 
 function filterByTag(tagName) {
+  if (isAdmin) return; // In admin mode, allow editing tag text without triggering role filtering
   document.querySelectorAll('.tag').forEach(t => {
     if (t.innerText.toLowerCase().includes(tagName.toLowerCase())) {
       t.classList.add('highlighted');
@@ -2304,4 +2308,421 @@ function initCadDynamicTelemetry() {
     });
 
   }, 1800);
+}
+
+// ----------------------------------------------------
+// 12. FANCY ANIMATED MARKETING / AI / BUSINESS GROWTH CANVAS
+// (Neural synapsing, exponential growth trajectories, live telemetry, interactive physics)
+// ----------------------------------------------------
+function initMarketingAiCanvas() {
+  const canvas = document.getElementById('marketingAiCanvas');
+  const section = document.getElementById('skills');
+  if (!canvas || !section) return;
+
+  const ctx = canvas.getContext('2d');
+  let width = 0;
+  let height = 0;
+  let isVisible = true;
+
+  function resize() {
+    const rect = section.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    width = rect.width;
+    height = rect.height;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // IntersectionObserver to pause rendering when offscreen
+  const observer = new IntersectionObserver((entries) => {
+    isVisible = entries[0].isIntersecting;
+  }, { threshold: 0.05 });
+  observer.observe(section);
+
+  // Interactive mouse tracking
+  const mouse = { x: -1000, y: -1000, active: false };
+  section.addEventListener('mousemove', (e) => {
+    const rect = section.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+    mouse.active = true;
+  });
+  section.addEventListener('mouseleave', () => {
+    mouse.active = false;
+  });
+
+  // 1. Neural Network & Agentic AI Nodes
+  const nodeCount = 28;
+  const nodes = [];
+  const nodeLabels = [
+    'LLM CORE', 'AGENT ROUTER', 'N8N PIPELINE', 'META ADS API', 'GA4 STREAM',
+    'ROAS OPT', 'LTV ENGINE', 'AUTONOMOUS FDE', 'SYNAPSE HUB', 'CDP MESH',
+    'SEARCH AEO', 'CONVERSION ALPHA'
+  ];
+
+  for (let i = 0; i < nodeCount; i++) {
+    nodes.push({
+      x: Math.random() * (width || 1000),
+      y: Math.random() * (height || 500),
+      vx: (Math.random() - 0.5) * 0.35,
+      vy: (Math.random() - 0.5) * 0.35,
+      radius: Math.random() > 0.7 ? 3.5 : 2,
+      pulse: Math.random() * Math.PI * 2,
+      isHub: i < 5,
+      label: i < nodeLabels.length ? nodeLabels[i] : null
+    });
+  }
+
+  // Synapse traveling signal pulses
+  const pulses = [];
+  setInterval(() => {
+    if (!isVisible) return;
+    if (nodes.length > 2 && pulses.length < 12) {
+      const idxA = Math.floor(Math.random() * nodes.length);
+      let bestIdx = -1;
+      let minD = 180;
+      for (let j = 0; j < nodes.length; j++) {
+        if (j === idxA) continue;
+        const dx = nodes[j].x - nodes[idxA].x;
+        const dy = nodes[j].y - nodes[idxA].y;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        if (d < minD) {
+          minD = d;
+          bestIdx = j;
+        }
+      }
+      if (bestIdx !== -1) {
+        pulses.push({
+          from: idxA,
+          to: bestIdx,
+          progress: 0,
+          speed: 0.018 + Math.random() * 0.022
+        });
+      }
+    }
+  }, 400);
+
+  // 2. Rising Funnel & Conversion Growth Particles
+  const funnelParticles = [];
+  for (let i = 0; i < 20; i++) {
+    funnelParticles.push({
+      x: Math.random() * (width || 1000),
+      y: Math.random() * (height || 500),
+      vy: -(0.3 + Math.random() * 0.5),
+      size: 1 + Math.random() * 2,
+      opacity: 0.2 + Math.random() * 0.5,
+      color: Math.random() > 0.5 ? '#38bdf8' : '#10b981'
+    });
+  }
+
+  // 3. Technical Candlestick Micro-Clusters along growth baseline
+  const candlesticks = [];
+  for (let i = 0; i < 18; i++) {
+    candlesticks.push({
+      relX: 0.08 + (i / 18) * 0.84,
+      open: Math.random() * 12 + 4,
+      close: Math.random() * 18 + 8,
+      high: Math.random() * 24 + 18,
+      low: Math.random() * 6 + 2,
+      isBullish: Math.random() > 0.25
+    });
+  }
+
+  let time = 0;
+
+  function render() {
+    if (!isVisible) {
+      requestAnimationFrame(render);
+      return;
+    }
+
+    time++;
+    ctx.clearRect(0, 0, width, height);
+
+    // Subtle Radial Background Glow behind matrix
+    const bgGlow = ctx.createRadialGradient(
+      width * 0.5, height * 0.45, 20,
+      width * 0.5, height * 0.45, width * 0.65
+    );
+    bgGlow.addColorStop(0, 'rgba(29, 99, 255, 0.08)');
+    bgGlow.addColorStop(0.5, 'rgba(56, 189, 248, 0.03)');
+    bgGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = bgGlow;
+    ctx.fillRect(0, 0, width, height);
+
+    // Mouse Spotlight Ambient Glow
+    if (mouse.active) {
+      const mouseGlow = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 220);
+      mouseGlow.addColorStop(0, 'rgba(56, 189, 248, 0.12)');
+      mouseGlow.addColorStop(0.6, 'rgba(29, 99, 255, 0.04)');
+      mouseGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = mouseGlow;
+      ctx.fillRect(0, 0, width, height);
+    }
+
+    // A. Business Exponential & Sigmoid Growth Trajectory Curves
+    ctx.save();
+    // Exponential Growth Curve 1: Primary ROAS / Scale Vector
+    ctx.beginPath();
+    const startX = width * 0.02;
+    const startY = height * 0.82;
+    const cp1x = width * 0.35;
+    const cp1y = height * 0.78 + Math.sin(time * 0.02) * 8;
+    const cp2x = width * 0.62;
+    const cp2y = height * 0.35 + Math.cos(time * 0.025) * 10;
+    const endX = width * 0.98;
+    const endY = height * 0.18 + Math.sin(time * 0.015) * 6;
+
+    ctx.moveTo(startX, startY);
+    ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, endX, endY);
+
+    const curveGrad = ctx.createLinearGradient(startX, startY, endX, endY);
+    curveGrad.addColorStop(0, 'rgba(29, 99, 255, 0.1)');
+    curveGrad.addColorStop(0.3, 'rgba(56, 189, 248, 0.45)');
+    curveGrad.addColorStop(0.7, 'rgba(16, 185, 129, 0.65)');
+    curveGrad.addColorStop(1, 'rgba(56, 189, 248, 0.85)');
+
+    ctx.strokeStyle = curveGrad;
+    ctx.lineWidth = 1.8;
+    ctx.stroke();
+
+    // Secondary Harmonic Growth Curve: AI Agentic Velocity
+    ctx.beginPath();
+    ctx.moveTo(startX, startY + 25);
+    ctx.bezierCurveTo(
+      width * 0.4, height * 0.88 + Math.cos(time * 0.018) * 8,
+      width * 0.68, height * 0.42 + Math.sin(time * 0.02) * 12,
+      endX, endY + 28
+    );
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.25)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 6]);
+    ctx.lineDashOffset = -time * 0.8;
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Shaded Area Under Primary Curve
+    ctx.lineTo(endX, height);
+    ctx.lineTo(startX, height);
+    ctx.closePath();
+    const areaGrad = ctx.createLinearGradient(0, height * 0.2, 0, height);
+    areaGrad.addColorStop(0, 'rgba(56, 189, 248, 0.04)');
+    areaGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = areaGrad;
+    ctx.fill();
+    ctx.restore();
+
+    // Traveling Pulse Beacon on the Main Growth Curve
+    const curveT = ((time * 0.0035) % 1);
+    const u = 1 - curveT;
+    const beaconX = u*u*u*startX + 3*u*u*curveT*cp1x + 3*u*curveT*curveT*cp2x + curveT*curveT*curveT*endX;
+    const beaconY = u*u*u*startY + 3*u*u*curveT*cp1y + 3*u*curveT*curveT*cp2y + curveT*curveT*curveT*endY;
+
+    ctx.save();
+    // Expanding pulse ring
+    const bRing = ((time * 0.03) % 1) * 20;
+    ctx.strokeStyle = `rgba(16, 185, 129, ${0.9 - bRing / 20})`;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(beaconX, beaconY, bRing, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Beacon Core
+    ctx.fillStyle = '#10b981';
+    ctx.shadowColor = '#10b981';
+    ctx.shadowBlur = 12;
+    ctx.beginPath();
+    ctx.arc(beaconX, beaconY, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // Milestone Flag Tags along the Growth Curve
+    const milestones = [
+      { t: 0.28, label: 'Q1 // LTV +140%' },
+      { t: 0.62, label: 'AGENTIC AI // ROAS 3.8x' },
+      { t: 0.88, label: 'PEAK SCALE // +200% ROAS' }
+    ];
+    milestones.forEach(m => {
+      const mt = m.t;
+      const mu = 1 - mt;
+      const mx = mu*mu*mu*startX + 3*mu*mu*mt*cp1x + 3*mu*mt*mt*cp2x + mt*mt*mt*endX;
+      const my = mu*mu*mu*startY + 3*mu*mu*mt*cp1y + 3*mu*mt*mt*cp2y + mt*mt*mt*endY;
+
+      ctx.save();
+      // Tick mark
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(mx, my - 3);
+      ctx.lineTo(mx, my - 16);
+      ctx.stroke();
+
+      // Milestone Pill Tag
+      ctx.font = '600 7px "JetBrains Mono", monospace';
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillText(m.label, mx + 4, my - 12);
+      ctx.beginPath();
+      ctx.arc(mx, my, 2, 0, Math.PI * 2);
+      ctx.fillStyle = '#10b981';
+      ctx.fill();
+      ctx.restore();
+    });
+
+    // B. Candlestick Breakout Growth Elements along Lower Trajectory
+    candlesticks.forEach((cs) => {
+      const cx = width * cs.relX;
+      const cyBase = height * 0.9 - Math.sin(cs.relX * Math.PI) * 20;
+      const candleColor = cs.isBullish ? 'rgba(16, 185, 129, 0.45)' : 'rgba(29, 99, 255, 0.35)';
+
+      ctx.save();
+      ctx.strokeStyle = candleColor;
+      ctx.lineWidth = 0.8;
+      ctx.beginPath();
+      ctx.moveTo(cx, cyBase - cs.high);
+      ctx.lineTo(cx, cyBase - cs.low);
+      ctx.stroke();
+
+      ctx.fillStyle = candleColor;
+      const bodyH = Math.abs(cs.close - cs.open);
+      const bodyY = cyBase - Math.max(cs.open, cs.close);
+      ctx.fillRect(cx - 2, bodyY, 4, Math.max(2, bodyH));
+      ctx.restore();
+    });
+
+    // C. Rising Funnel Conversion Particles
+    funnelParticles.forEach(p => {
+      p.y += p.vy;
+      if (p.y < 0) {
+        p.y = height + 10;
+        p.x = Math.random() * width;
+      }
+      ctx.save();
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = p.opacity;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    });
+
+    // D. Neural Network & Agent Synapses
+    nodes.forEach(node => {
+      node.x += node.vx;
+      node.y += node.vy;
+
+      if (node.x < 10 || node.x > width - 10) node.vx *= -1;
+      if (node.y < 10 || node.y > height - 10) node.vy *= -1;
+
+      if (mouse.active) {
+        const dx = node.x - mouse.x;
+        const dy = node.y - mouse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 130 && dist > 1) {
+          const force = (130 - dist) / 130 * 1.5;
+          node.x += (dx / dist) * force;
+          node.y += (dy / dist) * force;
+        }
+      }
+    });
+
+    // Draw Synaptic Connections
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const dx = nodes[j].x - nodes[i].x;
+        const dy = nodes[j].y - nodes[i].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 140) {
+          const alpha = (1 - dist / 140) * 0.22;
+          ctx.strokeStyle = `rgba(56, 189, 248, ${alpha})`;
+          ctx.lineWidth = 0.7;
+          ctx.beginPath();
+          ctx.moveTo(nodes[i].x, nodes[i].y);
+          ctx.lineTo(nodes[j].x, nodes[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    // Draw Traveling Synapse Pulses
+    for (let pIdx = pulses.length - 1; pIdx >= 0; pIdx--) {
+      const pulse = pulses[pIdx];
+      pulse.progress += pulse.speed;
+      if (pulse.progress >= 1) {
+        pulses.splice(pIdx, 1);
+        continue;
+      }
+      const nA = nodes[pulse.from];
+      const nB = nodes[pulse.to];
+      if (!nA || !nB) continue;
+
+      const px = nA.x + (nB.x - nA.x) * pulse.progress;
+      const py = nA.y + (nB.y - nA.y) * pulse.progress;
+
+      ctx.save();
+      ctx.fillStyle = '#38bdf8';
+      ctx.shadowColor = '#38bdf8';
+      ctx.shadowBlur = 8;
+      ctx.beginPath();
+      ctx.arc(px, py, 2.2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // Draw Neural Nodes & Hub Labels
+    nodes.forEach(node => {
+      ctx.save();
+      if (node.isHub) {
+        const hubR = 4 + Math.sin(time * 0.05 + node.pulse) * 2;
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, hubR + 4, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.fillStyle = '#38bdf8';
+        ctx.shadowColor = '#38bdf8';
+        ctx.shadowBlur = 6;
+      } else {
+        ctx.fillStyle = 'rgba(148, 163, 184, 0.45)';
+      }
+
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+      ctx.fill();
+
+      if (node.label && width > 700) {
+        ctx.font = '600 6.5px "JetBrains Mono", monospace';
+        ctx.fillStyle = 'rgba(148, 163, 184, 0.65)';
+        ctx.fillText(node.label, node.x + 7, node.y + 2);
+      }
+      ctx.restore();
+    });
+
+    requestAnimationFrame(render);
+  }
+
+  requestAnimationFrame(render);
+
+  // Dynamic Telemetry Micro-readouts update
+  const leftHud = document.getElementById('satMetricLeft');
+  const rightHud = document.getElementById('satMetricRight');
+  let hudTick = 0;
+  setInterval(() => {
+    if (!isVisible) return;
+    hudTick++;
+    const roas = (4.80 + Math.sin(hudTick * 0.4) * 0.12).toFixed(2);
+    const cac = (14.20 - Math.cos(hudTick * 0.3) * 0.45).toFixed(2);
+    const tokens = (142.0 + Math.sin(hudTick * 0.6) * 4.2).toFixed(1);
+    const latency = Math.floor(11 + Math.abs(Math.sin(hudTick * 0.8)) * 3);
+
+    if (leftHud) {
+      leftHud.textContent = `MULTI-TOUCH ATTRIBUTION • REALTIME ROAS: ${roas}x • CAC: $${cac} • LTV: $248`;
+    }
+    if (rightHud) {
+      rightHud.textContent = `32 NODES ACTIVE • ${tokens} TOKENS/SEC • LATENCY: ${latency}ms`;
+    }
+  }, 2200);
 }

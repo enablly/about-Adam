@@ -2042,9 +2042,25 @@
          AI & TECHNICAL MATRIX (INTERACTIVE TAG HIGHLIGHTING)
          ======================================================== -->
     <section id="skills">
+      <!-- FANCY ANIMATED MARKETING / AI / GROWTH BACKDROP CANVAS -->
+      <div class="skills-animation-backdrop" aria-hidden="true">
+        <canvas id="marketingAiCanvas"></canvas>
+        <div class="skills-bg-grid"></div>
+        <div class="skills-ambient-telemetry">
+          <div class="sat-item sat-left">
+            <span class="sat-tag">// GROWTH ENGINE:</span>
+            <span class="sat-metric" id="satMetricLeft">MULTI-TOUCH ATTRIBUTION • REALTIME ROAS: 4.82x • CAC: $14.20</span>
+          </div>
+          <div class="sat-item sat-right">
+            <span class="sat-tag">// AI INFERENCE MESH:</span>
+            <span class="sat-metric" id="satMetricRight">32 NODES ACTIVE • 142.8 TOKENS/SEC • LATENCY: 12ms</span>
+          </div>
+        </div>
+      </div>
+
       <div class="section-header">
         <div class="section-title-wrap">
-          <span class="section-num">// 03</span>
+          <span class="section-num" data-editable="true">// 03</span>
             <svg class="cad-section-crosshair" viewBox="0 0 24 24" width="20" height="20">
               <line x1="12" y1="0" x2="12" y2="24" stroke="var(--blue-core)" stroke-width="1.3" />
               <line x1="0" y1="12" x2="24" y2="12" stroke="var(--blue-core)" stroke-width="1.3" />
@@ -2052,9 +2068,9 @@
               <circle cx="12" cy="12" r="3.5" fill="none" stroke="var(--blue-core)" stroke-width="0.8" opacity="0.6" />
               <circle cx="12" cy="12" r="1.5" fill="var(--blue-core)" />
             </svg>
-          <h2 class="section-heading" data-editable="true">AI & Technical Matrix</h2>
+          <h2 class="section-heading" data-editable="true">MARKETING / AI / TECHNICAL MATRIX</h2>
         </div>
-        <div class="section-tag">COMPREHENSIVE TOOLING STACK</div>
+        <div class="section-tag" id="skillsSectionTag" data-editable="true">COMPREHENSIVE TOOLING STACK</div>
       </div>
 
       <div class="tech-matrix-grid">
@@ -2065,17 +2081,17 @@
             <span style="color: var(--blue-core);">01</span>
           </div>
           <div class="matrix-tag-cloud">
-            <span class="tag tag-blue" onclick="filterByTag('Ollama')">Ollama (Local LLM)</span>
-            <span class="tag tag-blue" onclick="filterByTag('n8n')">n8n Automation</span>
-            <span class="tag tag-blue" onclick="filterByTag('Claude')">Claude Code</span>
-            <span class="tag tag-blue" onclick="filterByTag('Gemini')">Gemini AI Studio</span>
-            <span class="tag tag-blue" onclick="filterByTag('Antigravity')">Antigravity SDK</span>
-            <span class="tag" onclick="filterByTag('Copilot')">Microsoft Copilot Studio</span>
-            <span class="tag">Azure AI Foundry</span>
-            <span class="tag">OpenAI Codex / GPT</span>
-            <span class="tag">Veo 3 / Nano Banana</span>
-            <span class="tag">Hermes</span>
-            <span class="tag">Self-Hosted Inference</span>
+            <span class="tag tag-blue" data-editable="true" onclick="filterByTag('Ollama')">Ollama (Local LLM)</span>
+            <span class="tag tag-blue" data-editable="true" onclick="filterByTag('n8n')">n8n Automation</span>
+            <span class="tag tag-blue" data-editable="true" onclick="filterByTag('Claude')">Claude Code</span>
+            <span class="tag tag-blue" data-editable="true" onclick="filterByTag('Gemini')">Gemini AI Studio</span>
+            <span class="tag tag-blue" data-editable="true" onclick="filterByTag('Antigravity')">Antigravity SDK</span>
+            <span class="tag" data-editable="true" onclick="filterByTag('Copilot')">Microsoft Copilot Studio</span>
+            <span class="tag" data-editable="true">Azure AI Foundry</span>
+            <span class="tag" data-editable="true">OpenAI Codex / GPT</span>
+            <span class="tag" data-editable="true">Veo 3 / Nano Banana</span>
+            <span class="tag" data-editable="true">Hermes</span>
+            <span class="tag" data-editable="true">Self-Hosted Inference</span>
           </div>
           <button class="admin-add-btn" onclick="addTag(this)">+ Add Tech Tag</button>
         </div>
@@ -2086,16 +2102,16 @@
             <span style="color: var(--blue-core);">02</span>
           </div>
           <div class="matrix-tag-cloud">
-            <span class="tag tag-blue" onclick="filterByTag('Google')">Google Ads (Search/Display/App)</span>
-            <span class="tag tag-blue" onclick="filterByTag('Meta')">Meta Ads Manager</span>
-            <span class="tag" onclick="filterByTag('DV360')">DV360 Programmatic</span>
-            <span class="tag">TikTok Ads Manager</span>
-            <span class="tag" onclick="filterByTag('LinkedIn')">LinkedIn Campaign Manager</span>
-            <span class="tag">Criteo & Adroll</span>
-            <span class="tag">Bing / Microsoft Ads</span>
-            <span class="tag">TradingView Media Buys</span>
-            <span class="tag">ForexFactory Placements</span>
-            <span class="tag">CPA / CPL Funnel Optimization</span>
+            <span class="tag tag-blue" data-editable="true" onclick="filterByTag('Google')">Google Ads (Search/Display/App)</span>
+            <span class="tag tag-blue" data-editable="true" onclick="filterByTag('Meta')">Meta Ads Manager</span>
+            <span class="tag" data-editable="true" onclick="filterByTag('DV360')">DV360 Programmatic</span>
+            <span class="tag" data-editable="true">TikTok Ads Manager</span>
+            <span class="tag" data-editable="true" onclick="filterByTag('LinkedIn')">LinkedIn Campaign Manager</span>
+            <span class="tag" data-editable="true">Criteo & Adroll</span>
+            <span class="tag" data-editable="true">Bing / Microsoft Ads</span>
+            <span class="tag" data-editable="true">TradingView Media Buys</span>
+            <span class="tag" data-editable="true">ForexFactory Placements</span>
+            <span class="tag" data-editable="true">CPA / CPL Funnel Optimization</span>
           </div>
           <button class="admin-add-btn" onclick="addTag(this)">+ Add Tech Tag</button>
         </div>
@@ -2106,16 +2122,16 @@
             <span style="color: var(--blue-core);">03</span>
           </div>
           <div class="matrix-tag-cloud">
-            <span class="tag tag-blue" onclick="filterByTag('RedTrack')">RedTrack</span>
-            <span class="tag tag-blue" onclick="filterByTag('Voluum')">Voluum Attribution</span>
-            <span class="tag">Google Analytics 4 (GA4)</span>
-            <span class="tag">Google Tag Manager (GTM)</span>
-            <span class="tag" onclick="filterByTag('HubSpot')">HubSpot Workflows</span>
-            <span class="tag" onclick="filterByTag('Salesforce')">Salesforce CRM</span>
-            <span class="tag" onclick="filterByTag('Cloud Run')">Google Cloud Run</span>
-            <span class="tag">Firebase</span>
-            <span class="tag">Phantombuster / Zapier</span>
-            <span class="tag">Looker Studio / Tableau</span>
+            <span class="tag tag-blue" data-editable="true" onclick="filterByTag('RedTrack')">RedTrack</span>
+            <span class="tag tag-blue" data-editable="true" onclick="filterByTag('Voluum')">Voluum Attribution</span>
+            <span class="tag" data-editable="true">Google Analytics 4 (GA4)</span>
+            <span class="tag" data-editable="true">Google Tag Manager (GTM)</span>
+            <span class="tag" data-editable="true" onclick="filterByTag('HubSpot')">HubSpot Workflows</span>
+            <span class="tag" data-editable="true" onclick="filterByTag('Salesforce')">Salesforce CRM</span>
+            <span class="tag" data-editable="true" onclick="filterByTag('Cloud Run')">Google Cloud Run</span>
+            <span class="tag" data-editable="true">Firebase</span>
+            <span class="tag" data-editable="true">Phantombuster / Zapier</span>
+            <span class="tag" data-editable="true">Looker Studio / Tableau</span>
           </div>
           <button class="admin-add-btn" onclick="addTag(this)">+ Add Tech Tag</button>
         </div>
