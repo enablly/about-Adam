@@ -715,9 +715,9 @@ section {
 }
 
 .hero-panel {
-  background: rgba(255, 255, 255, 0.76);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--border-medium);
   padding: 48px;
   position: relative;

@@ -833,7 +833,7 @@ function initCadGlobe() {
   let dpr = window.devicePixelRatio || 1;
   let radius = 62;
   let centerX = 0;
-  let centerY = 0;
+  let centerY = 80;
 
   // Geometry configuration: Earth's 23.5° axial tilt and slight 14° camera elevation
   const TILT_Z = -23.5 * (Math.PI / 180);
@@ -887,7 +887,7 @@ function initCadGlobe() {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     centerX = width / 2;
-    centerY = height / 2;
+    centerY = 80;
     radius = Math.min(width, height) * 0.37;
   }
 
@@ -1350,7 +1350,9 @@ function initCadGlobe() {
 
 
 // ----------------------------------------------------
-// 13. 3D EXECUTIVE HERO GLOBE (ROTATING SPHERE WITH AIRLINE TRAFFIC & PULSING HUBS)
+// ----------------------------------------------------
+// ----------------------------------------------------
+// 13. 3D EXECUTIVE HERO GLOBE (CAD ARCHITECTURAL SPHERE, DYNAMIC COORDINATES, SATELLITES & FLIGHT TRAFFIC)
 // ----------------------------------------------------
 function initHeroGlobe() {
   const canvas = document.getElementById('heroGlobeCanvas');
@@ -1473,6 +1475,7 @@ function initHeroGlobe() {
     return transformVec3D(v, R, altFrac, rot);
   }
 
+  // Polar Axis projection line (passing through center along Earth's tilt)
   function projectAxisPoint(yDist) {
     const x1 = -yDist * sinT;
     const y1 = yDist * cosT;
@@ -1486,11 +1489,39 @@ function initHeroGlobe() {
     };
   }
 
+  // 3D Orbit calculation for satellites (inclined Keplerian ellipse)
+  function projectOrbitPoint(orbitRadius, inclinationDeg, orbitAngleRad) {
+    const inc = inclinationDeg * (Math.PI / 180);
+    const cosI = Math.cos(inc), sinI = Math.sin(inc);
+    const xOrb = orbitRadius * Math.cos(orbitAngleRad);
+    const yOrb = orbitRadius * Math.sin(orbitAngleRad);
+
+    // Rotate orbital plane by inclination
+    const x0 = xOrb;
+    const y0 = yOrb * cosI;
+    const z0 = yOrb * sinI;
+
+    // Slanted axis tilt & camera pitch
+    const x1 = x0 * cosT - y0 * sinT;
+    const y1 = x0 * sinT + y0 * cosT;
+    const z1 = z0;
+
+    const x2 = x1;
+    const y2 = y1 * cosP - z1 * sinP;
+    const z2 = y1 * sinP + z1 * cosP;
+
+    return {
+      x: centerX + x2,
+      y: centerY - y2,
+      z: z2
+    };
+  }
+
   // Canvas Resize Handler
   function resize() {
     const rect = canvas.getBoundingClientRect();
     width = rect.width || window.innerWidth;
-    height = rect.height || 720;
+    height = rect.height || 820;
     dpr = window.devicePixelRatio || 1;
 
     canvas.width = Math.floor(width * dpr);
@@ -1498,10 +1529,10 @@ function initHeroGlobe() {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     centerX = width / 2;
-    // Radius configuration: large globe where bottom 30-35% reaches into hero section
-    radius = Math.min(width * 0.62, 780);
-    // Center positioned high above so bottom 30% hangs down across hero
-    centerY = -radius * 0.38;
+    // Dramatic, prominent spherical framing showing the full majestic 23.5° slope behind hero card
+    radius = Math.min(width * 0.55, 660);
+    // Center positioned so the tilted equator, tropics, and polar axis slope elegantly across the hero
+    centerY = 80;
   }
 
   window.addEventListener('resize', resize);
@@ -1519,7 +1550,6 @@ function initHeroGlobe() {
   const heroSection = document.getElementById('overview');
   if (heroSection) {
     heroSection.addEventListener('mousedown', (e) => {
-      // Ignore if clicking on interactive buttons/links/inputs
       if (e.target.closest('a, button, input, .photo-wrapper, .admin-controls')) return;
       isDragging = true;
       lastMouseX = e.clientX;
@@ -1550,54 +1580,67 @@ function initHeroGlobe() {
 
     // 1. Subtle CAD Crosshairs in Canvas Corners
     ctx.save();
-    ctx.strokeStyle = 'rgba(29, 99, 255, 0.18)';
+    ctx.strokeStyle = 'rgba(29, 99, 255, 0.25)';
     ctx.lineWidth = 0.8;
     const ch = 10;
     ctx.beginPath();
     ctx.moveTo(24, 24 + ch); ctx.lineTo(24, 24); ctx.lineTo(24 + ch, 24);
     ctx.moveTo(width - 24 - ch, 24); ctx.lineTo(width - 24, 24); ctx.lineTo(width - 24, 24 + ch);
+    ctx.moveTo(24, height - 24 - ch); ctx.lineTo(24, height - 24); ctx.lineTo(24 + ch, height - 24);
+    ctx.moveTo(width - 24 - ch, height - 24); ctx.lineTo(width - 24, height - 24); ctx.lineTo(width - 24, height - 24 - ch);
     ctx.stroke();
     ctx.restore();
 
-    // 2. High-Altitude Orbital Ring with Moving Satellite
+    // 2. Outer CAD Azimuth Compass Ring (000° to 359° with ticks and cardinal points)
+    const compassR = radius + 22;
     ctx.save();
-    ctx.strokeStyle = 'rgba(29, 99, 255, 0.15)';
+    ctx.strokeStyle = 'rgba(203, 213, 225, 0.7)';
     ctx.lineWidth = 0.8;
-    ctx.setLineDash([4, 8]);
+    ctx.setLineDash([2, 4]);
     ctx.beginPath();
-    ctx.arc(centerX, centerY, radius + 36, 0, Math.PI * 2);
+    ctx.arc(centerX, centerY, compassR, 0, Math.PI * 2);
     ctx.stroke();
     ctx.restore();
 
-    // Orbiting Satellite Beacon on the outer ring
-    const satAngle = (time * 0.0004) % (Math.PI * 2);
-    const satX = centerX + Math.cos(satAngle) * (radius + 36);
-    const satY = centerY + Math.sin(satAngle) * (radius + 36);
-    if (satY > 0 && satY < height) {
-      ctx.save();
-      ctx.fillStyle = '#1d63ff';
+    // Compass degree tick marks
+    ctx.save();
+    for (let deg = 0; deg < 360; deg += 10) {
+      const rad = deg * (Math.PI / 180);
+      const isMajor = deg % 30 === 0;
+      const isCardinal = deg % 90 === 0;
+      const len = isCardinal ? 7 : (isMajor ? 4 : 2);
+      const rInner = compassR - len;
+      const rOuter = compassR + len;
+
+      const cosA = Math.cos(rad), sinA = Math.sin(rad);
       ctx.beginPath();
-      ctx.arc(satX, satY, 2.5, 0, Math.PI * 2);
-      ctx.fill();
-      // Satellite radio ping wave
-      const pingR = ((time * 0.002) % 1) * 16;
-      ctx.strokeStyle = `rgba(29, 99, 255, ${1 - pingR / 16})`;
-      ctx.lineWidth = 0.8;
-      ctx.beginPath();
-      ctx.arc(satX, satY, pingR, 0, Math.PI * 2);
+      ctx.moveTo(centerX + cosA * rInner, centerY + sinA * rInner);
+      ctx.lineTo(centerX + cosA * rOuter, centerY + sinA * rOuter);
+      ctx.strokeStyle = isCardinal ? '#1d63ff' : (isMajor ? 'rgba(29, 99, 255, 0.45)' : 'rgba(203, 213, 225, 0.8)');
+      ctx.lineWidth = isCardinal ? 1.2 : 0.7;
       ctx.stroke();
-      ctx.restore();
+
+      if (isCardinal) {
+        ctx.font = '700 6.5px "JetBrains Mono", monospace';
+        ctx.fillStyle = '#1d63ff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const labels = { 0: '090° [E]', 90: '180° [S]', 180: '270° [W]', 270: '000° [N]' };
+        const textR = compassR + 14;
+        ctx.fillText(labels[deg], centerX + cosA * textR, centerY + sinA * textR);
+      }
     }
+    ctx.restore();
 
     // 3. Globe Base Sphere (Luminous Tech Blueprint Radial Atmosphere)
     const baseGrad = ctx.createRadialGradient(
-      centerX, centerY + radius * 0.35, radius * 0.2,
+      centerX - radius * 0.25, centerY - radius * 0.25, radius * 0.1,
       centerX, centerY, radius
     );
-    baseGrad.addColorStop(0, "rgba(255, 255, 255, 0.05)");
-    baseGrad.addColorStop(0.65, "rgba(29, 99, 255, 0.04)");
-    baseGrad.addColorStop(0.88, "rgba(29, 99, 255, 0.08)");
-    baseGrad.addColorStop(1, "rgba(29, 99, 255, 0.18)");
+    baseGrad.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
+    baseGrad.addColorStop(0.7, 'rgba(248, 250, 252, 0.92)');
+    baseGrad.addColorStop(0.92, 'rgba(238, 242, 246, 0.88)');
+    baseGrad.addColorStop(1, 'rgba(224, 231, 255, 0.35)');
 
     ctx.save();
     ctx.beginPath();
@@ -1605,42 +1648,85 @@ function initHeroGlobe() {
     ctx.fillStyle = baseGrad;
     ctx.fill();
 
-    // Outer horizon silhouette border with vivid electric blue
-    ctx.strokeStyle = "rgba(29, 99, 255, 0.85)";
-    ctx.lineWidth = 2.2;
-    ctx.shadowColor = "rgba(29, 99, 255, 0.5)";
-    ctx.shadowBlur = 8;
+    // Horizon border with crisp technical navy + blue halo
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 1.4;
+    ctx.stroke();
+
+    ctx.strokeStyle = 'rgba(29, 99, 255, 0.4)';
+    ctx.lineWidth = 2.5;
     ctx.stroke();
     ctx.restore();
 
-    // 4. Slanted Polar Axis (23.5° physical tilt line)
-    const axisTop = projectAxisPoint(radius + 28);
-    const axisBottom = projectAxisPoint(-radius - 28);
+    // 4. Slanted Polar Axis (23.5° physical tilt line extending past poles)
+    const axisTop = projectAxisPoint(radius + 40);
+    const axisNorthPole = projectAxisPoint(radius);
+    const axisSouthPole = projectAxisPoint(-radius);
+    const axisBottom = projectAxisPoint(-radius - 40);
+
     ctx.save();
-    ctx.strokeStyle = 'rgba(29, 99, 255, 0.35)';
-    ctx.lineWidth = 1;
-    ctx.setLineDash([4, 6]);
+    ctx.strokeStyle = 'rgba(29, 99, 255, 0.6)';
+    ctx.lineWidth = 1.1;
+    ctx.setLineDash([4, 4]);
+
+    // Top extension
     ctx.beginPath();
-    ctx.moveTo(axisTop.x, axisTop.y);
+    ctx.moveTo(axisNorthPole.x, axisNorthPole.y);
+    ctx.lineTo(axisTop.x, axisTop.y);
+    ctx.stroke();
+
+    // Bottom extension
+    ctx.beginPath();
+    ctx.moveTo(axisSouthPole.x, axisSouthPole.y);
     ctx.lineTo(axisBottom.x, axisBottom.y);
     ctx.stroke();
+
+    // Interior dashed axis passing through globe
+    ctx.strokeStyle = 'rgba(29, 99, 255, 0.2)';
+    ctx.beginPath();
+    ctx.moveTo(axisNorthPole.x, axisNorthPole.y);
+    ctx.lineTo(axisSouthPole.x, axisSouthPole.y);
+    ctx.stroke();
     ctx.restore();
 
-    // 5. Technical Graticule: Latitude Parallels (every 15°)
-    const lats = [-75, -60, -45, -30, -15, 0, 15, 30, 45, 60, 75];
+    // Slanted Axis Endcaps & Cross-Ticks
+    const normalAngle = Math.atan2(axisTop.y - axisNorthPole.y, axisTop.x - axisNorthPole.x) + Math.PI / 2;
+    const nx = Math.cos(normalAngle) * 6;
+    const ny = Math.sin(normalAngle) * 6;
+
+    ctx.save();
+    ctx.strokeStyle = '#1d63ff';
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(axisTop.x - nx, axisTop.y - ny); ctx.lineTo(axisTop.x + nx, axisTop.y + ny);
+    ctx.moveTo(axisBottom.x - nx, axisBottom.y - ny); ctx.lineTo(axisBottom.x + nx, axisBottom.y + ny);
+    ctx.stroke();
+
+    // Polar labels
+    ctx.font = '700 7px "JetBrains Mono", monospace';
+    ctx.fillStyle = '#1d63ff';
+    ctx.textAlign = 'left';
+    ctx.fillText('N 23.5° [AXIS // TRUE_NORTH]', axisTop.x + 8, axisTop.y + 2);
+
+    ctx.fillStyle = '#64748b';
+    ctx.fillText('S 23.5° [ANTARCTIC_POLE]', axisBottom.x + 8, axisBottom.y + 4);
+    ctx.restore();
+
+    // 5. Technical Graticule: Latitude Parallels with Rotating Equator Coordinates
+    const lats = [-60, -30, -23.5, 0, 23.5, 30, 60];
     lats.forEach(lat => {
       const isEquator = lat === 0;
       const isTropic = Math.abs(lat) === 23.5;
       ctx.save();
-      ctx.strokeStyle = isEquator ? 'rgba(29, 99, 255, 0.55)' : 'rgba(226, 232, 240, 0.9)';
-      ctx.lineWidth = isEquator ? 1.2 : 0.7;
-      if (!isEquator) ctx.setLineDash([2, 5]);
+      ctx.strokeStyle = isEquator ? 'rgba(29, 99, 255, 0.7)' : (isTropic ? 'rgba(2, 132, 199, 0.4)' : 'rgba(203, 213, 225, 0.7)');
+      ctx.lineWidth = isEquator ? 1.5 : (isTropic ? 0.9 : 0.6);
+      if (!isEquator) ctx.setLineDash(isTropic ? [3, 4] : [2, 5]);
 
       ctx.beginPath();
       let first = true;
       for (let lon = -180; lon <= 180; lon += 5) {
         const p = project3D(lon, lat, radius, rotation);
-        if (p.z > -radius * 0.08) {
+        if (p.z > 0) {
           if (first) {
             ctx.moveTo(p.x, p.y);
             first = false;
@@ -1653,21 +1739,49 @@ function initHeroGlobe() {
       }
       ctx.stroke();
       ctx.restore();
+
+      // Latitude Label at edge of sphere
+      const edgeP = project3D(-90, lat, radius, rotation);
+      if (edgeP.z > -10 && (isEquator || isTropic || Math.abs(lat) === 60)) {
+        ctx.save();
+        ctx.font = '600 5.5px "JetBrains Mono", monospace';
+        ctx.fillStyle = isEquator ? '#1d63ff' : '#94a3b8';
+        const label = isEquator ? '00° EQUATORIAL PLANE' : (lat > 0 ? `+${lat}°N` : `${lat}°S`);
+        ctx.fillText(label, edgeP.x + 4, edgeP.y + 2);
+        ctx.restore();
+      }
     });
 
-    // 6. Technical Graticule: Longitude Meridians (every 15°, 24 meridians)
-    for (let lon = -180; lon < 180; lon += 15) {
+    // Rotating Longitude Degree Markers along the Equator (every 30°)
+    ctx.save();
+    ctx.font = '600 5.5px "JetBrains Mono", monospace';
+    ctx.fillStyle = 'rgba(29, 99, 255, 0.8)';
+    for (let lon = -180; lon < 180; lon += 30) {
+      const eqP = project3D(lon, 0, radius, rotation);
+      if (eqP.z > 15) {
+        ctx.beginPath();
+        ctx.arc(eqP.x, eqP.y, 1.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        const lonText = lon === 0 ? '000°' : (lon > 0 ? `${lon}°E` : `${Math.abs(lon)}°W`);
+        ctx.fillText(lonText, eqP.x + 3, eqP.y - 3);
+      }
+    }
+    ctx.restore();
+
+    // 6. Technical Graticule: Longitude Meridians (every 30°)
+    for (let lon = -180; lon < 180; lon += 30) {
       const isPrime = lon === 0 || lon === 180;
       ctx.save();
-      ctx.strokeStyle = isPrime ? 'rgba(29, 99, 255, 0.38)' : 'rgba(226, 232, 240, 0.75)';
-      ctx.lineWidth = isPrime ? 1 : 0.6;
+      ctx.strokeStyle = isPrime ? 'rgba(29, 99, 255, 0.45)' : 'rgba(203, 213, 225, 0.6)';
+      ctx.lineWidth = isPrime ? 1.1 : 0.6;
       ctx.setLineDash([2, 5]);
 
       ctx.beginPath();
       let first = true;
       for (let lat = -85; lat <= 85; lat += 4) {
         const p = project3D(lon, lat, radius, rotation);
-        if (p.z > -radius * 0.08) {
+        if (p.z > 0) {
           if (first) {
             ctx.moveTo(p.x, p.y);
             first = false;
@@ -1682,30 +1796,51 @@ function initHeroGlobe() {
       ctx.restore();
     }
 
-    // 7. Render Continents & Major Landmasses
+    // 7. Render Continents & Major Landmasses with Horizon Geometric Clipping
     const worldPolys = (typeof SHARED_CONTINENTS !== 'undefined') ? SHARED_CONTINENTS : [];
     ctx.save();
     worldPolys.forEach(poly => {
+      const proj = poly.map(pt => project3D(pt[0], pt[1], radius, rotation));
+      const len = proj.length;
+      if (len < 2) return;
+
       ctx.beginPath();
-      let active = false;
-      for (let i = 0; i < poly.length; i++) {
-        const pt = poly[i];
-        const p = project3D(pt[0], pt[1], radius, rotation);
-        if (p.z > -radius * 0.08) {
-          if (!active) {
-            ctx.moveTo(p.x, p.y);
-            active = true;
-          } else {
-            ctx.lineTo(p.x, p.y);
+      let first = true;
+      for (let i = 0; i < len; i++) {
+        const p1 = proj[i];
+        const p2 = proj[(i + 1) % len];
+
+        if (p1.z > 0 && p2.z > 0) {
+          if (first) {
+            ctx.moveTo(p1.x, p1.y);
+            first = false;
           }
-        } else {
-          active = false;
+          ctx.lineTo(p2.x, p2.y);
+        } else if (p1.z > 0 && p2.z <= 0) {
+          const t = p1.z / (p1.z - p2.z);
+          const cx_ = p1.x + t * (p2.x - p1.x);
+          const cy_ = p1.y + t * (p2.y - p1.y);
+          if (first) {
+            ctx.moveTo(p1.x, p1.y);
+            first = false;
+          }
+          ctx.lineTo(cx_, cy_);
+          first = true;
+        } else if (p1.z <= 0 && p2.z > 0) {
+          const t = -p1.z / (p2.z - p1.z);
+          const cx_ = p1.x + t * (p2.x - p1.x);
+          const cy_ = p1.y + t * (p2.y - p1.y);
+          ctx.moveTo(cx_, cy_);
+          ctx.lineTo(p2.x, p2.y);
+          first = false;
         }
       }
-      ctx.strokeStyle = "rgba(29, 99, 255, 0.78)";
-      ctx.lineWidth = 1.6;
+
+      ctx.strokeStyle = '#0f172a'; // Bold architectural charcoal outline matching small globe
+      ctx.lineWidth = 1.7;
       ctx.stroke();
-      ctx.fillStyle = "rgba(29, 99, 255, 0.08)";
+
+      ctx.fillStyle = 'rgba(29, 99, 255, 0.08)';
       ctx.fill();
     });
     ctx.restore();
@@ -1717,18 +1852,16 @@ function initHeroGlobe() {
       const hubB = hubs[route.to];
       if (!hubA || !hubB) return;
 
-      // Draw 3D Geodesic Arc
+      // Draw 3D Geodesic Arc elevated above surface
       const steps = 32;
       ctx.beginPath();
-      let arcVisible = false;
       let first = true;
       for (let s = 0; s <= steps; s++) {
         const t = s / steps;
         const vt = slerpVec(hubA.vec, hubB.vec, t);
-        const altFrac = 0.12 * Math.sin(Math.PI * t);
+        const altFrac = 0.13 * Math.sin(Math.PI * t);
         const p = transformVec3D(vt, radius, altFrac, rotation);
-        if (p.z > -radius * 0.05) {
-          arcVisible = true;
+        if (p.z > 0) {
           if (first) {
             ctx.moveTo(p.x, p.y);
             first = false;
@@ -1739,74 +1872,195 @@ function initHeroGlobe() {
           first = true;
         }
       }
-      ctx.strokeStyle = "rgba(2, 132, 199, 0.85)";
-      ctx.lineWidth = 1.8;
-      ctx.setLineDash([4, 4]);
+      ctx.strokeStyle = 'rgba(2, 132, 199, 0.7)';
+      ctx.lineWidth = 1.3;
+      ctx.setLineDash([3, 4]);
       ctx.stroke();
 
-      // Render Active Aircraft along the arc
+      // Active Aircraft along the route
       const planeT = ((time * 0.0006 * route.speed) + route.offset) % 1;
       const vPlane = slerpVec(hubA.vec, hubB.vec, planeT);
-      const planeAlt = 0.12 * Math.sin(Math.PI * planeT);
+      const planeAlt = 0.13 * Math.sin(Math.PI * planeT);
       const planePos = transformVec3D(vPlane, radius, planeAlt, rotation);
 
-      if (planePos.z > -radius * 0.05) {
-        // Calculate tangent vector for aircraft heading
+      if (planePos.z > 0) {
+        // Calculate tangent vector for heading alignment
         const vNext = slerpVec(hubA.vec, hubB.vec, Math.min(1, planeT + 0.02));
-        const nextAlt = 0.12 * Math.sin(Math.PI * Math.min(1, planeT + 0.02));
+        const nextAlt = 0.13 * Math.sin(Math.PI * Math.min(1, planeT + 0.02));
         const nextPos = transformVec3D(vNext, radius, nextAlt, rotation);
         const headingAngle = Math.atan2(nextPos.y - planePos.y, nextPos.x - planePos.x);
 
-        // Trailing Comet Particles (4 fading tail dots)
-        for (let tail = 1; tail <= 4; tail++) {
+        // Contrail Vapor Jet Trail (6 fading particles)
+        for (let tail = 1; tail <= 6; tail++) {
           const tailT = Math.max(0, planeT - tail * 0.015);
           const vTail = slerpVec(hubA.vec, hubB.vec, tailT);
-          const tailAlt = 0.12 * Math.sin(Math.PI * tailT);
+          const tailAlt = 0.13 * Math.sin(Math.PI * tailT);
           const pTail = transformVec3D(vTail, radius, tailAlt, rotation);
-          if (pTail.z > -radius * 0.05) {
+          if (pTail.z > 0) {
             ctx.beginPath();
-            ctx.arc(pTail.x, pTail.y, 2.2 - tail * 0.35, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(2, 132, 199, ${0.7 - tail * 0.15})`;
+            ctx.arc(pTail.x, pTail.y, 2.4 - tail * 0.35, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(2, 132, 199, ${0.8 - tail * 0.13})`;
             ctx.fill();
           }
         }
 
-        // Draw Sleek Airplane Glyph
+        // Draw Detailed CAD Airplane Silhouette (fuselage, delta wings, stabilizers)
         ctx.save();
         ctx.translate(planePos.x, planePos.y);
         ctx.rotate(headingAngle);
-        // Plane fuselage / chevron
+
         ctx.fillStyle = '#1d63ff';
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 0.7;
         ctx.beginPath();
-        ctx.moveTo(5, 0);
-        ctx.lineTo(-4, -3.5);
-        ctx.lineTo(-2, 0);
-        ctx.lineTo(-4, 3.5);
+        ctx.moveTo(7, 0);
+        ctx.lineTo(2, -2.5);
+        ctx.lineTo(-2, -7); // Left wingtip
+        ctx.lineTo(-1, -2);
+        ctx.lineTo(-5, -1.2);
+        ctx.lineTo(-7, -4); // Left stabilizer
+        ctx.lineTo(-6, 0);
+        ctx.lineTo(-7, 4);  // Right stabilizer
+        ctx.lineTo(-5, 1.2);
+        ctx.lineTo(-1, 2);
+        ctx.lineTo(-2, 7);  // Right wingtip
+        ctx.lineTo(2, 2.5);
         ctx.closePath();
         ctx.fill();
+        ctx.stroke();
         ctx.restore();
 
         // Pulsing altitude beacon ring
-        ctx.save();
-        const bRing = ((time * 0.003 + route.offset) % 1) * 8;
-        ctx.strokeStyle = `rgba(29, 99, 255, ${0.9 - bRing / 8})`;
+        const bRing = ((time * 0.003 + route.offset) % 1) * 9;
+        ctx.strokeStyle = `rgba(29, 99, 255, ${0.9 - bRing / 9})`;
         ctx.lineWidth = 0.8;
         ctx.beginPath();
         ctx.arc(planePos.x, planePos.y, bRing, 0, Math.PI * 2);
         ctx.stroke();
 
         // Flight Callsign Micro-Tag
-        if (planePos.y > 0 && planePos.y < height && planePos.x > 20 && planePos.x < width - 20) {
-          ctx.font = '700 5.5px "JetBrains Mono", monospace';
+        if (planePos.y > 20 && planePos.y < height - 20 && planePos.x > 30 && planePos.x < width - 30) {
+          ctx.font = '700 6px "JetBrains Mono", monospace';
           ctx.fillStyle = '#0284c7';
-          ctx.fillText(`✈ ${route.callsign}`, planePos.x + 8, planePos.y - 4);
+          ctx.fillText(`✈ ${route.callsign} [${route.alt}]`, planePos.x + 9, planePos.y - 5);
         }
-        ctx.restore();
       }
     });
     ctx.restore();
 
-    // 9. Pulsing World City Hubs
+    // 9. Animated Satellites in 3D Orbit
+    // SATELLITE 1: SAT-01 // STARLINK-LEO (53° Inclined Orbit)
+    const sat1R = radius + 32;
+    const sat1Angle = (time * 0.0005) % (Math.PI * 2);
+    // Draw 3D Orbit Path Ellipse
+    ctx.save();
+    ctx.strokeStyle = 'rgba(2, 132, 199, 0.3)';
+    ctx.lineWidth = 0.8;
+    ctx.setLineDash([3, 5]);
+    ctx.beginPath();
+    let satFirst = true;
+    for (let th = 0; th <= Math.PI * 2 + 0.1; th += 0.1) {
+      const op = projectOrbitPoint(sat1R, 53, th);
+      if (op.z > -radius * 0.2) {
+        if (satFirst) { ctx.moveTo(op.x, op.y); satFirst = false; }
+        else { ctx.lineTo(op.x, op.y); }
+      } else {
+        satFirst = true;
+      }
+    }
+    ctx.stroke();
+    ctx.restore();
+
+    // Satellite 1 Position
+    const sat1Pos = projectOrbitPoint(sat1R, 53, sat1Angle);
+    if (sat1Pos.z > -radius * 0.2) {
+      ctx.save();
+      // Satellite body: central core + solar panel wings
+      ctx.translate(sat1Pos.x, sat1Pos.y);
+      const satTangent = Math.atan2(
+        projectOrbitPoint(sat1R, 53, sat1Angle + 0.05).y - sat1Pos.y,
+        projectOrbitPoint(sat1R, 53, sat1Angle + 0.05).x - sat1Pos.x
+      );
+      ctx.rotate(satTangent);
+
+      // Solar panels
+      ctx.fillStyle = 'rgba(2, 132, 199, 0.9)';
+      ctx.fillRect(-8, -2, 6, 4);
+      ctx.fillRect(2, -2, 6, 4);
+      // Bus core
+      ctx.fillStyle = '#1d63ff';
+      ctx.fillRect(-2, -2.5, 4, 5);
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 0.6;
+      ctx.strokeRect(-2, -2.5, 4, 5);
+      ctx.restore();
+
+      // Satellite radio ping wave
+      const satPing = ((time * 0.0018) % 1) * 18;
+      ctx.strokeStyle = `rgba(2, 132, 199, ${0.9 - satPing / 18})`;
+      ctx.lineWidth = 0.9;
+      ctx.beginPath();
+      ctx.arc(sat1Pos.x, sat1Pos.y, satPing, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Telemetry tag
+      ctx.save();
+      ctx.font = '700 6px "JetBrains Mono", monospace';
+      ctx.fillStyle = '#0284c7';
+      ctx.fillText('SAT-01 // LEO-550KM [7.6KM/S]', sat1Pos.x + 10, sat1Pos.y - 4);
+      ctx.restore();
+    }
+
+    // SATELLITE 2: ISS-RESEARCH (42° Inclined Orbit)
+    const sat2R = radius + 46;
+    const sat2Angle = (-time * 0.00035 + 2.0) % (Math.PI * 2);
+    // Orbit ellipse
+    ctx.save();
+    ctx.strokeStyle = 'rgba(29, 99, 255, 0.22)';
+    ctx.lineWidth = 0.8;
+    ctx.setLineDash([4, 6]);
+    ctx.beginPath();
+    let sat2First = true;
+    for (let th = 0; th <= Math.PI * 2 + 0.1; th += 0.1) {
+      const op = projectOrbitPoint(sat2R, 42, th);
+      if (op.z > -radius * 0.2) {
+        if (sat2First) { ctx.moveTo(op.x, op.y); sat2First = false; }
+        else { ctx.lineTo(op.x, op.y); }
+      } else {
+        sat2First = true;
+      }
+    }
+    ctx.stroke();
+    ctx.restore();
+
+    const sat2Pos = projectOrbitPoint(sat2R, 42, sat2Angle);
+    if (sat2Pos.z > -radius * 0.2) {
+      ctx.save();
+      ctx.translate(sat2Pos.x, sat2Pos.y);
+      // ISS station shape: cross axis with 4 solar arrays
+      ctx.fillStyle = '#1d63ff';
+      ctx.fillRect(-2, -6, 4, 12);
+      ctx.fillStyle = 'rgba(2, 132, 199, 0.85)';
+      ctx.fillRect(-9, -5, 6, 3);
+      ctx.fillRect(3, -5, 6, 3);
+      ctx.fillRect(-9, 2, 6, 3);
+      ctx.fillRect(3, 2, 6, 3);
+      ctx.restore();
+
+      const sat2Ping = ((time * 0.0014) % 1) * 16;
+      ctx.strokeStyle = `rgba(29, 99, 255, ${0.8 - sat2Ping / 16})`;
+      ctx.lineWidth = 0.8;
+      ctx.beginPath();
+      ctx.arc(sat2Pos.x, sat2Pos.y, sat2Ping, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.font = '600 5.5px "JetBrains Mono", monospace';
+      ctx.fillStyle = '#1d63ff';
+      ctx.fillText('ISS // LAB-418KM [RESEARCH]', sat2Pos.x + 10, sat2Pos.y + 3);
+      ctx.restore();
+    }
+
+    // 10. Pulsing World City Hubs with Kuala Lumpur Targeted Reticle
     hubs.forEach((hub, idx) => {
       const p = transformVec3D(hub.vec, radius, 0, rotation);
       if (p.z > 0) {
@@ -1815,23 +2069,44 @@ function initHeroGlobe() {
 
         ctx.save();
         // Expanding Ripple Ring 1
-        const r1 = 3 + pulseCycle * (isKL ? 22 : 14);
+        const r1 = 3 + pulseCycle * (isKL ? 24 : 14);
         ctx.strokeStyle = isKL
-          ? `rgba(29, 99, 255, ${0.9 - pulseCycle * 0.9})`
+          ? `rgba(29, 99, 255, ${0.95 - pulseCycle * 0.95})`
           : `rgba(2, 132, 199, ${0.7 - pulseCycle * 0.7})`;
         ctx.lineWidth = isKL ? 1.4 : 0.8;
         ctx.beginPath();
         ctx.arc(p.x, p.y, r1, 0, Math.PI * 2);
         ctx.stroke();
 
-        // Expanding Ripple Ring 2 for KL
+        // Second ripple for KL
         if (isKL) {
           const pulseCycle2 = ((time * 0.0016 + idx * 0.18 + 0.5) % 1);
-          const r2 = 3 + pulseCycle2 * 22;
-          ctx.strokeStyle = `rgba(29, 99, 255, ${0.9 - pulseCycle2 * 0.9})`;
+          const r2 = 3 + pulseCycle2 * 24;
+          ctx.strokeStyle = `rgba(29, 99, 255, ${0.95 - pulseCycle2 * 0.95})`;
           ctx.lineWidth = 1;
           ctx.beginPath();
           ctx.arc(p.x, p.y, r2, 0, Math.PI * 2);
+          ctx.stroke();
+
+          // CAD Targeting Corner Brackets around KL
+          const tb = 8;
+          ctx.strokeStyle = '#1d63ff';
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.moveTo(p.x - tb, p.y - tb + 3); ctx.lineTo(p.x - tb, p.y - tb); ctx.lineTo(p.x - tb + 3, p.y - tb);
+          ctx.moveTo(p.x + tb - 3, p.y - tb); ctx.lineTo(p.x + tb, p.y - tb); ctx.lineTo(p.x + tb, p.y - tb + 3);
+          ctx.moveTo(p.x - tb, p.y + tb - 3); ctx.lineTo(p.x - tb, p.y + tb); ctx.lineTo(p.x - tb + 3, p.y + tb);
+          ctx.moveTo(p.x + tb - 3, p.y + tb); ctx.lineTo(p.x + tb, p.y + tb); ctx.lineTo(p.x + tb, p.y + tb - 3);
+          ctx.stroke();
+
+          // Subtle Radar Sweep Line from KL
+          const sweepAngle = (time * 0.0015) % (Math.PI * 2);
+          const sweepLen = 34;
+          ctx.strokeStyle = 'rgba(29, 99, 255, 0.45)';
+          ctx.lineWidth = 0.9;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(p.x + Math.cos(sweepAngle) * sweepLen, p.y + Math.sin(sweepAngle) * sweepLen);
           ctx.stroke();
         }
 
@@ -1840,12 +2115,15 @@ function initHeroGlobe() {
         ctx.beginPath();
         ctx.arc(p.x, p.y, isKL ? 4 : 2.8, 0, Math.PI * 2);
         ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1;
+        ctx.stroke();
 
         // CAD Leader Line & Hub Label
         if (isKL || p.z > radius * 0.15) {
           ctx.font = isKL ? '700 7px "JetBrains Mono", monospace' : '600 5.5px "JetBrains Mono", monospace';
           ctx.fillStyle = isKL ? '#1d63ff' : '#475569';
-          ctx.strokeStyle = isKL ? 'rgba(29, 99, 255, 0.5)' : 'rgba(148, 163, 184, 0.4)';
+          ctx.strokeStyle = isKL ? 'rgba(29, 99, 255, 0.6)' : 'rgba(148, 163, 184, 0.45)';
           ctx.lineWidth = 0.8;
 
           const isRight = p.x < centerX + 20;
@@ -1853,7 +2131,7 @@ function initHeroGlobe() {
           const ly1 = p.y - 4;
           const lx2 = isRight ? p.x + 14 : p.x - 14;
           const ly2 = p.y - 12;
-          const lx3 = isRight ? lx2 + (isKL ? 44 : 24) : lx2 - (isKL ? 44 : 24);
+          const lx3 = isRight ? lx2 + (isKL ? 48 : 26) : lx2 - (isKL ? 48 : 26);
 
           ctx.beginPath();
           ctx.moveTo(lx1, ly1);
@@ -1868,14 +2146,14 @@ function initHeroGlobe() {
       }
     });
 
-    // 10. CAD Outer Telemetry Micro-Readout
+    // 11. CAD Viewport Telemetry Micro-Readouts
     ctx.save();
-    ctx.font = '500 6.5px "JetBrains Mono", monospace';
-    ctx.fillStyle = '#94a3b8';
+    ctx.font = '600 6.5px "JetBrains Mono", monospace';
+    ctx.fillStyle = '#64748b';
     const deg = Math.floor(((rotation * 180 / Math.PI) % 360 + 360) % 360);
-    ctx.fillText(`θ: ${String(deg).padStart(3, '0')}° AZIMUTH`, 28, height - 16);
+    ctx.fillText(`θ: ${String(deg).padStart(3, '0')}° AZIMUTH // AXIS: -23.5° TILT`, 28, height - 16);
     ctx.textAlign = 'right';
-    ctx.fillText('RADIUS: 6,371 KM // 23.5° TILT', width - 28, height - 16);
+    ctx.fillText('12 FLIGHT CORRIDORS ACTIVE // 2 LEO SATELLITES TRACKING', width - 28, height - 16);
     ctx.restore();
   }
 
