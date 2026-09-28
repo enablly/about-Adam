@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adam Lau — Regional Digital Growth Leader & Forward Deployed Engineer (FDE)</title>
+  <meta name="description" content="Executive resume of Adam Lau: 16+ years in digital marketing, AI agentic workflows, FDE leadership, high-risk fintech acquisition, and enterprise performance growth.">
+  <meta property="og:title" content="Adam Lau — Regional Digital Growth Leader & Forward Deployed Engineer">
+  <meta property="og:description" content="16+ years architecting AI-driven and data-driven growth strategies across CFD, Forex, Luxury Skincare, Automotive, and B2B SaaS.">
+  <meta property="og:type" content="website">
+  
+  <!-- Modernist Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Minimalist Sharp Design System -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ========================================================
+       ADMIN DOCK (ACTIVATES WHEN LOGGED IN)
+       ======================================================== -->
+  <div id="adminDock">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <span class="admin-pill">ADMIN ACTIVE</span>
+      <span id="adminUserDisplay" style="color: #fff;">adamlau.creatif@gmail.com</span>
+      <span style="color: var(--text-faint);">| Direct Click to Edit Any Text</span>
+    </div>
+    <div class="admin-controls">
+      <button class="btn btn-sm btn-primary" onclick="saveAllChanges()">Save Changes</button>
+      <button class="btn btn-sm btn-blue-outline" onclick="exportUpdatedHTML()">Export HTML for GitHub</button>
+      <button class="btn btn-sm" onclick="resetToOriginalDefaults()">Reset Defaults</button>
+      <button class="btn btn-sm btn-danger" onclick="logoutAdmin()">Logout</button>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       SITE HEADER & QUICK ACTIONS
+       ======================================================== -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="#overview" class="brand-link">
+        <div class="brand-cube"></div>
+        <span class="brand-text" data-editable="true">ADAM LAU</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#overview" class="active">Overview</a></li>
+        <li><a href="#pillars">Pillars</a></li>
+        <li><a href="#experience">Career History</a></li>
+        <li><a href="#skills">Tech Matrix</a></li>
+        <li><a href="#credentials">Education</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <div class="nav-right-actions">
+        <button id="adminLoginBtn" class="btn btn-sm btn-blue-outline" onclick="openLoginModal()">Admin Login</button>
+        <button class="btn btn-sm btn-primary" onclick="window.print()">Export PDF</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- ========================================================
+         HERO SECTION / EXECUTIVE DOSSIER
+         ======================================================== -->
+    <section id="overview">
+      <div class="hero-panel">
+        
+        <div class="hero-top-row">
+          
+          <!-- USER-EDITABLE PHOTO SLOT -->
+          <div class="photo-wrapper" id="photoContainer">
+            <img id="profileImage" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='480' viewBox='0 0 400 480'><rect width='400' height='480' fill='%230b0e14'/><circle cx='200' cy='180' r='60' fill='%231d63ff' opacity='0.25'/><circle cx='200' cy='170' r='45' fill='%231d63ff' opacity='0.5'/><path d='M100 360 C100 270, 300 270, 300 360 Z' fill='%231d63ff' opacity='0.3'/><text x='200' y='420' font-family='monospace' font-size='14' fill='%2360a5fa' text-anchor='middle'>ADAM LAU // PORTRAIT</text></svg>" alt="Adam Lau Portrait">
+            
+            <div class="photo-upload-overlay">
+              <span style="font-family: var(--mono); font-size: 0.72rem; color: #fff;">CHANGE PROFILE PICTURE</span>
+              <button class="btn btn-sm btn-primary" onclick="triggerPhotoUpload()">Upload Image</button>
+              <button class="btn btn-sm" onclick="downloadProfilePhoto()" style="font-size: 0.65rem;">Download .jpg</button>
+              <button class="btn btn-sm btn-danger" onclick="resetProfilePhoto()" style="font-size: 0.65rem;">Reset</button>
+              <input type="file" id="photoFileInput" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
+            </div>
+            <div class="photo-badge">PORTRAIT // FDE</div>
+          </div>
+
+          <div class="hero-text-block">
+            <div class="status-badge" data-editable="true">
+              <span class="status-ping"></span>
+              Regional Growth Leader & FDE • Open for Strategic Leadership • Greater Kuala Lumpur / Global
+            </div>
+            
+            <h1 class="hero-name" data-editable="true">Adam Lau</h1>
+            
+            <div class="hero-headline" data-editable="true">
+              Regional Digital Growth Leader | Forward Deployed Engineer (FDE) Mindset | Scaling B2B & Fintech Growth with Agentic AI | Ex-Dentsu, Pepperstone
+            </div>
+            
+            <p class="hero-summary" data-editable="true">
+              16+ years architecting AI-driven, data-driven growth strategies for tier-1 global brands across CFD, Forex, Automotive, Luxury Skincare, SaaS, and FMCG. Paired with a Forward Deployed Engineer (FDE) mindset — turning business bottlenecks into autonomous cloud automations, self-hosted LLMs (Ollama/n8n), and multi-million dollar performance funnels.
+            </p>
+
+            <div class="hero-actions">
+              <a href="#experience" class="btn btn-primary">Examine Career History</a>
+              <a href="https://www.linkedin.com/in/adam-enablly" target="_blank" class="btn">LinkedIn Profile ↗</a>
+              <button class="btn" onclick="copyContact('adamlau.creatif@gmail.com', 'Email address copied to clipboard!')">Copy Email</button>
+              <button class="btn" onclick="copyContact('0123458846', 'Phone number copied to clipboard!')">Copy Phone</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- LIVE EXECUTIVE METRICS TILES -->
+        <div class="metric-grid">
+          <div class="metric-card">
+            <div class="metric-val" data-editable="true">16<span>+</span></div>
+            <div class="metric-desc" data-editable="true">Years Digital Growth & Leadership</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-val" data-editable="true">$2.5M<span>+</span></div>
+            <div class="metric-desc" data-editable="true">Annual Paid Media Budget (Pepperstone)</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-val" data-editable="true">200<span>%</span></div>
+            <div class="metric-desc" data-editable="true">Enterprise Client ROAS (Dentsu)</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-val" data-editable="true">25<span>+</span></div>
+            <div class="metric-desc" data-editable="true">Team Size Directed (Enablly)</div>
+          </div>
+        </div>
+
+        <!-- BULKED UP BRANDS ROSTER -->
+        <div class="client-strip">
+          <div class="client-strip-title" data-editable="true">Verified Portfolio Brands & Verticals Scaled</div>
+          <div class="client-tags-wrap">
+            <span class="brand-pill accent" data-editable="true">Steelcase</span>
+            <span class="brand-pill accent" data-editable="true">Pepperstone</span>
+            <span class="brand-pill accent" data-editable="true">VT Markets</span>
+            <span class="brand-pill accent" data-editable="true">dentsu</span>
+            <span class="brand-pill" data-editable="true">Volvo</span>
+            <span class="brand-pill" data-editable="true">BYD</span>
+            <span class="brand-pill" data-editable="true">SK-II</span>
+            <span class="brand-pill" data-editable="true">Valmont</span>
+            <span class="brand-pill" data-editable="true">Aesop</span>
+            <span class="brand-pill" data-editable="true">Secret Recipe</span>
+            <span class="brand-pill" data-editable="true">AEON</span>
+            <span class="brand-pill" data-editable="true">Richeese Factory</span>
+            <span class="brand-pill" data-editable="true">Startraders</span>
+            <span class="brand-pill" data-editable="true">Ultimarkets</span>
+            <span class="brand-pill" data-editable="true">ATFX</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================================
+         STRATEGIC CORE PILLARS
+         ======================================================== -->
+    <section id="pillars">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-num">// 01</span>
+          <h2 class="section-heading" data-editable="true">Strategic Core Pillars</h2>
+        </div>
+        <div class="section-tag">ARCHITECTURAL DISCIPLINES</div>
+      </div>
+
+      <div class="pillars-grid">
+        
+        <div class="pillar-box">
+          <div>
+            <div class="pillar-code" data-editable="true">FDE // AGENTIC AI</div>
+            <div class="pillar-title" data-editable="true">Forward Deployed Engineering</div>
+            <p class="pillar-body" data-editable="true">
+              Bridging commercial operations with hands-on software tooling. Implementing self-hosted Ollama on local-host environments, custom n8n workflows for reporting and compliance, Claude Code, Gemini AI Studio, and Google Antigravity to automate manual friction.
+            </p>
+          </div>
+          <div class="pillar-subskills">
+            <span class="pill-micro">Ollama</span>
+            <span class="pill-micro">n8n</span>
+            <span class="pill-micro">Claude Code</span>
+            <span class="pill-micro">Cloud Run</span>
+          </div>
+        </div>
+
+        <div class="pillar-box">
+          <div>
+            <div class="pillar-code" data-editable="true">MEDIA // DEMAND ACQUISITION</div>
+            <div class="pillar-title" data-editable="true">Performance & Programmatic</div>
+            <p class="pillar-body" data-editable="true">
+              Leading high-budget paid media campaigns across Google Ads, Meta, TikTok, YouTube, Bing, and DV360 DSPs. Proven record delivering 200% ROAS, expanding Introducing Broker (IB) partner networks, and lowering CPA by up to 35%.
+            </p>
+          </div>
+          <div class="pillar-subskills">
+            <span class="pill-micro">DV360</span>
+            <span class="pill-micro">Meta Ads</span>
+            <span class="pill-micro">Google Ads</span>
+            <span class="pill-micro">TikTok</span>
+          </div>
+        </div>
+
+        <div class="pillar-box">
+          <div>
+            <div class="pillar-code" data-editable="true">SEARCH // GENERATIVE DISCOVERY</div>
+            <div class="pillar-title" data-editable="true">AI-SEO, GEO & AEO Strategy</div>
+            <p class="pillar-body" data-editable="true">
+              Specialized in generative search optimization (Google SGE, Perplexity, LLMs). Automating keyword cluster generation, predictive search intent mapping, and Middle-to-Bottom of Funnel user journeys for high organic discoverability.
+            </p>
+          </div>
+          <div class="pillar-subskills">
+            <span class="pill-micro">Google SGE</span>
+            <span class="pill-micro">GEO / AEO</span>
+            <span class="pill-micro">Content Clusters</span>
+            <span class="pill-micro">Technical SEO</span>
+          </div>
+        </div>
+
+        <div class="pillar-box">
+          <div>
+            <div class="pillar-code" data-editable="true">COMPLIANCE // GREY VERTICALS</div>
+            <div class="pillar-title" data-editable="true">Fintech, Forex & Regulated Media</div>
+            <p class="pillar-body" data-editable="true">
+              5+ years scaling high-risk verticals (Forex, CFD, Crypto, iGaming). Deploying cookie-building at scale, anti-detect browser environments, multi-touch tracking via RedTrack/Voluum, and portal media buys (TradingView, ForexFactory).
+            </p>
+          </div>
+          <div class="pillar-subskills">
+            <span class="pill-micro">RedTrack</span>
+            <span class="pill-micro">Voluum</span>
+            <span class="pill-micro">Anti-detect</span>
+            <span class="pill-micro">IB Growth</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================================
+         CAREER EXPERIENCE (BULKED & INTERACTIVE)
+         ======================================================== -->
+    <section id="experience">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-num">// 02</span>
+          <h2 class="section-heading" data-editable="true">Career Experience</h2>
+        </div>
+        <div class="section-tag">VERIFIED WORK HISTORY (16+ YEARS)</div>
+      </div>
+
+      <!-- FILTER TABS & INTERACTION -->
+      <div class="filter-wrapper">
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="filterJobs('all', this)">All Roles (9)</button>
+          <button class="filter-tab" onclick="filterJobs('fde', this)">AI & FDE Roles</button>
+          <button class="filter-tab" onclick="filterJobs('forex', this)">Fintech & Forex (5+ Yrs)</button>
+          <button class="filter-tab" onclick="filterJobs('agency', this)">Agency & Enterprise Scale</button>
+          <button class="filter-tab" onclick="filterJobs('foundations', this)">Foundations (2001-2015)</button>
+        </div>
+        <div class="interactive-hint">
+          <span>⚡ Click any skill tag below to filter associated roles</span>
+        </div>
+      </div>
+
+      <div class="jobs-stack" id="jobsContainer">
+
+        <!-- 1. STEELCASE -->
+        <div class="job-card current" data-category="fde" data-skills="FDE,Copilot,Claude,Gemini,Antigravity,HubSpot,Salesforce,Cloud Run">
+          <div class="job-top-bar">
+            <div class="job-title-group">
+              <h3 data-editable="true">Regional Digital Growth Leader</h3>
+              <div class="job-employer" data-editable="true">Steelcase <span class="job-location-tag">• Kuala Lumpur, Malaysia</span></div>
+            </div>
+            <div class="job-period-badge" data-editable="true">May 2026 – Present (Current)</div>
+          </div>
+          <p class="job-overview-text" data-editable="true">
+            Driving digital growth, customer experience, and commercial revenue performance through strategic marketing leadership paired with a Forward Deployed Engineer (FDE) mindset — turning enterprise bottlenecks into scalable digital solutions, autonomous agents, and cross-functional automations.
+          </p>
+          <ul class="job-bullets-list">
+            <li data-editable="true">Lead regional digital growth, e-commerce, demand generation, and performance marketing, directly aligning execution with regional revenue and pipeline outcomes.</li>
+            <li data-editable="true">Operate as an internal Forward Deployed Engineer (FDE), partnering across Marketing, Sales, IT, and Operations to build and deploy custom AI agents.</li>
+            <li data-editable="true">Architect AI-powered workflows using Microsoft Copilot Studio, Azure AI Foundry, Claude Code, OpenAI Codex, Gemini AI Studio, Hermes, and Antigravity to streamline operations.</li>
+            <li data-editable="true">Deploy lightweight cloud applications and AI assistants via Google Cloud Run, Firebase, Azure Container Apps, and GitHub Enterprise.</li>
+            <li data-editable="true">Optimize enterprise martech infrastructure (HubSpot, Salesforce, web analytics, CDPs) to improve lead quality, conversion, and pipeline performance.</li>
+            <li data-editable="true">Drive B2B discoverability via AI-SEO, CRO, structured content strategy, and data-driven experimentation.</li>
+          </ul>
+          <button class="admin-add-btn" onclick="addBulletPoint(this)">+ Add Bullet Point</button>
+
+          <button class="job-details-toggle" onclick="toggleDetails('dossier-steelcase', this)">▼ View Tech Stack & Architecture Notes</button>
+          <div id="dossier-steelcase" class="job-expanded-dossier">
+            <div class="dossier-subheading">Architecture & Tooling Matrix</div>
+            <p style="font-size: 0.84rem; color: var(--text-muted); line-height: 1.6;" data-editable="true">
+              Tooling Stack: Microsoft Copilot Studio, Azure AI Foundry, Claude Code, Gemini AI Studio, Antigravity, Cloud Run, Firebase, Azure Container Apps, GitHub Enterprise, HubSpot CRM, Salesforce. Key Focus: Agentic automation, internal LLM orchestration, and rapid enterprise prototyping.
+            </p>
+          </div>
+
+          <div class="job-tech-bar">
+            <span class="tag tag-blue" onclick="filterByTag('FDE')">Forward Deployed Engineering</span>
+            <span class="tag tag-blue" onclick="filterByTag('Copilot')">Microsoft Copilot Studio</span>
+            <span class="tag tag-blue" onclick="filterByTag('Claude')">Claude Code</span>
+            <span class="tag tag-blue" onclick="filterByTag('Gemini')">Gemini AI Studio</span>
+            <span class="tag" onclick="filterByTag('Antigravity')">Antigravity</span>
+            <span class="tag" onclick="filterByTag('Cloud Run')">Cloud Run</span>
+            <span class="tag" onclick="filterByTag('HubSpot')">HubSpot</span>
+            <span class="tag" onclick="filterByTag('Salesforce')">Salesforce</span>
+          </div>
+        </div>
+
+        <!-- 2. PEPPERSTONE -->
+        <div class="job-card" data-category="forex" data-skills="Ollama,n8n,Meta,Google,Predictive Analytics,Forex">
+          <div class="job-top-bar">
+            <div class="job-title-group">
+              <h3 data-editable="true">Regional Senior Performance Marketing Manager</h3>
+              <div class="job-employer" data-editable="true">Pepperstone <span class="job-location-tag">• Kuala Lumpur, Malaysia</span></div>
+            </div>
+            <div class="job-period-badge" data-editable="true">August 2024 – April 2026 (1 yr 9 mos)</div>
+          </div>
+          <p class="job-overview-text" data-editable="true">
+            Led paid media strategies managing and optimizing $2.5M+ annual ad budgets across DSP, Meta, Google, and Bing — consistently improving YoY ROI by 18% while building localized AI infrastructure.
+          </p>
+          <ul class="job-bullets-list">
+            <li data-editable="true">Managed and scaled $2.5M+ annual paid media spend, lifting overall campaign ROI by 18% year-over-year.</li>
+            <li data-editable="true">Executed targeted lead-gen programs for the APAC region, managing direct broker deals and optimizing listings for a 35% increase in qualified leads.</li>
+            <li data-editable="true">Spearheaded Introducing Broker (IB) recruitment campaigns, expanding partner network by 20% and partner-driven revenue by 25%.</li>
+            <li data-editable="true">Deployed self-hosted local LLM (Ollama) integrated with n8n to automate departmental reporting, compliance checks, and lead segmentation.</li>
+            <li data-editable="true">Implemented predictive analytics models to forecast ROAS and identify high-LTV audience segments for proactive budget reallocation.</li>
+            <li data-editable="true">Integrated Generative AI tools (Gemini Pro, Claude, ChatGPT) and prompt engineering to scale ad creative, webinar funnels, and email nurturing sequences.</li>
+            <li data-editable="true">Identified high-intent Google Ads audience segments through rigorous cohort analysis that lowered CPA by 12% in Q1 2025.</li>
+          </ul>
+          <button class="admin-add-btn" onclick="addBulletPoint(this)">+ Add Bullet Point</button>
+
+          <button class="job-details-toggle" onclick="toggleDetails('dossier-pepperstone', this)">▼ View AI & Automation Architecture</button>
+          <div id="dossier-pepperstone" class="job-expanded-dossier">
+            <div class="dossier-subheading">Self-Hosted AI & Compliance Infrastructure</div>
+            <p style="font-size: 0.84rem; color: var(--text-muted); line-height: 1.6;" data-editable="true">
+              Designed a secure local inference pipeline running Ollama on dedicated internal hosts, bridged to n8n webhooks. This ensured customer data and trading analytics never left the private environment while performing automated financial compliance checks and ad copy reviews.
+            </p>
+          </div>
+
+          <div class="job-tech-bar">
+            <span class="tag tag-blue" onclick="filterByTag('Ollama')">Ollama (Self-Hosted)</span>
+            <span class="tag tag-blue" onclick="filterByTag('n8n')">n8n Automation</span>
+            <span class="tag" onclick="filterByTag('Meta')">Meta Ads</span>
+            <span class="tag" onclick="filterByTag('Google')">Google Ads ($2.5M Budget)</span>
+            <span class="tag" onclick="filterByTag('Predictive Analytics')">Predictive ROAS Modeling</span>
+            <span class="tag" onclick="filterByTag('Forex')">Forex / CFD Acquisition</span>
+          </div>
+        </div>
+
+        <!-- 3. VT MARKETS -->
+        <div class="job-card" data-category="forex" data-skills="Forex,RedTrack,Voluum,SEO,Anti-detect">
+          <div class="job-top-bar">
+            <div class="job-title-group">
+              <h3 data-editable="true">Global Performance Marketing Senior Manager</h3>
+              <div class="job-employer" data-editable="true">VT Markets <span class="job-location-tag">• Malaysia</span></div>
+            </div>
+            <div class="job-period-badge" data-editable="true">February 2023 – July 2024 (1 yr 6 mos)</div>
+          </div>
+          <p class="job-overview-text" data-editable="true">
+            Directed global digital acquisition across Europe, United Kingdom, Dubai, Singapore, Japan, Australia, and broader APAC for a premier global Forex & CFD brokerage.
+          </p>
+          <ul class="job-bullets-list">
+            <li data-editable="true">Directed multi-channel demand capture across Google Ads, Meta, LinkedIn, and Twitter with heavy focus on SEM.</li>
+            <li data-editable="true">Deployed specialized infrastructure to run long-lasting ads in high-risk verticals: anti-detect browsers, cookie nurturing engines, and competitive ad intelligence platforms.</li>
+            <li data-editable="true">Collaborated with web teams to implement compliant landing page funnels, cloaking, and G-bot traffic redirection systems.</li>
+            <li data-editable="true">Executed 'User-Journey SEO' framework mapping Middle to Bottom of Funnel prospects, boosting organic lead-gen volume and high-intent rankings.</li>
+            <li data-editable="true">Managed major affiliate trading portal placements (TradingView, ForexFactory, WikiFX, Investing.com, FXStreet) with full CPA/CPL attribution via RedTrack and Voluum.</li>
+          </ul>
+          <button class="admin-add-btn" onclick="addBulletPoint(this)">+ Add Bullet Point</button>
+
+          <div class="job-tech-bar">
+            <span class="tag tag-blue" onclick="filterByTag('Forex')">Global Forex Scaling</span>
+            <span class="tag" onclick="filterByTag('RedTrack')">RedTrack</span>
+            <span class="tag" onclick="filterByTag('Voluum')">Voluum Attribution</span>
+            <span class="tag" onclick="filterByTag('Anti-detect')">Anti-Detect Environments</span>
+            <span class="tag" onclick="filterByTag('SEO')">User-Journey SEO</span>
+          </div>
+        </div>
+
+        <!-- 4. DENTSU -->
+        <div class="job-card" data-category="agency" data-skills="dentsu,DV360,LinkedIn,Affiliate,Enterprise">
+          <div class="job-top-bar">
+            <div class="job-title-group">
+              <h3 data-editable="true">Assistant Performance Marketing Manager</h3>
+              <div class="job-employer" data-editable="true">dentsu <span class="job-location-tag">• Singapore</span></div>
+            </div>
+            <div class="job-period-badge" data-editable="true">July 2021 – January 2023 (1 yr 7 mos)</div>
+          </div>
+          <p class="job-overview-text" data-editable="true">
+            Drove enterprise performance marketing strategies and B2B growth across prestigious global accounts including Volvo, BYD, SK-II, Valmont, Aesop, Secret Recipe, AEON, and Richeese Factory.
+          </p>
+          <ul class="job-bullets-list">
+            <li data-editable="true">Managed $1M+ monthly performance media budgets across B2B enterprise accounts, delivering consistent 200% ROAS.</li>
+            <li data-editable="true">Scaled affiliate marketing programs to 180% ROI through rigorous partner recruitment, commission tiering, and funnel optimization.</li>
+            <li data-editable="true">Implemented LinkedIn Sales Navigator outreach automation generating 500+ qualified enterprise B2B leads monthly with 40% response rates.</li>
+            <li data-editable="true">Launched programmatic display campaigns via DV360, achieving 25% lower CPA compared to standard search networks.</li>
+            <li data-editable="true">Managed 100+ high-value affiliate partnerships across SaaS, fintech, and enterprise software ecosystems (Impact Radius, PartnerStack, TUNE).</li>
+          </ul>
+          <button class="admin-add-btn" onclick="addBulletPoint(this)">+ Add Bullet Point</button>
+
+          <div class="job-tech-bar">
+            <span class="tag tag-blue" onclick="filterByTag('DV360')">DV360 Programmatic</span>
+            <span class="tag" onclick="filterByTag('LinkedIn')">LinkedIn Sales Navigator ABM</span>
+            <span class="tag" onclick="filterByTag('Affiliate')">PartnerStack / Impact Radius</span>
+            <span class="tag" onclick="filterByTag('Enterprise')">Enterprise Multi-touch Attribution</span>
+          </div>
+        </div>
+
+        <!-- 5. ULTIMA MARKETS -->
+        <div class="job-card" data-category="forex" data-skills="Forex,Social,LeadGen">
+          <div class="job-top-bar">
+            <div class="job-title-group">
+              <h3 data-editable="true">Senior Social Media Manager</h3>
+              <div class="job-employer" data-editable="true">Ultima Markets <span class="job-location-tag">• Kuala Lumpur, Malaysia</span></div>
+            </div>
+            <div class="job-period-badge" data-editable="true">January 2020 – March 2021 (1 yr 3 mos)</div>
+          </div>
+          <p class="job-overview-text" data-editable="true">
+            Drove high-converting social media acquisition funnels converting active traders into funded live accounts through automated lead scoring, technical analysis education, and retargeting workflows.
+          </p>
+          <ul class="job-bullets-list">
+            <li data-editable="true">Built and executed paid social acquisition funnels across LinkedIn, Twitter, Facebook, and Instagram focused on First Time Depositor (FTD) conversion.</li>
+            <li data-editable="true">Automated lead qualification workflows to nurture trading leads and streamline KYC handoff to sales desks.</li>
+          </ul>
+          <div class="job-tech-bar">
+            <span class="tag" onclick="filterByTag('Forex')">Forex Trader Acquisition</span>
+            <span class="tag" onclick="filterByTag('LeadGen')">Lead Scoring Automation</span>
+          </div>
+        </div>
+
+        <!-- 6. ENABLLY.COM -->
+        <div class="job-card" data-category="agency" data-skills="Leadership,eCommerce,Team25,Growth">
+          <div class="job-top-bar">
+            <div class="job-title-group">
+              <h3 data-editable="true">Regional Sales Marketing Manager</h3>
+              <div class="job-employer" data-editable="true">enablly.com <span class="job-location-tag">• Malaysia</span></div>
+            </div>
+            <div class="job-period-badge" data-editable="true">November 2015 – December 2019 (4 yrs 2 mos)</div>
+          </div>
+          <p class="job-overview-text" data-editable="true">
+            Directed end-to-end commercial growth and managed a multidisciplinary department of 25 specialists (performance marketers, graphic designers, copywriters, social media managers).
+          </p>
+          <ul class="job-bullets-list">
+            <li data-editable="true">Served clients across SaaS, B2B, eCommerce, D2C, and regulated industries (Forex, iGaming, Dating, Cannabis).</li>
+            <li data-editable="true">Orchestrated multi-cast live streaming across Facebook, LinkedIn, YouTube, Shopee, and Lazada with custom RTMP broadcasting.</li>
+            <li data-editable="true">Led community growth initiatives on Discord and Telegram for early crypto/NFT projects.</li>
+          </ul>
+          <div class="job-tech-bar">
+            <span class="tag tag-blue" onclick="filterByTag('Leadership')">25-Person Leadership</span>
+            <span class="tag" onclick="filterByTag('eCommerce')">Shopee / Lazada / Shopify Ads</span>
+            <span class="tag" onclick="filterByTag('Growth')">Conversion API (CAPI)</span>
+          </div>
+        </div>
+
+        <!-- 7. FOUNDATIONS: PRETTY GROUP, JOBSDB, TWINCREST -->
+        <div class="job-card" data-category="foundations" data-skills="Foundations,SEO,eCommerce,RealEstate">
+          <div class="job-top-bar">
+            <div class="job-title-group">
+              <h3 data-editable="true">Foundational Career Track (2001 – 2015)</h3>
+              <div class="job-employer" data-editable="true">Pretty Group • JobsDB.com • Twincrest Properties</div>
+            </div>
+            <div class="job-period-badge" data-editable="true">2001 – 2015 (14 Years)</div>
+          </div>
+          <p class="job-overview-text" data-editable="true">
+            14 years of commercial and digital grounding across eCommerce management, technical SEO execution, and real estate sales:
+          </p>
+          <ul class="job-bullets-list">
+            <li data-editable="true"><strong>Pretty Group (Marketing Manager, 2014–2015):</strong> Managed a 5-person team, achieving +30% revenue growth in 2014 by revamping Facebook ad-spend, targeting, and retargeting funnels.</li>
+            <li data-editable="true"><strong>JobsDB.com (Digital Marketing Executive, 2010–2014):</strong> Drove core digital disciplines: technical SEO, keyword research, PPC management, content production, lowering CPC and elevating domain authority.</li>
+            <li data-editable="true"><strong>Twincrest Properties (Real Estate Representative, 2001–2010):</strong> 8+ years mastering high-value client negotiations, property contracts, and commercial sales representation.</li>
+          </ul>
+          <div class="job-tech-bar">
+            <span class="tag" onclick="filterByTag('SEO')">JobsDB SEO / PPC</span>
+            <span class="tag" onclick="filterByTag('eCommerce')">Pretty Group (+30% Growth)</span>
+            <span class="tag" onclick="filterByTag('RealEstate')">Twincrest Real Estate</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================================
+         AI & TECHNICAL MATRIX (INTERACTIVE TAG HIGHLIGHTING)
+         ======================================================== -->
+    <section id="skills">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-num">// 03</span>
+          <h2 class="section-heading" data-editable="true">AI & Technical Matrix</h2>
+        </div>
+        <div class="section-tag">COMPREHENSIVE TOOLING STACK</div>
+      </div>
+
+      <div class="tech-matrix-grid">
+        
+        <div class="matrix-card">
+          <div class="matrix-card-header">
+            <span data-editable="true">AI & Forward Deployed Engineering</span>
+            <span style="color: var(--blue-highlight);">01</span>
+          </div>
+          <div class="matrix-tag-cloud">
+            <span class="tag tag-blue" onclick="filterByTag('Ollama')">Ollama (Local LLM)</span>
+            <span class="tag tag-blue" onclick="filterByTag('n8n')">n8n Automation</span>
+            <span class="tag tag-blue" onclick="filterByTag('Claude')">Claude Code</span>
+            <span class="tag tag-blue" onclick="filterByTag('Gemini')">Gemini AI Studio</span>
+            <span class="tag tag-blue" onclick="filterByTag('Antigravity')">Antigravity SDK</span>
+            <span class="tag" onclick="filterByTag('Copilot')">Microsoft Copilot Studio</span>
+            <span class="tag">Azure AI Foundry</span>
+            <span class="tag">OpenAI Codex / GPT</span>
+            <span class="tag">Veo 3 / Nano Banana</span>
+            <span class="tag">Hermes</span>
+            <span class="tag">Self-Hosted Inference</span>
+          </div>
+          <button class="admin-add-btn" onclick="addTag(this)">+ Add Tech Tag</button>
+        </div>
+
+        <div class="matrix-card">
+          <div class="matrix-card-header">
+            <span data-editable="true">Performance & Demand Generation</span>
+            <span style="color: var(--blue-highlight);">02</span>
+          </div>
+          <div class="matrix-tag-cloud">
+            <span class="tag tag-blue" onclick="filterByTag('Google')">Google Ads (Search/Display/App)</span>
+            <span class="tag tag-blue" onclick="filterByTag('Meta')">Meta Ads Manager</span>
+            <span class="tag" onclick="filterByTag('DV360')">DV360 Programmatic</span>
+            <span class="tag">TikTok Ads Manager</span>
+            <span class="tag" onclick="filterByTag('LinkedIn')">LinkedIn Campaign Manager</span>
+            <span class="tag">Criteo & Adroll</span>
+            <span class="tag">Bing / Microsoft Ads</span>
+            <span class="tag">TradingView Media Buys</span>
+            <span class="tag">ForexFactory Placements</span>
+            <span class="tag">CPA / CPL Funnel Optimization</span>
+          </div>
+          <button class="admin-add-btn" onclick="addTag(this)">+ Add Tech Tag</button>
+        </div>
+
+        <div class="matrix-card">
+          <div class="matrix-card-header">
+            <span data-editable="true">Attribution, Cloud & Martech</span>
+            <span style="color: var(--blue-highlight);">03</span>
+          </div>
+          <div class="matrix-tag-cloud">
+            <span class="tag tag-blue" onclick="filterByTag('RedTrack')">RedTrack</span>
+            <span class="tag tag-blue" onclick="filterByTag('Voluum')">Voluum Attribution</span>
+            <span class="tag">Google Analytics 4 (GA4)</span>
+            <span class="tag">Google Tag Manager (GTM)</span>
+            <span class="tag" onclick="filterByTag('HubSpot')">HubSpot Workflows</span>
+            <span class="tag" onclick="filterByTag('Salesforce')">Salesforce CRM</span>
+            <span class="tag" onclick="filterByTag('Cloud Run')">Google Cloud Run</span>
+            <span class="tag">Firebase</span>
+            <span class="tag">Phantombuster / Zapier</span>
+            <span class="tag">Looker Studio / Tableau</span>
+          </div>
+          <button class="admin-add-btn" onclick="addTag(this)">+ Add Tech Tag</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================================
+         EDUCATION & CERTIFICATIONS
+         ======================================================== -->
+    <section id="credentials">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-num">// 04</span>
+          <h2 class="section-heading" data-editable="true">Education & Certifications</h2>
+        </div>
+        <div class="section-tag">FORMAL CREDENTIALS</div>
+      </div>
+
+      <div class="split-grid">
+        
+        <div class="info-pane">
+          <div class="info-pane-title" data-editable="true">Formal Degrees & Diplomas</div>
+          <div class="info-record">
+            <div class="record-degree" data-editable="true">Bachelor's Degree, Material Engineering</div>
+            <div class="record-institution" data-editable="true">Tunku Abdul Rahman University College (TARC)</div>
+            <div class="record-dates" data-editable="true">March 1996 – February 1999</div>
+          </div>
+          <div class="info-record">
+            <div class="record-degree" data-editable="true">Diploma of Education, Executive Real Estate Diploma</div>
+            <div class="record-institution" data-editable="true">UCSI University</div>
+            <div class="record-dates" data-editable="true">June 2015 – July 2017</div>
+          </div>
+          <button class="admin-add-btn" onclick="addEducation(this)">+ Add Education Entry</button>
+        </div>
+
+        <div class="info-pane">
+          <div class="info-pane-title" data-editable="true">Professional Accreditations</div>
+          <div class="info-record">
+            <div class="record-degree" data-editable="true">What Is Generative AI Certification</div>
+            <div class="record-institution" data-editable="true">AI Prompting & Large Language Model Architecture</div>
+          </div>
+          <div class="info-record">
+            <div class="record-degree" data-editable="true">Project Management Institute (PMI)</div>
+            <div class="record-institution" data-editable="true">Accountability & Delivering Results Effectively</div>
+          </div>
+          <div class="info-record">
+            <div class="record-degree" data-editable="true">Google Certified Professional</div>
+            <div class="record-institution" data-editable="true">Google Ads Display Certification • Google App Search</div>
+          </div>
+          <button class="admin-add-btn" onclick="addEducation(this)">+ Add Certification Entry</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================================
+         CONTACT & INITIATE DIALOGUE
+         ======================================================== -->
+    <section id="contact">
+      <div class="contact-box">
+        <h2 class="contact-headline" data-editable="true">Initiate Executive Contact</h2>
+        <p class="contact-blurb" data-editable="true">
+          Available for Regional Growth Leadership, Forward Deployed Engineering, or Enterprise AI Advisory engagements. Connect directly via email, phone, or LinkedIn.
+        </p>
+        <div class="contact-buttons-row">
+          <a href="mailto:adamlau.creatif@gmail.com" class="btn btn-primary" data-editable="true">Email: adamlau.creatif@gmail.com</a>
+          <a href="https://www.linkedin.com/in/adam-enablly" target="_blank" class="btn btn-blue-outline">LinkedIn Profile ↗</a>
+          <a href="tel:0123458846" class="btn">Direct Line: 0123458846</a>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- SITE FOOTER -->
+  <footer class="site-footer">
+    <div>ADAM LAU // EXECUTIVE RESUME SYSTEM // HOSTED ON GITHUB PAGES</div>
+    <div style="margin-top: 6px; color: var(--text-faint);">
+      100% SHARP CORNERS (0PX RADIUS) • IN-SITU LIVE CMS • DESIGNED FOR MODERN AGENTS & EXECUTIVES
+    </div>
+  </footer>
+
+  <!-- ========================================================
+       MODAL: ADMIN LOGIN
+       ======================================================== -->
+  <div id="loginModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">Admin Authentication</div>
+        <button class="btn btn-sm" onclick="closeLoginModal()">✕</button>
+      </div>
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;">
+        Sign in with your email & password to enable live editing on all text fields and profile photo upload.
+      </p>
+      <div class="form-group">
+        <label>Admin Email</label>
+        <input type="email" id="adminEmailInput" class="form-input" value="adamlau.creatif@gmail.com" placeholder="email@domain.com">
+      </div>
+      <div class="form-group">
+        <label>Admin Password</label>
+        <input type="password" id="adminPasswordInput" class="form-input" placeholder="Enter password (default: admin123)">
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px;">
+        <span style="font-family: var(--mono); font-size: 0.7rem; color: var(--text-faint);">Demo Passcode: admin123</span>
+        <button class="btn btn-primary" onclick="submitAdminLogin()">Login & Edit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST FEEDBACK -->
+  <div id="toastNotice">
+    <span style="color: var(--blue-highlight); font-weight: bold;">[ SYSTEM ]</span>
+    <span id="toastMsg">Notification message</span>
+  </div>
+
+  <!-- Core JavaScript Engine -->
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,356 @@
+/**
+ * ADAM LAU — EXECUTIVE RESUME & GROWTH DOSSIER
+ * Interactive Client Engine & In-Situ CMS
+ */
+
+// ----------------------------------------------------
+// 1. STATE & CONSTANTS
+// ----------------------------------------------------
+let isAdmin = false;
+const STORAGE_KEY_AUTH = 'adam_resume_admin_session';
+const STORAGE_KEY_DATA = 'adam_resume_edited_content_v1';
+const STORAGE_KEY_PHOTO = 'adam_resume_custom_photo_v1';
+let toastTimer = null;
+
+// Default fallback avatar SVG
+const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='480' viewBox='0 0 400 480'><rect width='400' height='480' fill='%230b0e14'/><circle cx='200' cy='180' r='60' fill='%231d63ff' opacity='0.25'/><circle cx='200' cy='170' r='45' fill='%231d63ff' opacity='0.5'/><path d='M100 360 C100 270, 300 270, 300 360 Z' fill='%231d63ff' opacity='0.3'/><text x='200' y='420' font-family='monospace' font-size='14' fill='%2360a5fa' text-anchor='middle'>ADAM LAU // PORTRAIT</text></svg>";
+
+// ----------------------------------------------------
+// 2. INITIALIZATION
+// ----------------------------------------------------
+window.addEventListener('DOMContentLoaded', () => {
+  // Restore custom photo if previously uploaded
+  const savedPhoto = localStorage.getItem(STORAGE_KEY_PHOTO);
+  const profileImg = document.getElementById('profileImage');
+  if (savedPhoto && profileImg) {
+    profileImg.src = savedPhoto;
+  }
+
+  // Restore saved text customizations
+  const savedContent = localStorage.getItem(STORAGE_KEY_DATA);
+  if (savedContent) {
+    try {
+      const parsed = JSON.parse(savedContent);
+      applySavedEdits(parsed);
+    } catch (e) {
+      console.error('Failed to parse saved resume edits:', e);
+    }
+  }
+
+  // Restore admin session
+  if (localStorage.getItem(STORAGE_KEY_AUTH) === 'true') {
+    activateAdminMode();
+  }
+
+  // Global keyboard shortcuts
+  window.addEventListener('keydown', (e) => {
+    // Save on Cmd+S or Ctrl+S if in Admin Mode
+    if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+      if (isAdmin) {
+        e.preventDefault();
+        saveAllChanges();
+      }
+    }
+    // Escape to close login modal
+    if (e.key === 'Escape') {
+      closeLoginModal();
+    }
+  });
+});
+
+// ----------------------------------------------------
+// 3. ADMIN AUTHENTICATION
+// ----------------------------------------------------
+function openLoginModal() {
+  const modal = document.getElementById('loginModal');
+  if (modal) {
+    modal.classList.add('active');
+    const pwdInput = document.getElementById('adminPasswordInput');
+    if (pwdInput) pwdInput.focus();
+  }
+}
+
+function closeLoginModal() {
+  const modal = document.getElementById('loginModal');
+  if (modal) {
+    modal.classList.remove('active');
+  }
+}
+
+function submitAdminLogin() {
+  const emailInput = document.getElementById('adminEmailInput');
+  const passInput = document.getElementById('adminPasswordInput');
+  const email = emailInput ? emailInput.value.trim() : '';
+  const pass = passInput ? passInput.value.trim() : '';
+
+  // Allows login with email adamlau.creatif@gmail.com and password admin123 (or any 4+ char password)
+  if ((email.toLowerCase() === 'adamlau.creatif@gmail.com' || email.includes('@')) && (pass === 'admin123' || pass.length >= 4)) {
+    localStorage.setItem(STORAGE_KEY_AUTH, 'true');
+    closeLoginModal();
+    activateAdminMode();
+    showToast('Admin Mode Active. Click any text to edit or hover over your portrait to upload.');
+  } else {
+    alert('Authentication error. Default email: adamlau.creatif@gmail.com | Demo password: admin123');
+  }
+}
+
+function activateAdminMode() {
+  isAdmin = true;
+  document.body.classList.add('admin-mode');
+  const dock = document.getElementById('adminDock');
+  if (dock) dock.classList.add('active');
+  
+  const loginBtn = document.getElementById('adminLoginBtn');
+  if (loginBtn) loginBtn.style.display = 'none';
+
+  // Enable contenteditable on all designated text elements
+  document.querySelectorAll('[data-editable="true"]').forEach(el => {
+    el.setAttribute('contenteditable', 'true');
+    el.setAttribute('spellcheck', 'false');
+  });
+}
+
+function logoutAdmin() {
+  localStorage.removeItem(STORAGE_KEY_AUTH);
+  isAdmin = false;
+  document.body.classList.remove('admin-mode');
+  
+  const dock = document.getElementById('adminDock');
+  if (dock) dock.classList.remove('active');
+
+  const loginBtn = document.getElementById('adminLoginBtn');
+  if (loginBtn) loginBtn.style.display = 'inline-flex';
+
+  document.querySelectorAll('[data-editable="true"]').forEach(el => {
+    el.removeAttribute('contenteditable');
+  });
+  showToast('Admin mode deactivated.');
+}
+
+// ----------------------------------------------------
+// 4. LIVE CONTENT PERSISTENCE & EXPORT
+// ----------------------------------------------------
+function saveAllChanges() {
+  const edits = [];
+  document.querySelectorAll('[data-editable="true"]').forEach((el, index) => {
+    edits.push({
+      index: index,
+      tag: el.tagName,
+      html: el.innerHTML
+    });
+  });
+  localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(edits));
+  showToast('All text modifications saved to browser storage!');
+}
+
+function applySavedEdits(editsList) {
+  const editableElements = document.querySelectorAll('[data-editable="true"]');
+  editsList.forEach(item => {
+    if (editableElements[item.index]) {
+      editableElements[item.index].innerHTML = item.html;
+    }
+  });
+}
+
+function resetToOriginalDefaults() {
+  if (confirm('Are you sure you want to reset all customized text back to the default resume?')) {
+    localStorage.removeItem(STORAGE_KEY_DATA);
+    localStorage.removeItem(STORAGE_KEY_PHOTO);
+    location.reload();
+  }
+}
+
+function exportUpdatedHTML() {
+  // Temporarily strip editing markup before extracting clean production HTML
+  const wasAdmin = isAdmin;
+  document.body.classList.remove('admin-mode');
+  document.querySelectorAll('[data-editable="true"]').forEach(el => el.removeAttribute('contenteditable'));
+
+  const cleanHTML = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+
+  // Restore active editing state
+  if (wasAdmin) {
+    document.body.classList.add('admin-mode');
+    document.querySelectorAll('[data-editable="true"]').forEach(el => el.setAttribute('contenteditable', 'true'));
+  }
+
+  const blob = new Blob([cleanHTML], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'index.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Exported index.html! Commit this file to your GitHub repository.');
+}
+
+// ----------------------------------------------------
+// 5. EXECUTIVE PHOTO UPLOADER
+// ----------------------------------------------------
+function triggerPhotoUpload() {
+  const input = document.getElementById('photoFileInput');
+  if (input) input.click();
+}
+
+function handlePhotoUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  if (!file.type.startsWith('image/')) {
+    alert('Please select an image file (PNG, JPG, WebP).');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const dataUrl = e.target.result;
+    const img = document.getElementById('profileImage');
+    if (img) img.src = dataUrl;
+    localStorage.setItem(STORAGE_KEY_PHOTO, dataUrl);
+    showToast('Portrait photo updated & saved! You can also download it for your GitHub repo.');
+  };
+  reader.readAsDataURL(file);
+}
+
+function downloadProfilePhoto() {
+  const img = document.getElementById('profileImage');
+  if (!img) return;
+  const a = document.createElement('a');
+  a.href = img.src;
+  a.download = 'profile.jpg';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  showToast('Downloaded profile.jpg! Place this into your repository folder.');
+}
+
+function resetProfilePhoto() {
+  localStorage.removeItem(STORAGE_KEY_PHOTO);
+  const img = document.getElementById('profileImage');
+  if (img) img.src = DEFAULT_AVATAR;
+  showToast('Portrait image reset to default graphic.');
+}
+
+// ----------------------------------------------------
+// 6. INTERACTIVE FILTERS & TAG HIGHLIGHTING
+// ----------------------------------------------------
+function filterJobs(category, btn) {
+  document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  const cards = document.querySelectorAll('.job-card');
+  cards.forEach(card => {
+    if (category === 'all' || card.getAttribute('data-category') === category) {
+      card.style.display = 'block';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+function filterByTag(tagName) {
+  // Highlight matching tags
+  document.querySelectorAll('.tag').forEach(t => {
+    if (t.innerText.toLowerCase().includes(tagName.toLowerCase())) {
+      t.classList.add('highlighted');
+    } else {
+      t.classList.remove('highlighted');
+    }
+  });
+
+  // Highlight and show matching job cards
+  const cards = document.querySelectorAll('.job-card');
+  let matchedCount = 0;
+  cards.forEach(card => {
+    const skills = (card.getAttribute('data-skills') || '').toLowerCase();
+    const content = card.innerText.toLowerCase();
+    if (skills.includes(tagName.toLowerCase()) || content.includes(tagName.toLowerCase())) {
+      card.style.display = 'block';
+      card.style.borderColor = 'var(--blue-core)';
+      matchedCount++;
+    } else {
+      card.style.borderColor = 'var(--border-subtle)';
+    }
+  });
+
+  showToast(`Filtered roles applying: "${tagName}" (${matchedCount} roles found)`);
+}
+
+function toggleDetails(dossierId, btn) {
+  const el = document.getElementById(dossierId);
+  if (!el) return;
+  if (el.classList.contains('open')) {
+    el.classList.remove('open');
+    btn.innerText = '▼ View Tech Stack & Architecture Notes';
+  } else {
+    el.classList.add('open');
+    btn.innerText = '▲ Hide Tech Stack & Architecture Notes';
+  }
+}
+
+// ----------------------------------------------------
+// 7. IN-SITU BULLET & TAG ADDITION
+// ----------------------------------------------------
+function addBulletPoint(btn) {
+  const ul = btn.previousElementSibling;
+  if (!ul) return;
+  const li = document.createElement('li');
+  li.setAttribute('data-editable', 'true');
+  li.setAttribute('contenteditable', 'true');
+  li.innerText = 'New verified milestone or leadership achievement (click to edit)...';
+  ul.appendChild(li);
+  li.focus();
+  showToast('Added new bullet point. Click to customize.');
+}
+
+function addTag(btn) {
+  const container = btn.previousElementSibling;
+  if (!container) return;
+  const span = document.createElement('span');
+  span.className = 'tag';
+  span.setAttribute('data-editable', 'true');
+  span.setAttribute('contenteditable', 'true');
+  span.innerText = 'New Tool / Skill';
+  container.appendChild(span);
+  span.focus();
+  showToast('Added new tech tag.');
+}
+
+function addEducation(btn) {
+  const container = btn.parentElement;
+  if (!container) return;
+  const div = document.createElement('div');
+  div.className = 'info-record';
+  div.innerHTML = `
+    <div class="record-degree" data-editable="true" contenteditable="true">Degree / Certification Title</div>
+    <div class="record-institution" data-editable="true" contenteditable="true">Institution Name</div>
+    <div class="record-dates" data-editable="true" contenteditable="true">Month Year – Month Year</div>
+  `;
+  container.insertBefore(div, btn);
+  showToast('Added education/certification entry.');
+}
+
+// ----------------------------------------------------
+// 8. CLIPBOARD & TOAST NOTIFICATION UTILITIES
+// ----------------------------------------------------
+function copyContact(text, msg) {
+  navigator.clipboard.writeText(text).then(() => {
+    showToast(msg);
+  }).catch(() => {
+    showToast(`Copied: ${text}`);
+  });
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toastNotice');
+  const msgEl = document.getElementById('toastMsg');
+  if (!toast || !msgEl) return;
+  msgEl.innerText = msg;
+  toast.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 4000);
+}
