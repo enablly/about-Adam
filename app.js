@@ -28,6 +28,9 @@ window.addEventListener('DOMContentLoaded', () => {
   // Initialize Animated Counters
   initNumberCounters();
 
+  // Initialize 3D Slanted Geometry Globe (Box 3 GEO.AEO)
+  initCadGlobe();
+
   // Restore custom photo if previously uploaded
   const savedPhoto = localStorage.getItem(STORAGE_KEY_PHOTO);
   const profileImg = document.getElementById('profileImage');
@@ -698,4 +701,638 @@ function showToast(msg) {
   toastTimer = setTimeout(() => {
     toast.classList.remove('show');
   }, 4000);
+}
+
+// ----------------------------------------------------
+// 12. 3D SLANTED SPINNING GEOMETRY GLOBE (CAD VIEWPORT)
+// ----------------------------------------------------
+function initCadGlobe() {
+  const canvas = document.getElementById('cadGlobeCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  let width = 0;
+  let height = 0;
+  let dpr = window.devicePixelRatio || 1;
+  let radius = 62;
+  let centerX = 0;
+  let centerY = 0;
+
+  // Geometry configuration: Earth's 23.5° axial tilt and slight 14° camera elevation
+  const TILT_Z = -23.5 * (Math.PI / 180);
+  const PITCH_X = 14 * (Math.PI / 180);
+  const cosT = Math.cos(TILT_Z), sinT = Math.sin(TILT_Z);
+  const cosP = Math.cos(PITCH_X), sinP = Math.sin(PITCH_X);
+
+  let rotation = 1.85; // Initial rotation angle
+  let spinSpeed = 0.005; // Smooth slow stately rotation
+  let isDragging = false;
+  let lastMouseX = 0;
+  let isVisible = true;
+
+  // Raw geographic polygons for continents & major landmasses [lon, lat]
+  const rawContinents = [
+    // North America
+    [
+      [-168, 65], [-160, 71], [-140, 69], [-125, 69], [-95, 73], [-82, 65], [-76, 58],
+      [-60, 48], [-65, 44], [-70, 42], [-76, 35], [-81, 25], [-82, 23], [-90, 21],
+      [-97, 26], [-105, 22], [-88, 16], [-80, 8], [-77, 8], [-85, 13], [-96, 16],
+      [-105, 20], [-115, 30], [-124, 40], [-125, 48], [-135, 57], [-152, 60], [-165, 60], [-168, 65]
+    ],
+    // South America
+    [
+      [-77, 8], [-71, 12], [-60, 10], [-50, 0], [-35, -5], [-35, -8], [-40, -22],
+      [-50, -30], [-57, -38], [-66, -45], [-68, -55], [-75, -50], [-72, -40], [-71, -30],
+      [-77, -10], [-80, -2], [-77, 8]
+    ],
+    // Europe & Mediterranean
+    [
+      [-9, 36], [-9, 43], [-1, 44], [-4, 48], [2, 51], [8, 54], [10, 56], [14, 54],
+      [20, 55], [26, 60], [30, 68], [15, 68], [5, 62], [5, 58], [2, 51], [-4, 48],
+      [-8, 44], [-9, 36]
+    ],
+    // Scandinavia
+    [
+      [5, 59], [10, 58], [12, 56], [18, 59], [22, 65], [28, 71], [24, 71], [15, 69], [5, 62], [5, 59]
+    ],
+    // British Isles & Ireland
+    [
+      [-5, 50], [1.5, 51], [0, 53], [-2, 57], [-5, 58], [-5, 55], [-3, 53], [-5, 50]
+    ],
+    [
+      [-10, 51.5], [-6, 52], [-6, 55], [-10, 54], [-10, 51.5]
+    ],
+    // Africa
+    [
+      [-6, 36], [10, 37], [25, 32], [32, 31], [33, 27], [43, 12], [51, 12], [42, 0],
+      [40, -10], [35, -20], [32, -28], [28, -34], [18, -34], [12, -18], [9, -5],
+      [9, 4], [0, 6], [-13, 9], [-17, 15], [-17, 21], [-11, 28], [-6, 36]
+    ],
+    // Eurasia / Central & North Asia
+    [
+      [32, 31], [35, 33], [40, 38], [50, 40], [60, 40], [70, 40], [80, 40], [90, 40],
+      [100, 40], [110, 40], [120, 40], [140, 50], [160, 60], [180, 66], [170, 70],
+      [140, 73], [100, 75], [75, 70], [60, 68], [50, 68], [40, 65], [30, 70], [28, 70],
+      [35, 60], [45, 50], [40, 40], [35, 33]
+    ],
+    // India Subcontinent
+    [
+      [68, 24], [72, 20], [77, 10], [80, 8], [80, 13], [85, 20], [88, 22], [90, 24],
+      [80, 27], [73, 26], [68, 24]
+    ],
+    // Southeast Asia & China Coast
+    [
+      [98, 22], [100, 14], [101, 3], [104, 1.3], [103, 7], [108, 12], [106, 20],
+      [118, 24], [122, 30], [122, 38], [120, 40], [105, 35], [98, 22]
+    ],
+    // Japan
+    [
+      [130, 31], [132, 34], [139, 35], [141, 41], [142, 44], [145, 44], [140, 38], [136, 34], [130, 31]
+    ],
+    // Maritime Southeast Asia (Sumatra, Java, Borneo, Philippines)
+    [
+      [95, 5], [105, -5], [100, 0], [95, 5]
+    ],
+    [
+      [106, -6], [114, -8], [114, -7], [106, -6]
+    ],
+    [
+      [110, 1], [117, 4], [119, 0], [115, -4], [110, -2], [110, 1]
+    ],
+    [
+      [120, 18], [126, 12], [125, 7], [121, 10], [120, 18]
+    ],
+    // Australia
+    [
+      [114, -22], [122, -18], [131, -12], [136, -12], [138, -17], [142, -11], [145, -15],
+      [153, -28], [151, -34], [148, -38], [140, -38], [137, -35], [134, -33], [129, -32],
+      [124, -33], [115, -34], [113, -26], [114, -22]
+    ],
+    // New Zealand
+    [
+      [173, -35], [178, -38], [175, -41], [170, -44], [167, -46], [170, -43], [173, -35]
+    ],
+    // Greenland
+    [
+      [-45, 60], [-35, 66], [-20, 75], [-30, 82], [-55, 82], [-55, 70], [-45, 60]
+    ]
+  ];
+
+  // Densify polygons so lines hug spherical curvature seamlessly
+  function densify(polygon, maxDeg = 6) {
+    const pts = [];
+    for (let i = 0; i < polygon.length; i++) {
+      const p1 = polygon[i];
+      const p2 = polygon[(i + 1) % polygon.length];
+      pts.push(p1);
+      const dLon = p2[0] - p1[0];
+      const dLat = p2[1] - p1[1];
+      const dist = Math.hypot(dLon, dLat);
+      if (dist > maxDeg) {
+        const steps = Math.ceil(dist / maxDeg);
+        for (let s = 1; s < steps; s++) {
+          const frac = s / steps;
+          pts.push([p1[0] + dLon * frac, p1[1] + dLat * frac]);
+        }
+      }
+    }
+    return pts;
+  }
+
+  const continents = rawContinents.map(poly => densify(poly));
+
+  // Major Country / Regional Tech & Fintech Hubs with Pulsing Blue Dots
+  const hubs = [
+    { name: 'Kuala Lumpur', code: 'MY // KL', lat: 3.14, lon: 101.69, primary: true, offset: 0.0 },
+    { name: 'Tokyo', code: 'JP // TYO', lat: 35.68, lon: 139.76, offset: 0.3 },
+    { name: 'London', code: 'UK // LDN', lat: 51.51, lon: -0.13, offset: 0.6 },
+    { name: 'New York', code: 'US // NYC', lat: 40.71, lon: -74.01, offset: 0.9 },
+    { name: 'San Francisco', code: 'US // SFO', lat: 37.77, lon: -122.42, offset: 0.2 },
+    { name: 'Sydney', code: 'AU // SYD', lat: -33.87, lon: 151.21, offset: 0.5 },
+    { name: 'Frankfurt', code: 'EU // FRA', lat: 50.11, lon: 8.68, offset: 0.75 },
+    { name: 'Dubai', code: 'AE // DXB', lat: 25.20, lon: 55.27, offset: 0.4 },
+    { name: 'Singapore', code: 'SG // SIN', lat: 1.35, lon: 103.82, offset: 0.15 }
+  ];
+
+  // Geodesic Network Arcs (hub index pairs)
+  const connections = [
+    [0, 1], // KL ↔ London
+    [0, 3], // KL ↔ Tokyo
+    [0, 5], // KL ↔ Sydney
+    [1, 2], // London ↔ NYC
+    [2, 4], // NYC ↔ SFO
+    [4, 1], // SFO ↔ Tokyo
+    [1, 6], // London ↔ Frankfurt
+    [7, 6]  // Dubai ↔ Frankfurt
+  ];
+
+  // Canvas Resize Handler
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    width = rect.width || 280;
+    height = rect.height || 172;
+    dpr = window.devicePixelRatio || 1;
+
+    canvas.width = Math.floor(width * dpr);
+    canvas.height = Math.floor(height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    centerX = width / 2;
+    centerY = height / 2;
+    radius = Math.min(width, height) * 0.37;
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+
+  // IntersectionObserver to pause rendering when offscreen
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      isVisible = entry.isIntersecting;
+    });
+  }, { threshold: 0.05 });
+  observer.observe(canvas);
+
+  // Mouse & Touch Interactivity (Drag to Rotate)
+  canvas.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    lastMouseX = e.clientX;
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    const deltaX = e.clientX - lastMouseX;
+    rotation += deltaX * 0.007;
+    lastMouseX = e.clientX;
+  });
+  window.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
+
+  canvas.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 1) {
+      isDragging = true;
+      lastMouseX = e.touches[0].clientX;
+    }
+  }, { passive: true });
+  window.addEventListener('touchmove', (e) => {
+    if (!isDragging || e.touches.length !== 1) return;
+    const deltaX = e.touches[0].clientX - lastMouseX;
+    rotation += deltaX * 0.007;
+    lastMouseX = e.touches[0].clientX;
+  }, { passive: true });
+  window.addEventListener('touchend', () => {
+    isDragging = false;
+  });
+
+  // 3D Spherical Coordinate Transformation
+  function project3D(lonDeg, latDeg, R, rot) {
+    const rad = Math.PI / 180;
+    const lambda = lonDeg * rad + rot;
+    const phi = latDeg * rad;
+
+    const cosPhi = Math.cos(phi);
+    const x0 = R * cosPhi * Math.sin(lambda);
+    const y0 = R * Math.sin(phi);
+    const z0 = R * cosPhi * Math.cos(lambda);
+
+    // 1. Earth Slanted Axis Tilt (around Z axis)
+    const x1 = x0 * cosT - y0 * sinT;
+    const y1 = x0 * sinT + y0 * cosT;
+    const z1 = z0;
+
+    // 2. Camera Elevation Pitch (around X axis)
+    const x2 = x1;
+    const y2 = y1 * cosP - z1 * sinP;
+    const z2 = y1 * sinP + z1 * cosP;
+
+    return {
+      x: centerX + x2,
+      y: centerY - y2,
+      z: z2,
+      rawX: x2,
+      rawY: y2
+    };
+  }
+
+  // Project point along the slanted polar axis
+  function projectAxisPoint(yDist) {
+    const x1 = -yDist * sinT;
+    const y1 = yDist * cosT;
+    const z1 = 0;
+
+    const x2 = x1;
+    const y2 = y1 * cosP - z1 * sinP;
+    const z2 = y1 * sinP + z1 * cosP;
+
+    return {
+      x: centerX + x2,
+      y: centerY - y2,
+      z: z2
+    };
+  }
+
+  // Animation Loop
+  function render(time) {
+    requestAnimationFrame(render);
+    if (!isVisible) return;
+
+    if (!isDragging) {
+      rotation += spinSpeed;
+    }
+
+    ctx.clearRect(0, 0, width, height);
+
+    // 1. Subtle CAD Crosshairs in Canvas Corners
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 0.8;
+    const ch = 7;
+    // Top-left
+    ctx.beginPath();
+    ctx.moveTo(10, 10 + ch); ctx.lineTo(10, 10); ctx.lineTo(10 + ch, 10);
+    ctx.moveTo(width - 10 - ch, 10); ctx.lineTo(width - 10, 10); ctx.lineTo(width - 10, 10 + ch);
+    ctx.moveTo(10, height - 10 - ch); ctx.lineTo(10, height - 10); ctx.lineTo(10 + ch, height - 10);
+    ctx.moveTo(width - 10 - ch, height - 10); ctx.lineTo(width - 10, height - 10); ctx.lineTo(width - 10, height - 10 - ch);
+    ctx.stroke();
+
+    // 2. CAD Orbit / Outer Range Ring
+    ctx.save();
+    ctx.strokeStyle = 'rgba(226, 232, 240, 0.8)';
+    ctx.lineWidth = 0.8;
+    ctx.setLineDash([2, 4]);
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius + 12, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+
+    // 3. Globe Base Sphere (Clean white fill with subtle soft halo)
+    const baseGrad = ctx.createRadialGradient(
+      centerX - radius * 0.3, centerY - radius * 0.3, radius * 0.1,
+      centerX, centerY, radius
+    );
+    baseGrad.addColorStop(0, '#ffffff');
+    baseGrad.addColorStop(0.85, '#f8fafc');
+    baseGrad.addColorStop(1, '#eef2f6');
+
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+    ctx.fillStyle = baseGrad;
+    ctx.fill();
+
+    // Outer silhouette border
+    ctx.strokeStyle = 'rgba(29, 99, 255, 0.28)';
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+
+    // 4. Slanted Polar Axis (23.5° physical tilt line)
+    const axisTop = projectAxisPoint(radius + 18);
+    const axisNorth = projectAxisPoint(radius);
+    const axisSouth = projectAxisPoint(-radius);
+    const axisBottom = projectAxisPoint(-radius - 18);
+
+    // Dashed extended axis lines
+    ctx.save();
+    ctx.strokeStyle = 'rgba(29, 99, 255, 0.45)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+
+    // Top extension
+    ctx.beginPath();
+    ctx.moveTo(axisNorth.x, axisNorth.y);
+    ctx.lineTo(axisTop.x, axisTop.y);
+    ctx.stroke();
+
+    // Bottom extension
+    ctx.beginPath();
+    ctx.moveTo(axisSouth.x, axisSouth.y);
+    ctx.lineTo(axisBottom.x, axisBottom.y);
+    ctx.stroke();
+    ctx.restore();
+
+    // Slanted Axis Endcaps & Ticks
+    const normalAngle = Math.atan2(axisTop.y - axisNorth.y, axisTop.x - axisNorth.x) + Math.PI / 2;
+    const nx = Math.cos(normalAngle) * 4;
+    const ny = Math.sin(normalAngle) * 4;
+
+    ctx.strokeStyle = 'var(--blue-core, #1d63ff)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(axisTop.x - nx, axisTop.y - ny);
+    ctx.lineTo(axisTop.x + nx, axisTop.y + ny);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(axisBottom.x - nx, axisBottom.y - ny);
+    ctx.lineTo(axisBottom.x + nx, axisBottom.y + ny);
+    ctx.stroke();
+
+    // Polar labels
+    ctx.font = '600 7px "JetBrains Mono", monospace';
+    ctx.fillStyle = '#1d63ff';
+    ctx.textAlign = 'left';
+    ctx.fillText('N 23.5°', axisTop.x + 6, axisTop.y + 2);
+
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillText('S', axisBottom.x + 6, axisBottom.y + 4);
+
+    // 5. Wireframe Parallels (Latitude Rings)
+    const latitudes = [-60, -30, 0, 30, 60];
+    latitudes.forEach(lat => {
+      const isEquator = lat === 0;
+      const pts = [];
+      for (let lon = 0; lon <= 360; lon += 6) {
+        pts.push(project3D(lon, lat, radius, rotation));
+      }
+
+      // Draw visible front arc (z > 0)
+      ctx.beginPath();
+      let drawing = false;
+      pts.forEach(p => {
+        if (p.z > 0) {
+          if (!drawing) {
+            ctx.moveTo(p.x, p.y);
+            drawing = true;
+          } else {
+            ctx.lineTo(p.x, p.y);
+          }
+        } else {
+          drawing = false;
+        }
+      });
+      ctx.strokeStyle = isEquator ? 'rgba(29, 99, 255, 0.42)' : 'rgba(29, 99, 255, 0.16)';
+      ctx.lineWidth = isEquator ? 1.2 : 0.7;
+      ctx.stroke();
+
+      // Faint back arc (z <= 0)
+      ctx.save();
+      ctx.setLineDash([1, 4]);
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.15)';
+      ctx.lineWidth = 0.6;
+      ctx.beginPath();
+      drawing = false;
+      pts.forEach(p => {
+        if (p.z <= 0) {
+          if (!drawing) {
+            ctx.moveTo(p.x, p.y);
+            drawing = true;
+          } else {
+            ctx.lineTo(p.x, p.y);
+          }
+        } else {
+          drawing = false;
+        }
+      });
+      ctx.stroke();
+      ctx.restore();
+    });
+
+    // 6. Wireframe Meridians (Longitude Rings)
+    for (let m = 0; m < 8; m++) {
+      const lon = m * 45;
+      const pts = [];
+      for (let lat = -90; lat <= 90; lat += 6) {
+        pts.push(project3D(lon, lat, radius, rotation));
+      }
+
+      // Visible arc (z > 0)
+      ctx.beginPath();
+      let drawing = false;
+      pts.forEach(p => {
+        if (p.z > 0) {
+          if (!drawing) {
+            ctx.moveTo(p.x, p.y);
+            drawing = true;
+          } else {
+            ctx.lineTo(p.x, p.y);
+          }
+        } else {
+          drawing = false;
+        }
+      });
+      ctx.strokeStyle = 'rgba(29, 99, 255, 0.14)';
+      ctx.lineWidth = 0.7;
+      ctx.stroke();
+    }
+
+    // 7. Country & Continental Geometric Outlines
+    ctx.save();
+    continents.forEach(poly => {
+      const proj = poly.map(pt => project3D(pt[0], pt[1], radius, rotation));
+      const len = proj.length;
+      if (len < 2) return;
+
+      ctx.beginPath();
+      let first = true;
+      for (let i = 0; i < len; i++) {
+        const p1 = proj[i];
+        const p2 = proj[(i + 1) % len];
+
+        if (p1.z > 0 && p2.z > 0) {
+          if (first) {
+            ctx.moveTo(p1.x, p1.y);
+            first = false;
+          }
+          ctx.lineTo(p2.x, p2.y);
+        } else if (p1.z > 0 && p2.z <= 0) {
+          // Clip from visible to hidden
+          const t = p1.z / (p1.z - p2.z);
+          const cx_ = p1.x + t * (p2.x - p1.x);
+          const cy_ = p1.y + t * (p2.y - p1.y);
+          if (first) {
+            ctx.moveTo(p1.x, p1.y);
+            first = false;
+          }
+          ctx.lineTo(cx_, cy_);
+          first = true;
+        } else if (p1.z <= 0 && p2.z > 0) {
+          // Clip from hidden to visible
+          const t = -p1.z / (p2.z - p1.z);
+          const cx_ = p1.x + t * (p2.x - p1.x);
+          const cy_ = p1.y + t * (p2.y - p1.y);
+          ctx.moveTo(cx_, cy_);
+          ctx.lineTo(p2.x, p2.y);
+          first = false;
+        }
+      }
+
+      ctx.strokeStyle = '#0f172a'; // Crisp technical slate
+      ctx.lineWidth = 1.15;
+      ctx.stroke();
+
+      ctx.fillStyle = 'rgba(29, 99, 255, 0.04)';
+      ctx.fill();
+    });
+    ctx.restore();
+
+    // 8. Geodesic Flight & Fiber Mesh Arcs
+    const sec = time / 1000;
+    connections.forEach(([iA, iB]) => {
+      const hA = hubs[iA];
+      const hB = hubs[iB];
+      if (!hA || !hB) return;
+
+      const pA = project3D(hA.lon, hA.lat, radius, rotation);
+      const pB = project3D(hB.lon, hB.lat, radius, rotation);
+
+      // Only draw when at least one hub is on the front side
+      if (pA.z > -10 || pB.z > -10) {
+        ctx.save();
+        ctx.strokeStyle = 'rgba(29, 99, 255, 0.28)';
+        ctx.lineWidth = 0.9;
+        ctx.setLineDash([2, 3]);
+
+        ctx.beginPath();
+        let inPath = false;
+        const steps = 14;
+        let packetPt = null;
+        const packetT = (sec * 0.4 + (iA * 0.2)) % 1.0;
+
+        for (let s = 0; s <= steps; s++) {
+          const t = s / steps;
+          const lon = hA.lon + (hB.lon - hA.lon) * t;
+          const lat = hA.lat + (hB.lat - hA.lat) * t;
+          const arcP = project3D(lon, lat, radius, rotation);
+
+          if (arcP.z > 0) {
+            if (!inPath) {
+              ctx.moveTo(arcP.x, arcP.y);
+              inPath = true;
+            } else {
+              ctx.lineTo(arcP.x, arcP.y);
+            }
+          } else {
+            inPath = false;
+          }
+
+          if (Math.abs(t - packetT) < 0.04 && arcP.z > 0) {
+            packetPt = arcP;
+          }
+        }
+        ctx.stroke();
+        ctx.restore();
+
+        // Traveling data packet
+        if (packetPt) {
+          ctx.beginPath();
+          ctx.arc(packetPt.x, packetPt.y, 1.8, 0, Math.PI * 2);
+          ctx.fillStyle = '#1d63ff';
+          ctx.fill();
+        }
+      }
+    });
+
+    // 9. Major Country / Regional Hubs with Pulsing Blue Dots
+    hubs.forEach(hub => {
+      const p = project3D(hub.lon, hub.lat, radius, rotation);
+      if (p.z <= 0) return; // Behind horizon
+
+      // Pulse wave phases
+      const wave1 = (sec * 0.9 + hub.offset) % 1.0;
+      const wave2 = (sec * 0.9 + hub.offset + 0.5) % 1.0;
+
+      // Pulse Ring 1
+      const r1 = 2.8 + wave1 * 11;
+      const alpha1 = (1 - wave1) * 0.8;
+      ctx.strokeStyle = `rgba(29, 99, 255, ${alpha1})`;
+      ctx.lineWidth = 1.1;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, r1, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Pulse Ring 2
+      const r2 = 2.8 + wave2 * 11;
+      const alpha2 = (1 - wave2) * 0.8;
+      ctx.strokeStyle = `rgba(29, 99, 255, ${alpha2})`;
+      ctx.lineWidth = 1.1;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, r2, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Core Solid Blue Dot
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 2.8, 0, Math.PI * 2);
+      ctx.fillStyle = '#1d63ff';
+      ctx.fill();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+
+      // CAD Leader Tag for prominent hubs facing front
+      if (hub.primary || p.z > 25) {
+        ctx.save();
+        ctx.font = '700 6.5px "JetBrains Mono", monospace';
+        ctx.fillStyle = hub.primary ? '#1d63ff' : '#475569';
+        ctx.strokeStyle = hub.primary ? 'rgba(29, 99, 255, 0.45)' : 'rgba(148, 163, 184, 0.4)';
+        ctx.lineWidth = 0.8;
+
+        const isRight = p.x < centerX + 20;
+        const lx1 = isRight ? p.x + 4 : p.x - 4;
+        const ly1 = p.y - 4;
+        const lx2 = isRight ? p.x + 12 : p.x - 12;
+        const ly2 = p.y - 12;
+        const lx3 = isRight ? lx2 + 28 : lx2 - 28;
+
+        ctx.beginPath();
+        ctx.moveTo(lx1, ly1);
+        ctx.lineTo(lx2, ly2);
+        ctx.lineTo(lx3, ly2);
+        ctx.stroke();
+
+        ctx.textAlign = isRight ? 'left' : 'right';
+        ctx.fillText(hub.code, isRight ? lx2 + 2 : lx2 - 2, ly2 - 2);
+        ctx.restore();
+      }
+    });
+
+    // 10. CAD Viewport Telemetry Micro-Readout
+    ctx.save();
+    ctx.font = '500 6px "JetBrains Mono", monospace';
+    ctx.fillStyle = '#94a3b8';
+    const deg = Math.floor(((rotation * 180 / Math.PI) % 360 + 360) % 360);
+    ctx.fillText(`θ: ${String(deg).padStart(3, '0')}°`, 14, height - 12);
+    ctx.textAlign = 'right';
+    ctx.fillText('CAD.3D // TILT -23.5°', width - 14, height - 12);
+    ctx.restore();
+  }
+
+  requestAnimationFrame(render);
 }
