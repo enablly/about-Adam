@@ -300,53 +300,134 @@
           <!-- CAD UPPERFOLD: AGENTIC GRAPH & PIPELINE -->
           <div class="pillar-cad-viewport">
             <div class="cad-header-strip">
-              <span class="cad-id">SYS.FDE // AGENT_GRAPH</span>
-              <span class="cad-metric">LAT: 12ms</span>
+              <span class="cad-id">SYS.FDE // MULTI_AGENT_DAG</span>
+              <span class="cad-metric">LAT: 12ms • 142 T/S</span>
             </div>
             <div class="cad-canvas-area">
-              <svg class="cad-svg" viewBox="0 0 280 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- Alignment grid lines -->
-                <path d="M 15 75 H 265 M 140 15 V 135" stroke="#e2e8f0" stroke-width="0.8" stroke-dasharray="2 4"/>
-                <path d="M 28 25 H 34 M 31 22 V 28 M 248 25 H 254 M 251 22 V 28 M 28 125 H 34 M 31 122 V 128 M 248 125 H 254 M 251 122 V 128" stroke="#94a3b8" stroke-width="0.8"/>
-                
-                <!-- Connector lines -->
-                <path d="M 68 75 H 115" stroke="#1d63ff" stroke-width="1.5" class="cad-flow-line"/>
-                <path d="M 165 75 H 212" stroke="#1d63ff" stroke-width="1.5" class="cad-flow-line"/>
-                <path d="M 140 32 V 46" stroke="#1d63ff" stroke-width="1.2" stroke-dasharray="3 3"/>
-                <path d="M 140 104 V 118" stroke="#1d63ff" stroke-width="1.2" stroke-dasharray="3 3"/>
-                
-                <!-- Input Node -->
-                <rect x="22" y="60" width="46" height="30" fill="#ffffff" stroke="#090d16" stroke-width="1.2"/>
-                <rect x="25" y="63" width="40" height="24" fill="#f8fafc" stroke="#e2e8f0" stroke-width="0.8"/>
-                <text x="45" y="78" font-family="'JetBrains Mono', monospace" font-size="6.5" fill="#475569" text-anchor="middle" font-weight="700">INPUT</text>
-                
-                <!-- Center Core Node (Ollama / n8n) -->
-                <rect x="115" y="46" width="50" height="58" fill="#ffffff" stroke="#1d63ff" stroke-width="1.5"/>
-                <rect x="121" y="52" width="38" height="46" fill="#f0f6ff" stroke="#38bdf8" stroke-width="0.8" stroke-dasharray="2 2"/>
-                <polygon points="140,56 152,68 140,80 128,68" stroke="#1d63ff" stroke-width="1" fill="none"/>
-                <circle cx="140" cy="68" r="3.5" fill="#1d63ff">
-                  <animate attributeName="r" values="2.5;4.5;2.5" dur="1.8s" repeatCount="indefinite"/>
-                  <animate attributeName="opacity" values="0.6;1;0.6" dur="1.8s" repeatCount="indefinite"/>
+              <svg class="cad-svg" viewBox="0 0 280 185" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Alignment grid lines & datum marks -->
+                <path d="M 12 92.5 H 268 M 140 10 V 175" stroke="#e2e8f0" stroke-width="0.8" stroke-dasharray="2 4"/>
+                <path d="M 18 16 H 24 M 21 13 V 19 M 256 16 H 262 M 259 13 V 19 M 18 168 H 24 M 21 165 V 171 M 256 168 H 262 M 259 165 V 171" stroke="#94a3b8" stroke-width="0.8"/>
+                <text x="140" y="8" font-family="'JetBrains Mono', monospace" font-size="5" fill="#94a3b8" text-anchor="middle" letter-spacing="0.08em">◄── MESH TOPOLOGY // 184mm ──►</text>
+
+                <!-- BUS ROUTING TRACES (PCB / CAD STYLE) -->
+                <!-- Input A (API) to Core -->
+                <path d="M 68 48 H 86 V 80 H 100" stroke="#1d63ff" stroke-width="1.3" fill="none"/>
+                <!-- Input B (Vector) to Core -->
+                <path d="M 68 136 H 86 V 104 H 100" stroke="#0284c7" stroke-width="1.3" fill="none"/>
+                <!-- Satellite Agent 1 (Claude Code) vertical bus -->
+                <path d="M 140 34 V 50" stroke="#1d63ff" stroke-width="1.2" stroke-dasharray="3 3"/>
+                <!-- Satellite Agent 2 (Guardrails) vertical bus -->
+                <path d="M 140 134 V 150" stroke="#059669" stroke-width="1.2" stroke-dasharray="3 3"/>
+                <!-- Core to Exec A (n8n) -->
+                <path d="M 180 80 H 194 V 48 H 212" stroke="#1d63ff" stroke-width="1.3" fill="none"/>
+                <!-- Core to Exec B (Cloud Run) -->
+                <path d="M 180 104 H 194 V 136 H 212" stroke="#059669" stroke-width="1.3" fill="none"/>
+
+                <!-- SELF-HEALING RECURSIVE EVALUATION LOOP (Dashed blue loop returning along bottom) -->
+                <path d="M 238 152 V 174 H 42 V 152" stroke="#38bdf8" stroke-width="1" stroke-dasharray="2 3" fill="none"/>
+                <text x="140" y="171" font-family="'JetBrains Mono', monospace" font-size="4.8" fill="#0284c7" text-anchor="middle" font-weight="600">RECURSIVE EVAL &amp; RE-PROMPT LOOP // EPOCH: 04</text>
+
+                <!-- INPUT STAGE (LEFT) -->
+                <!-- Node 1A: API / STREAM INGEST -->
+                <g class="cad-node">
+                  <rect x="12" y="34" width="56" height="28" fill="#ffffff" stroke="#090d16" stroke-width="1.2"/>
+                  <rect x="15" y="37" width="50" height="22" fill="#f8fafc" stroke="#e2e8f0" stroke-width="0.8"/>
+                  <circle cx="21" cy="48" r="2" fill="#1d63ff"/>
+                  <text x="43" y="46" font-family="'JetBrains Mono', monospace" font-size="5.5" fill="#090d16" text-anchor="middle" font-weight="700">API INGEST</text>
+                  <text x="43" y="54" font-family="'JetBrains Mono', monospace" font-size="4.6" fill="#64748b" text-anchor="middle">STREAM // 200</text>
+                </g>
+
+                <!-- Node 1B: VECTOR RAG CACHE -->
+                <g class="cad-node">
+                  <rect x="12" y="122" width="56" height="28" fill="#ffffff" stroke="#090d16" stroke-width="1.2"/>
+                  <rect x="15" y="125" width="50" height="22" fill="#f8fafc" stroke="#e2e8f0" stroke-width="0.8"/>
+                  <!-- Mini DB disk icons -->
+                  <ellipse cx="21" cy="132" rx="3.5" ry="1.5" fill="none" stroke="#0284c7" stroke-width="0.8"/>
+                  <ellipse cx="21" cy="136" rx="3.5" ry="1.5" fill="none" stroke="#0284c7" stroke-width="0.8"/>
+                  <ellipse cx="21" cy="140" rx="3.5" ry="1.5" fill="none" stroke="#0284c7" stroke-width="0.8"/>
+                  <text x="44" y="134" font-family="'JetBrains Mono', monospace" font-size="5.5" fill="#090d16" text-anchor="middle" font-weight="700">VECTOR RAG</text>
+                  <text x="44" y="142" font-family="'JetBrains Mono', monospace" font-size="4.6" fill="#64748b" text-anchor="middle">1536d MEMORY</text>
+                </g>
+
+                <!-- SATELLITE AGENT TOP: CLAUDE CODE / CODEX -->
+                <g class="cad-node">
+                  <rect x="108" y="14" width="64" height="20" fill="#ffffff" stroke="#1d63ff" stroke-width="1"/>
+                  <rect x="110" y="16" width="60" height="16" fill="#f0f6ff"/>
+                  <text x="140" y="27" font-family="'JetBrains Mono', monospace" font-size="5.2" fill="#1d63ff" text-anchor="middle" font-weight="700">AGENT: SYNTHESIS</text>
+                </g>
+
+                <!-- SATELLITE AGENT BOTTOM: GUARDRAILS -->
+                <g class="cad-node">
+                  <rect x="108" y="150" width="64" height="20" fill="#ffffff" stroke="#059669" stroke-width="1"/>
+                  <rect x="110" y="152" width="60" height="16" fill="#ecfdf5"/>
+                  <text x="140" y="163" font-family="'JetBrains Mono', monospace" font-size="5.2" fill="#059669" text-anchor="middle" font-weight="700">GUARD: COMPLIANCE</text>
+                </g>
+
+                <!-- CENTER INFERENCE ENGINE (OLLAMA LOCAL LLM) -->
+                <g class="cad-node">
+                  <rect x="100" y="50" width="80" height="84" fill="#ffffff" stroke="#1d63ff" stroke-width="1.6"/>
+                  <rect x="104" y="54" width="72" height="76" fill="#f8fafc" stroke="#93c5fd" stroke-width="0.8" stroke-dasharray="2 2"/>
+                  
+                  <!-- Bezel header -->
+                  <rect x="104" y="54" width="72" height="14" fill="#1d63ff"/>
+                  <text x="140" y="64" font-family="'JetBrains Mono', monospace" font-size="5.5" fill="#ffffff" text-anchor="middle" font-weight="800">OLLAMA 3.2 // CORE</text>
+                  
+                  <!-- Center rotating/pulsing reticle -->
+                  <polygon points="140,73 154,87 140,101 126,87" stroke="#1d63ff" stroke-width="1.2" fill="none"/>
+                  <circle cx="140" cy="87" r="7" stroke="#38bdf8" stroke-width="0.8" stroke-dasharray="2 2" fill="none">
+                    <animateTransform attributeName="transform" type="rotate" from="0 140 87" to="360 140 87" dur="6s" repeatCount="indefinite"/>
+                  </circle>
+                  <circle cx="140" cy="87" r="3" fill="#1d63ff">
+                    <animate attributeName="r" values="2;4;2" dur="1.5s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.5;1;0.5" dur="1.5s" repeatCount="indefinite"/>
+                  </circle>
+                  
+                  <!-- Telemetry readouts inside core -->
+                  <text x="140" y="112" font-family="'JetBrains Mono', monospace" font-size="5" fill="#1d63ff" text-anchor="middle" font-weight="700">142.8 TOKENS/S</text>
+                  <text x="140" y="122" font-family="'JetBrains Mono', monospace" font-size="4.5" fill="#64748b" text-anchor="middle">VRAM: 8.4GB FP16</text>
+                </g>
+
+                <!-- EXECUTION STAGE (RIGHT) -->
+                <!-- Node 3A: n8n AUTOMATION -->
+                <g class="cad-node">
+                  <rect x="212" y="34" width="56" height="28" fill="#ffffff" stroke="#090d16" stroke-width="1.2"/>
+                  <rect x="215" y="37" width="50" height="22" fill="#f8fafc" stroke="#e2e8f0" stroke-width="0.8"/>
+                  <circle cx="260" cy="48" r="2" fill="#059669"/>
+                  <text x="238" y="46" font-family="'JetBrains Mono', monospace" font-size="5.5" fill="#090d16" text-anchor="middle" font-weight="700">n8n WORKFLOW</text>
+                  <text x="238" y="54" font-family="'JetBrains Mono', monospace" font-size="4.6" fill="#059669" text-anchor="middle">AUTO EXECUTE</text>
+                </g>
+
+                <!-- Node 3B: CLOUD RUN // API -->
+                <g class="cad-node">
+                  <rect x="212" y="122" width="56" height="28" fill="#ffffff" stroke="#090d16" stroke-width="1.2"/>
+                  <rect x="215" y="125" width="50" height="22" fill="#f8fafc" stroke="#e2e8f0" stroke-width="0.8"/>
+                  <circle cx="260" cy="136" r="2" fill="#059669"/>
+                  <text x="238" y="134" font-family="'JetBrains Mono', monospace" font-size="5.5" fill="#090d16" text-anchor="middle" font-weight="700">CLOUD RUN</text>
+                  <text x="238" y="142" font-family="'JetBrains Mono', monospace" font-size="4.6" fill="#059669" text-anchor="middle">CONTAINER 200</text>
+                </g>
+
+                <!-- ANIMATED DYNAMIC TRAVELING DATA PACKETS -->
+                <circle r="2.2" fill="#1d63ff">
+                  <animateMotion path="M 68 48 H 86 V 80 H 100" dur="1.8s" repeatCount="indefinite"/>
                 </circle>
-                <text x="140" y="92" font-family="'JetBrains Mono', monospace" font-size="5.5" fill="#1d63ff" text-anchor="middle" font-weight="700">OLLAMA/n8n</text>
-                
-                <!-- Action Node -->
-                <rect x="212" y="60" width="46" height="30" fill="#ffffff" stroke="#090d16" stroke-width="1.2"/>
-                <rect x="215" y="63" width="40" height="24" fill="#f8fafc" stroke="#e2e8f0" stroke-width="0.8"/>
-                <text x="235" y="78" font-family="'JetBrains Mono', monospace" font-size="6.5" fill="#059669" text-anchor="middle" font-weight="700">ACTION</text>
-                
-                <!-- Dynamic traveling packets -->
-                <rect x="85" y="73" width="5" height="4" fill="#1d63ff">
-                  <animate attributeName="x" values="68;112" dur="1.6s" repeatCount="indefinite"/>
-                </rect>
-                <rect x="185" y="73" width="5" height="4" fill="#059669">
-                  <animate attributeName="x" values="165;209" dur="1.6s" repeatCount="indefinite"/>
-                </rect>
+                <circle r="2.2" fill="#0284c7">
+                  <animateMotion path="M 68 136 H 86 V 104 H 100" dur="2.1s" repeatCount="indefinite"/>
+                </circle>
+                <circle r="2.2" fill="#059669">
+                  <animateMotion path="M 180 80 H 194 V 48 H 212" dur="1.6s" repeatCount="indefinite"/>
+                </circle>
+                <circle r="2.2" fill="#1d63ff">
+                  <animateMotion path="M 180 104 H 194 V 136 H 212" dur="1.9s" repeatCount="indefinite"/>
+                </circle>
+                <circle r="1.8" fill="#38bdf8">
+                  <animateMotion path="M 238 152 V 174 H 42 V 152" dur="3.2s" repeatCount="indefinite"/>
+                </circle>
               </svg>
             </div>
             <div class="cad-footer-strip">
-              <span>COORD: [140, 075]</span>
-              <span class="cad-status-active">● STREAMING</span>
+              <span>COORD: [140, 092] • 32 NODES</span>
+              <span class="cad-status-active">● STREAMING ACTIVE</span>
             </div>
           </div>
           <div class="pillar-content">
@@ -377,42 +458,106 @@
           <!-- CAD UPPERFOLD: ACQUISITION FUNNEL & DSP WAVE -->
           <div class="pillar-cad-viewport">
             <div class="cad-header-strip">
-              <span class="cad-id">DSP.MEDIA // FUNNEL</span>
-              <span class="cad-metric">ROAS: 200%</span>
+              <span class="cad-id">DSP.MEDIA // RTB_WATERFALL</span>
+              <span class="cad-metric">ROAS: 200%+ • WIN: 74%</span>
             </div>
             <div class="cad-canvas-area">
-              <svg class="cad-svg" viewBox="0 0 280 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg class="cad-svg" viewBox="0 0 280 185" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <!-- Alignment grid lines -->
-                <path d="M 15 75 H 265 M 140 15 V 135" stroke="#e2e8f0" stroke-width="0.8" stroke-dasharray="2 4"/>
-                
-                <!-- Tier 1: Demand Capture -->
-                <polygon points="55,18 225,18 195,48 85,48" fill="#ffffff" stroke="#090d16" stroke-width="1.2"/>
-                <polygon points="55,18 225,18 195,48 85,48" fill="rgba(29, 99, 255, 0.05)"/>
-                <text x="140" y="36" font-family="'JetBrains Mono', monospace" font-size="6.5" fill="#475569" text-anchor="middle" font-weight="600">TIER 1: DEMAND CAPTURE</text>
-                
-                <!-- Tier 2: CPA Conversion -->
-                <polygon points="88,54 192,54 170,86 110,86" fill="#ffffff" stroke="#1d63ff" stroke-width="1.2"/>
-                <polygon points="88,54 192,54 170,86 110,86" fill="rgba(29, 99, 255, 0.09)"/>
-                <text x="140" y="73" font-family="'JetBrains Mono', monospace" font-size="6.2" fill="#1d63ff" text-anchor="middle" font-weight="600">TIER 2: CPA CONVERSION</text>
-                
-                <!-- Tier 3: FTD 200% ROI -->
-                <polygon points="112,92 168,92 152,122 128,122" fill="#ffffff" stroke="#059669" stroke-width="1.2"/>
-                <polygon points="112,92 168,92 152,122 128,122" fill="rgba(5, 150, 105, 0.12)"/>
-                <text x="140" y="110" font-family="'JetBrains Mono', monospace" font-size="6.2" fill="#059669" text-anchor="middle" font-weight="700">FTD 200%</text>
-                
-                <!-- Bid flow wave along base -->
-                <path d="M 20 136 Q 50 126 80 136 T 140 136 T 200 136 T 260 136" stroke="#1d63ff" stroke-width="1.2" fill="none" class="cad-flow-line"/>
-                
-                <!-- Animated conversion particle -->
-                <circle cx="140" cy="24" r="2.2" fill="#1d63ff">
-                  <animate attributeName="cy" values="20;118" dur="1.8s" repeatCount="indefinite"/>
-                  <animate attributeName="opacity" values="1;0.2" dur="1.8s" repeatCount="indefinite"/>
+                <path d="M 12 92.5 H 268 M 140 10 V 175" stroke="#e2e8f0" stroke-width="0.8" stroke-dasharray="2 4"/>
+                <path d="M 18 14 H 24 M 21 11 V 17 M 256 14 H 262 M 259 11 V 17 M 18 168 H 24 M 21 165 V 171 M 256 168 H 262 M 259 165 V 171" stroke="#94a3b8" stroke-width="0.8"/>
+
+                <!-- TOP ROW: 4 MULTI-CHANNEL PROGRAMMATIC INGESTION PORTS -->
+                <g class="cad-channel-row">
+                  <!-- Port 1: DV360 -->
+                  <rect x="14" y="10" width="56" height="18" fill="#ffffff" stroke="#090d16" stroke-width="1"/>
+                  <rect x="16" y="12" width="52" height="14" fill="#f8fafc"/>
+                  <text x="42" y="22" font-family="'JetBrains Mono', monospace" font-size="5.2" fill="#090d16" text-anchor="middle" font-weight="700">DV360 DSP</text>
+
+                  <!-- Port 2: META CAPI -->
+                  <rect x="76" y="10" width="58" height="18" fill="#ffffff" stroke="#1d63ff" stroke-width="1"/>
+                  <rect x="78" y="12" width="54" height="14" fill="#f0f6ff"/>
+                  <text x="105" y="22" font-family="'JetBrains Mono', monospace" font-size="5.2" fill="#1d63ff" text-anchor="middle" font-weight="700">META CAPI</text>
+
+                  <!-- Port 3: GOOGLE ADS -->
+                  <rect x="140" y="10" width="62" height="18" fill="#ffffff" stroke="#1d63ff" stroke-width="1"/>
+                  <rect x="142" y="12" width="58" height="14" fill="#f0f6ff"/>
+                  <text x="171" y="22" font-family="'JetBrains Mono', monospace" font-size="5.2" fill="#1d63ff" text-anchor="middle" font-weight="700">GOOGLE PMAX</text>
+
+                  <!-- Port 4: TIKTOK -->
+                  <rect x="208" y="10" width="58" height="18" fill="#ffffff" stroke="#090d16" stroke-width="1"/>
+                  <rect x="210" y="12" width="54" height="14" fill="#f8fafc"/>
+                  <text x="237" y="22" font-family="'JetBrains Mono', monospace" font-size="5.2" fill="#090d16" text-anchor="middle" font-weight="700">TIKTOK DSP</text>
+
+                  <!-- Feeder lines into Funnel Tier 1 -->
+                  <path d="M 42 28 L 56 38 M 105 28 L 105 38 M 171 28 L 171 38 M 237 28 L 224 38" stroke="#93c5fd" stroke-width="1" stroke-dasharray="2 2"/>
+                </g>
+
+                <!-- TIER 1: GLOBAL DEMAND CAPTURE (IMPRESSIONS & REACH) -->
+                <polygon points="36,38 244,38 220,70 60,70" fill="#ffffff" stroke="#090d16" stroke-width="1.3"/>
+                <polygon points="36,38 244,38 220,70 60,70" fill="rgba(29, 99, 255, 0.04)"/>
+                <!-- Internal scanline & hatching -->
+                <line x1="48" y1="54" x2="232" y2="54" stroke="#e2e8f0" stroke-width="0.8" stroke-dasharray="3 3"/>
+                <text x="140" y="52" font-family="'JetBrains Mono', monospace" font-size="6.5" fill="#090d16" text-anchor="middle" font-weight="700">TIER 1: DEMAND CAPTURE (14.2M IMP)</text>
+                <text x="140" y="62" font-family="'JetBrains Mono', monospace" font-size="5" fill="#64748b" text-anchor="middle">CPM: $3.80 • REACH: 100% • GEO: GLOBAL</text>
+                <!-- Left dimension bracket -->
+                <path d="M 28 38 H 32 V 70 H 28" stroke="#94a3b8" stroke-width="0.8" fill="none"/>
+                <text x="24" y="56" font-family="'JetBrains Mono', monospace" font-size="4.8" fill="#94a3b8" text-anchor="end">TOP FUNNEL</text>
+
+                <!-- TIER 2: CPA CONVERSION & SEGMENTATION -->
+                <polygon points="66,75 214,75 190,107 90,107" fill="#ffffff" stroke="#1d63ff" stroke-width="1.4"/>
+                <polygon points="66,75 214,75 190,107 90,107" fill="rgba(29, 99, 255, 0.08)"/>
+                <!-- Split segmentation boundary line -->
+                <line x1="140" y1="75" x2="140" y2="107" stroke="#93c5fd" stroke-width="0.9" stroke-dasharray="2 2"/>
+                <text x="140" y="89" font-family="'JetBrains Mono', monospace" font-size="6.2" fill="#1d63ff" text-anchor="middle" font-weight="700">TIER 2: CPA CONVERSION (680k CLK)</text>
+                <text x="103" y="100" font-family="'JetBrains Mono', monospace" font-size="4.8" fill="#1d63ff" text-anchor="middle" font-weight="600">PRO TRADER: 62%</text>
+                <text x="177" y="100" font-family="'JetBrains Mono', monospace" font-size="4.8" fill="#0284c7" text-anchor="middle" font-weight="600">RETAIL: 38%</text>
+                <!-- Right dimension callout -->
+                <path d="M 220 75 H 216 V 107 H 220" stroke="#059669" stroke-width="0.8" fill="none"/>
+                <text x="224" y="93" font-family="'JetBrains Mono', monospace" font-size="4.8" fill="#059669" text-anchor="start" font-weight="700">Δ -35% CPA</text>
+
+                <!-- TIER 3: FTD 200% ROI & REVENUE -->
+                <polygon points="96,112 184,112 166,144 114,144" fill="#ffffff" stroke="#059669" stroke-width="1.5"/>
+                <polygon points="96,112 184,112 166,144 114,144" fill="rgba(5, 150, 105, 0.12)"/>
+                <text x="140" y="126" font-family="'JetBrains Mono', monospace" font-size="6.5" fill="#059669" text-anchor="middle" font-weight="800">TIER 3: FTD 200% ROAS</text>
+                <text x="140" y="137" font-family="'JetBrains Mono', monospace" font-size="5" fill="#047857" text-anchor="middle" font-weight="600">ROAS: 4.82x • LTV: $248 • CAC: $14.20</text>
+
+                <!-- REAL-TIME BIDDING (RTB) AUCTION OSCILLATOR WAVE -->
+                <g class="cad-rtb-oscillator">
+                  <!-- Wave grid baseline -->
+                  <line x1="16" y1="164" x2="264" y2="164" stroke="#cbd5e1" stroke-width="0.8" stroke-dasharray="2 3"/>
+                  <!-- Sine Auction Bid Density Wave -->
+                  <path d="M 16 164 Q 40 150 64 164 T 112 164 T 160 164 T 208 164 T 264 164" stroke="#1d63ff" stroke-width="1.4" fill="none" class="cad-flow-line"/>
+                  <!-- Secondary EMA Wave -->
+                  <path d="M 16 168 Q 48 158 80 168 T 144 168 T 208 168 T 264 168" stroke="#059669" stroke-width="1" stroke-dasharray="2 2" fill="none"/>
+                  
+                  <text x="20" y="178" font-family="'JetBrains Mono', monospace" font-size="5" fill="#1d63ff" font-weight="700">RTB BIDDER: 2,400 QPS</text>
+                  <text x="110" y="178" font-family="'JetBrains Mono', monospace" font-size="4.8" fill="#64748b">P99: 8ms • ARBITRAGE: AUTO</text>
+
+                  <!-- Mini Radar Reticle on Right -->
+                  <circle cx="245" cy="164" r="10" stroke="#1d63ff" stroke-width="0.8" fill="none"/>
+                  <circle cx="245" cy="164" r="4" stroke="#38bdf8" stroke-width="0.6" stroke-dasharray="2 2" fill="none"/>
+                  <line x1="235" y1="164" x2="255" y2="164" stroke="#1d63ff" stroke-width="0.6"/>
+                  <line x1="245" y1="154" x2="245" y2="174" stroke="#1d63ff" stroke-width="0.6"/>
+                  <circle cx="245" cy="164" r="1.8" fill="#059669"/>
+                </g>
+
+                <!-- Cascading animated conversion particle through the funnel -->
+                <circle cx="140" cy="38" r="2.4" fill="#1d63ff">
+                  <animate attributeName="cy" values="32;148" dur="1.7s" repeatCount="indefinite"/>
+                  <animate attributeName="opacity" values="1;0.2" dur="1.7s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="105" cy="24" r="1.8" fill="#38bdf8">
+                  <animate attributeName="cy" values="24;70" dur="1.4s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="171" cy="24" r="1.8" fill="#059669">
+                  <animate attributeName="cy" values="24;70" dur="1.5s" repeatCount="indefinite"/>
                 </circle>
               </svg>
             </div>
             <div class="cad-footer-strip">
-              <span>BID: 2.4k/s</span>
-              <span class="cad-status-active">● CPA: -35%</span>
+              <span>BID: 2.4k/s • eCPA: $14.20</span>
+              <span class="cad-status-active">● AUTO ARBITRAGE</span>
             </div>
           </div>
           <div class="pillar-content">
@@ -483,46 +628,133 @@
           <div class="pillar-cad-viewport">
             <div class="cad-header-strip">
               <span class="cad-id">FINTECH // ATTR_SHIELD</span>
-              <span class="cad-metric">REDTRACK</span>
+              <span class="cad-metric">REDTRACK // VOLUUM</span>
             </div>
             <div class="cad-canvas-area">
-              <svg class="cad-svg" viewBox="0 0 280 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- Alignment crosshairs -->
-                <path d="M 15 75 H 265 M 140 15 V 135" stroke="#e2e8f0" stroke-width="0.8" stroke-dasharray="2 4"/>
-                
-                <!-- Candlesticks with wicks -->
-                <g class="cad-candle-1">
-                  <line x1="52" y1="35" x2="52" y2="115" stroke="#64748b" stroke-width="1"/>
-                  <rect x="47" y="52" width="10" height="38" fill="#ffffff" stroke="#059669" stroke-width="1.2"/>
+              <svg class="cad-svg" viewBox="0 0 280 185" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Alignment crosshairs & datum grid -->
+                <path d="M 12 92.5 H 268 M 140 10 V 175" stroke="#e2e8f0" stroke-width="0.8" stroke-dasharray="2 4"/>
+                <path d="M 18 14 H 24 M 21 11 V 17 M 256 14 H 262 M 259 11 V 17 M 18 168 H 24 M 21 165 V 171 M 256 168 H 262 M 259 165 V 171" stroke="#94a3b8" stroke-width="0.8"/>
+
+                <!-- TOP TICKER BAR: PAIR & ATTRIBUTION TELEMETRY -->
+                <text x="18" y="16" font-family="'JetBrains Mono', monospace" font-size="5" fill="#64748b" font-weight="600">EUR/USD 1.0842 • SPREAD: 0.1 PIP</text>
+                <text x="148" y="16" font-family="'JetBrains Mono', monospace" font-size="5" fill="#059669" text-anchor="end" font-weight="700">MTA: MULTI-TOUCH</text>
+
+                <!-- 7 FINANCIAL CANDLESTICKS WITH WICKS (X=20 to X=150) -->
+                <!-- Candle 1: Bullish Green -->
+                <g class="cad-candle">
+                  <line x1="26" y1="58" x2="26" y2="120" stroke="#94a3b8" stroke-width="0.9"/>
+                  <rect x="22" y="74" width="8" height="34" fill="#ffffff" stroke="#059669" stroke-width="1.2"/>
+                  <rect x="23" y="75" width="6" height="32" fill="rgba(5, 150, 105, 0.15)"/>
                 </g>
-                <g class="cad-candle-2">
-                  <line x1="82" y1="24" x2="82" y2="124" stroke="#64748b" stroke-width="1"/>
-                  <rect x="77" y="38" width="10" height="56" fill="#ffffff" stroke="#1d63ff" stroke-width="1.2"/>
+                <!-- Candle 2: Bullish Blue Breakout -->
+                <g class="cad-candle">
+                  <line x1="44" y1="44" x2="44" y2="128" stroke="#94a3b8" stroke-width="0.9"/>
+                  <rect x="40" y="56" width="8" height="52" fill="#ffffff" stroke="#1d63ff" stroke-width="1.2"/>
+                  <rect x="41" y="57" width="6" height="50" fill="rgba(29, 99, 255, 0.15)"/>
                 </g>
-                <g class="cad-candle-3">
-                  <line x1="112" y1="46" x2="112" y2="114" stroke="#64748b" stroke-width="1"/>
-                  <rect x="107" y="62" width="10" height="34" fill="#ffffff" stroke="#059669" stroke-width="1.2"/>
+                <!-- Candle 3: Retracement Green -->
+                <g class="cad-candle">
+                  <line x1="62" y1="62" x2="62" y2="114" stroke="#94a3b8" stroke-width="0.9"/>
+                  <rect x="58" y="72" width="8" height="26" fill="#ffffff" stroke="#059669" stroke-width="1.2"/>
+                  <rect x="59" y="73" width="6" height="24" fill="rgba(5, 150, 105, 0.15)"/>
                 </g>
-                <g class="cad-candle-4">
-                  <line x1="142" y1="28" x2="142" y2="108" stroke="#64748b" stroke-width="1"/>
-                  <rect x="137" y="44" width="10" height="42" fill="#ffffff" stroke="#1d63ff" stroke-width="1.2"/>
+                <!-- Candle 4: Strong Surge Blue -->
+                <g class="cad-candle">
+                  <line x1="80" y1="32" x2="80" y2="122" stroke="#94a3b8" stroke-width="0.9"/>
+                  <rect x="76" y="44" width="8" height="60" fill="#ffffff" stroke="#1d63ff" stroke-width="1.2"/>
+                  <rect x="77" y="45" width="6" height="58" fill="rgba(29, 99, 255, 0.15)"/>
                 </g>
-                
-                <!-- Moving average / attribution trend curve -->
-                <path d="M 25 96 L 52 52 L 82 38 L 112 62 L 142 44 L 186 36" fill="none" stroke="#1d63ff" stroke-width="1.5" class="cad-flow-line"/>
-                
-                <!-- Compliance / Cloaking Shield Node -->
-                <g transform="translate(186, 30)">
-                  <polygon points="26,8 48,16 48,46 26,64 4,46 4,16" fill="#ffffff" stroke="#090d16" stroke-width="1.2"/>
-                  <polygon points="26,14 42,21 42,42 26,56 10,42 10,21" fill="rgba(29, 99, 255, 0.08)" stroke="#1d63ff" stroke-width="0.8" stroke-dasharray="2 2"/>
-                  <path d="M 19 32 L 24 37 L 34 26" stroke="#059669" stroke-width="1.6" fill="none"/>
-                  <text x="26" y="78" font-family="'JetBrains Mono', monospace" font-size="5.5" fill="#1d63ff" text-anchor="middle" font-weight="700">CLOAK_SEC</text>
+                <!-- Candle 5: Consolidation Green -->
+                <g class="cad-candle">
+                  <line x1="98" y1="46" x2="98" y2="108" stroke="#94a3b8" stroke-width="0.9"/>
+                  <rect x="94" y="58" width="8" height="30" fill="#ffffff" stroke="#059669" stroke-width="1.2"/>
+                  <rect x="95" y="59" width="6" height="28" fill="rgba(5, 150, 105, 0.15)"/>
                 </g>
+                <!-- Candle 6: High Volume Surge Blue -->
+                <g class="cad-candle">
+                  <line x1="116" y1="22" x2="116" y2="118" stroke="#94a3b8" stroke-width="0.9"/>
+                  <rect x="112" y="32" width="8" height="64" fill="#ffffff" stroke="#1d63ff" stroke-width="1.3"/>
+                  <rect x="113" y="33" width="6" height="62" fill="rgba(29, 99, 255, 0.2)"/>
+                </g>
+                <!-- Candle 7: Bullish Continuation Green -->
+                <g class="cad-candle">
+                  <line x1="134" y1="30" x2="134" y2="98" stroke="#94a3b8" stroke-width="0.9"/>
+                  <rect x="130" y="42" width="8" height="36" fill="#ffffff" stroke="#059669" stroke-width="1.2"/>
+                  <rect x="131" y="43" width="6" height="34" fill="rgba(5, 150, 105, 0.15)"/>
+                </g>
+
+                <!-- DUAL EXPONENTIAL MOVING AVERAGES (EMA 9 & EMA 21) -->
+                <!-- Fast EMA 9 (Vibrant Blue Curve) -->
+                <path d="M 18 108 Q 44 82 80 56 T 116 38 T 148 30" fill="none" stroke="#1d63ff" stroke-width="1.6" class="cad-flow-line"/>
+                <!-- Slow EMA 21 (Dashed Emerald Baseline) -->
+                <path d="M 18 118 Q 44 100 80 78 T 116 58 T 148 48" fill="none" stroke="#059669" stroke-width="1.1" stroke-dasharray="3 3"/>
+
+                <!-- VOLUME HISTOGRAM BARS AT BASE (y=136 to y=152) -->
+                <rect x="23" y="144" width="6" height="10" fill="#cbd5e1"/>
+                <rect x="41" y="136" width="6" height="18" fill="#93c5fd"/>
+                <rect x="59" y="146" width="6" height="8" fill="#cbd5e1"/>
+                <rect x="77" y="134" width="6" height="20" fill="#93c5fd"/>
+                <rect x="95" y="142" width="6" height="12" fill="#cbd5e1"/>
+                <rect x="113" y="130" width="6" height="24" fill="#3b82f6"/>
+                <rect x="131" y="138" width="6" height="16" fill="#10b981"/>
+                <text x="18" y="162" font-family="'JetBrains Mono', monospace" font-size="4.8" fill="#64748b">VOL: $2.8M • 24H LIQUIDITY</text>
+
+                <!-- MULTI-TOUCH ATTRIBUTION TOUCHPOINT NODES -->
+                <!-- Touchpoint 1: Search -->
+                <circle cx="44" cy="56" r="3.5" fill="#ffffff" stroke="#1d63ff" stroke-width="1.3"/>
+                <text x="44" y="49" font-family="'JetBrains Mono', monospace" font-size="4.6" fill="#1d63ff" text-anchor="middle" font-weight="700">T1: 40%</text>
+                <!-- Touchpoint 2: Portal -->
+                <circle cx="80" cy="44" r="3.5" fill="#ffffff" stroke="#059669" stroke-width="1.3"/>
+                <text x="80" y="37" font-family="'JetBrains Mono', monospace" font-size="4.6" fill="#059669" text-anchor="middle" font-weight="700">T2: 25%</text>
+                <!-- Touchpoint 3: Retarget -->
+                <circle cx="116" cy="32" r="3.5" fill="#ffffff" stroke="#1d63ff" stroke-width="1.3"/>
+                <text x="116" y="25" font-family="'JetBrains Mono', monospace" font-size="4.6" fill="#1d63ff" text-anchor="middle" font-weight="700">T3: 35%</text>
+
+                <!-- Connector Vector from T3 to Anti-Detect Shield -->
+                <path d="M 134 42 L 180 56" stroke="#1d63ff" stroke-width="1.2" stroke-dasharray="2 3"/>
+
+                <!-- CYBERNETIC CLOAKING & ANTI-DETECT VAULT (RIGHT HALF) -->
+                <!-- Rotating concentric radar ring around shield -->
+                <circle cx="218" cy="58" r="25" stroke="#38bdf8" stroke-width="0.8" stroke-dasharray="3 4" fill="none">
+                  <animateTransform attributeName="transform" type="rotate" from="0 218 58" to="360 218 58" dur="8s" repeatCount="indefinite"/>
+                </circle>
+                <!-- Outer Octagonal Shield -->
+                <polygon points="218,28 242,40 242,74 218,92 194,74 194,40" fill="#ffffff" stroke="#090d16" stroke-width="1.5"/>
+                <polygon points="218,33 237,43 237,70 218,84 199,70 199,43" fill="rgba(29, 99, 255, 0.08)" stroke="#1d63ff" stroke-width="0.8" stroke-dasharray="2 2"/>
+                <!-- Verified Green Checkmark -->
+                <path d="M 210 58 L 216 64 L 227 51" stroke="#059669" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <text x="218" y="78" font-family="'JetBrains Mono', monospace" font-size="5.2" fill="#1d63ff" text-anchor="middle" font-weight="800">CLOAK_SEC</text>
+
+                <!-- DYNAMIC TRAFFIC REDIRECTION SPLITTER CONDUITS -->
+                <!-- Conduit A: Review / G-Bot Traffic -->
+                <path d="M 218 92 V 104 H 194 V 116 H 182" stroke="#94a3b8" stroke-width="1" fill="none"/>
+                <rect x="174" y="116" width="94" height="18" fill="#ffffff" stroke="#94a3b8" stroke-width="0.9"/>
+                <rect x="176" y="118" width="90" height="14" fill="#f8fafc"/>
+                <circle cx="182" cy="125" r="2" fill="#94a3b8"/>
+                <text x="223" y="128" font-family="'JetBrains Mono', monospace" font-size="4.8" fill="#64748b" text-anchor="middle" font-weight="600">G-BOT: WHITE PAGE (200)</text>
+
+                <!-- Conduit B: Real Trader Conversion -->
+                <path d="M 218 92 V 138 H 194 V 148 H 182" stroke="#059669" stroke-width="1.2" fill="none"/>
+                <rect x="174" y="148" width="94" height="22" fill="#ffffff" stroke="#059669" stroke-width="1.3"/>
+                <rect x="176" y="150" width="90" height="18" fill="#ecfdf5"/>
+                <circle cx="182" cy="159" r="2" fill="#059669"/>
+                <text x="223" y="158" font-family="'JetBrains Mono', monospace" font-size="5" fill="#059669" text-anchor="middle" font-weight="700">REAL TRADER: MONEY PAGE</text>
+                <text x="223" y="166" font-family="'JetBrains Mono', monospace" font-size="4.5" fill="#047857" text-anchor="middle">FTD CONVERSION // ACTIVE</text>
+
+                <!-- Animated attribution packet moving from T1 to T3 to Shield -->
+                <circle r="2.2" fill="#1d63ff">
+                  <animateMotion path="M 18 108 Q 44 82 80 56 T 116 38 T 148 30 L 194 50" dur="2.4s" repeatCount="indefinite"/>
+                </circle>
+                <!-- Animated pulse entering Money page -->
+                <circle cx="182" cy="159" r="2" fill="#059669">
+                  <animate attributeName="r" values="1.5;3;1.5" dur="1.2s" repeatCount="indefinite"/>
+                </circle>
               </svg>
             </div>
             <div class="cad-footer-strip">
-              <span>CLOAK: ACTIVE</span>
-              <span class="cad-status-active">● GA4 / VOL</span>
+              <span>CLOAK: ACTIVE • FINGERPRINT: 99.8%</span>
+              <span class="cad-status-active">● GA4 / VOLUUM MTA</span>
             </div>
           </div>
           <div class="pillar-content">

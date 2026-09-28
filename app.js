@@ -1000,8 +1000,8 @@ function initCadGlobe() {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     centerX = width / 2;
-    centerY = 80;
-    radius = Math.min(width, height) * 0.37;
+    centerY = height / 2;
+    radius = Math.min(width, height) * 0.38;
   }
 
   window.addEventListener('resize', resize);
