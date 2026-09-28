@@ -202,8 +202,8 @@ body.admin-mode .admin-add-btn {
    ======================================================== */
 .photo-wrapper {
   position: relative;
-  width: 240px;
-  align-self: stretch;
+  width: 210px;
+  height: 250px;
   background: #f1f5f9;
   border: 1px solid var(--border-medium);
   overflow: hidden;
@@ -296,7 +296,7 @@ body.admin-mode .photo-wrapper:hover .photo-upload-overlay {
   color: var(--text-muted);
   padding: 2px 7px;
   letter-spacing: 0.05em;
-  z-index: 6;
+  z-index: 3;
   box-shadow: var(--shadow-sm);
 }
 
@@ -745,7 +745,7 @@ section {
 .hero-top-row {
   display: flex;
   gap: 40px;
-  align-items: stretch;
+  align-items: flex-start;
   margin-bottom: 36px;
 }
 
@@ -1926,7 +1926,6 @@ footer.site-footer {
   .photo-wrapper {
     width: 180px;
     height: 220px;
-    align-self: flex-start;
   }
   .metric-grid {
     grid-template-columns: repeat(2, 1fr);
