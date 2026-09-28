@@ -23,6 +23,13 @@ window.addEventListener('DOMContentLoaded', () => {
   ['adam_resume_edited_content_v1', 'adam_resume_edited_content_v2', 'adam_resume_skills_clouds_v1', 'adam_resume_skills_clouds_v2'].forEach(k => {
     if (localStorage.getItem(k)) localStorage.removeItem(k);
   });
+
+  // Self-heal: if v3 has any residual shifted skill names inside education/contact keys, reset to authentic defaults
+  const v3Data = localStorage.getItem(STORAGE_KEY_DATA);
+  if (v3Data && (v3Data.includes('ANTIGRAVITY') || v3Data.includes('OBSIDIAN') || v3Data.includes('COPILOT') || v3Data.includes('Dataverse'))) {
+    localStorage.removeItem(STORAGE_KEY_DATA);
+    localStorage.removeItem('adam_resume_skills_clouds_v3');
+  }
   // Initialize AI/Tech Line Canvas Background
   initTechBackgroundCanvas();
 
