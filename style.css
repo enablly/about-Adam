@@ -296,7 +296,7 @@ body.admin-mode .photo-wrapper:hover .photo-upload-overlay {
   color: var(--text-muted);
   padding: 2px 7px;
   letter-spacing: 0.05em;
-  z-index: 3;
+  z-index: 6;
   box-shadow: var(--shadow-sm);
 }
 
