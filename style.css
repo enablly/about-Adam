@@ -1965,6 +1965,44 @@ body.admin-mode .matrix-card .tag[data-editable="true"]:focus {
   font-family: var(--mono);
   font-size: 0.74rem;
   color: var(--text-faint);
+  line-height: 1.5;
+}
+
+.cert-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.cert-filter-btn {
+  background: #f8fafc;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  padding: 5px 12px;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  border-radius: 0;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cert-filter-btn:hover,
+.cert-filter-btn.active {
+  background: var(--blue-glow);
+  border-color: var(--blue-core);
+  color: var(--blue-core);
+  font-weight: 600;
+}
+
+.cert-records-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.cert-record {
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 /* ========================================================

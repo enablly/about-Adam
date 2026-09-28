@@ -8,7 +8,7 @@
 // ----------------------------------------------------
 let isAdmin = false;
 const STORAGE_KEY_AUTH = 'adam_resume_admin_session';
-const STORAGE_KEY_DATA = 'adam_resume_edited_content_v3';
+const STORAGE_KEY_DATA = 'adam_resume_edited_content_v4';
 const STORAGE_KEY_PHOTO = 'adam_resume_custom_photo_v1';
 let toastTimer = null;
 
@@ -19,17 +19,10 @@ const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/20
 // 2. INITIALIZATION
 // ----------------------------------------------------
 window.addEventListener('DOMContentLoaded', () => {
-  // Immediately purge corrupted legacy v1/v2 storage data
-  ['adam_resume_edited_content_v1', 'adam_resume_edited_content_v2', 'adam_resume_skills_clouds_v1', 'adam_resume_skills_clouds_v2'].forEach(k => {
+  // Purge legacy storage versions to display fresh, authentic resume credentials
+  ['adam_resume_edited_content_v1', 'adam_resume_edited_content_v2', 'adam_resume_edited_content_v3', 'adam_resume_skills_clouds_v1', 'adam_resume_skills_clouds_v2'].forEach(k => {
     if (localStorage.getItem(k)) localStorage.removeItem(k);
   });
-
-  // Self-heal: if v3 has any residual shifted skill names inside education/contact keys, reset to authentic defaults
-  const v3Data = localStorage.getItem(STORAGE_KEY_DATA);
-  if (v3Data && (v3Data.includes('ANTIGRAVITY') || v3Data.includes('OBSIDIAN') || v3Data.includes('COPILOT') || v3Data.includes('Dataverse'))) {
-    localStorage.removeItem(STORAGE_KEY_DATA);
-    localStorage.removeItem('adam_resume_skills_clouds_v3');
-  }
   // Initialize AI/Tech Line Canvas Background
   initTechBackgroundCanvas();
 
@@ -691,6 +684,21 @@ function filterJobs(category, btn) {
       card.style.display = 'block';
     } else {
       card.style.display = 'none';
+    }
+  });
+}
+
+function filterCerts(category, btn) {
+  document.querySelectorAll('.cert-filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  const records = document.querySelectorAll('.cert-record');
+  records.forEach(rec => {
+    const cat = rec.getAttribute('data-cert-cat');
+    if (category === 'all' || cat === category) {
+      rec.style.display = 'block';
+    } else {
+      rec.style.display = 'none';
     }
   });
 }

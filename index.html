@@ -2197,30 +2197,113 @@
 
         <!-- PROFESSIONAL CERTIFICATIONS -->
         <div class="info-pane">
-          <div class="info-pane-title" id="eduCertTitle" data-editable="true" data-edit-key="edu-cert-title">Professional Certifications</div>
+          <div class="info-pane-title" id="eduCertTitle" data-editable="true" data-edit-key="edu-cert-title">Professional Certifications & Accreditations (14)</div>
           
-          <div class="info-record">
-            <div class="record-degree" id="certDegree1" data-editable="true" data-edit-key="cert-degree-1">What Is Generative AI</div>
-            <div class="record-institution" id="certInst1" data-editable="true" data-edit-key="cert-inst-1">LinkedIn Learning / Microsoft</div>
-            <div class="record-dates" id="certDates1" data-editable="true" data-edit-key="cert-dates-1">AI Prompting & Large Language Model Architecture</div>
+          <div class="cert-filter-bar">
+            <button class="cert-filter-btn active" onclick="filterCerts('all', this)">All (14)</button>
+            <button class="cert-filter-btn" onclick="filterCerts('ai', this)">Agentic AI & LLMs (6)</button>
+            <button class="cert-filter-btn" onclick="filterCerts('leadership', this)">PM & Leadership (4)</button>
+            <button class="cert-filter-btn" onclick="filterCerts('marketing-cloud', this)">Cloud & Ads (4)</button>
           </div>
 
-          <div class="info-record">
-            <div class="record-degree" id="certDegree2" data-editable="true" data-edit-key="cert-degree-2">Project Management Institute (PMI) - Accountability</div>
-            <div class="record-institution" id="certInst2" data-editable="true" data-edit-key="cert-inst-2">Project Management Institute (PMI)</div>
-            <div class="record-dates" id="certDates2" data-editable="true" data-edit-key="cert-dates-2">Delivering Results Effectively</div>
-          </div>
+          <div class="cert-records-container" id="certRecordsContainer">
+            <!-- 1. Governing Agentic AI Systems -->
+            <div class="info-record cert-record" data-cert-cat="ai">
+              <div class="record-degree" id="certDegree1" data-editable="true" data-edit-key="cert-degree-1">Governing Agentic AI Systems</div>
+              <div class="record-institution" id="certInst1" data-editable="true" data-edit-key="cert-inst-1">All Tech Is Human · Issued Jun 2026</div>
+              <div class="record-dates" id="certDates1" data-editable="true" data-edit-key="cert-dates-1">Credential ID: d2a7b53068d231b00687705e460df5b4e58fae9037b0fe98300db5c68d4681af<br>Skills: Generative AI for Services Professionals, Artificial Intelligence (AI), Agentic Oversight</div>
+            </div>
 
-          <div class="info-record">
-            <div class="record-degree" id="certDegree3" data-editable="true" data-edit-key="cert-degree-3">Google Ads Display Certification</div>
-            <div class="record-institution" id="certInst3" data-editable="true" data-edit-key="cert-inst-3">Google Digital Academy (Skillshop)</div>
-            <div class="record-dates" id="certDates3" data-editable="true" data-edit-key="cert-dates-3">Display & Programmatic Advertising</div>
-          </div>
+            <!-- 2. Build AI Agents and Automate Workflows with n8n -->
+            <div class="info-record cert-record" data-cert-cat="ai">
+              <div class="record-degree" id="certDegree2" data-editable="true" data-edit-key="cert-degree-2">Build AI Agents and Automate Workflows with n8n</div>
+              <div class="record-institution" id="certInst2" data-editable="true" data-edit-key="cert-inst-2">LinkedIn · Issued Jun 2026</div>
+              <div class="record-dates" id="certDates2" data-editable="true" data-edit-key="cert-dates-2">Skills: n8n, AI Productivity, Workflow Automation, AI Agents</div>
+            </div>
 
-          <div class="info-record">
-            <div class="record-degree" id="certDegree4" data-editable="true" data-edit-key="cert-degree-4">Google App Search Certification</div>
-            <div class="record-institution" id="certInst4" data-editable="true" data-edit-key="cert-inst-4">Google Digital Academy (Skillshop)</div>
-            <div class="record-dates" id="certDates4" data-editable="true" data-edit-key="cert-dates-4">App Campaign Scaling & SEM</div>
+            <!-- 3. AI Agents for Everyday Professionals -->
+            <div class="info-record cert-record" data-cert-cat="ai">
+              <div class="record-degree" id="certDegree3" data-editable="true" data-edit-key="cert-degree-3">AI Agents for Everyday Professionals</div>
+              <div class="record-institution" id="certInst3" data-editable="true" data-edit-key="cert-inst-3">LinkedIn · Issued Jan 2026</div>
+              <div class="record-dates" id="certDates3" data-editable="true" data-edit-key="cert-dates-3">Credential ID: 79999af8bf1d28923d73ff0bc442c5e9345259e686365ca7904634827a834d53<br>Skills: Generative AI for Services Professionals, Artificial Intelligence (AI)</div>
+            </div>
+
+            <!-- 4. What Is Generative AI -->
+            <div class="info-record cert-record" data-cert-cat="ai">
+              <div class="record-degree" id="certDegree4" data-editable="true" data-edit-key="cert-degree-4">What Is Generative AI</div>
+              <div class="record-institution" id="certInst4" data-editable="true" data-edit-key="cert-inst-4">Microsoft · Issued Jun 2026</div>
+              <div class="record-dates" id="certDates4" data-editable="true" data-edit-key="cert-dates-4">Credential ID: 91b362c6baf92fe5e94c3903679c3ed4cb4f7bc708186d1eb82e3a9e6db691d6<br>Skills: Generative AI Tools, Generative AI Foundations & Prompting</div>
+            </div>
+
+            <!-- 5. Generative AI for Business Leaders (2025) -->
+            <div class="info-record cert-record" data-cert-cat="ai">
+              <div class="record-degree" id="certDegree5" data-editable="true" data-edit-key="cert-degree-5">Generative AI for Business Leaders (2025)</div>
+              <div class="record-institution" id="certInst5" data-editable="true" data-edit-key="cert-inst-5">Omer Cohen Creative Content · Issued Mar 2026</div>
+              <div class="record-dates" id="certDates5" data-editable="true" data-edit-key="cert-dates-5">Credential ID: 9d2ab340eacb08a498c7042ab1e7be0b5d52c1d4af59314a46751a276692ddba<br>Skills: Enterprise AI Strategy, Organizational Transformation & AI ROI</div>
+            </div>
+
+            <!-- 6. Understanding AI's Global Impact -->
+            <div class="info-record cert-record" data-cert-cat="ai">
+              <div class="record-degree" id="certDegree6" data-editable="true" data-edit-key="cert-degree-6">Understanding AI's Global Impact: Governance, Equity, and Responsibility</div>
+              <div class="record-institution" id="certInst6" data-editable="true" data-edit-key="cert-inst-6">LinkedIn · Issued Jun 2026</div>
+              <div class="record-dates" id="certDates6" data-editable="true" data-edit-key="cert-dates-6">Skills: Responsible AI, AI Policy, Governance, and Regulation</div>
+            </div>
+
+            <!-- 7. Microsoft Azure Essentials by Microsoft Press -->
+            <div class="info-record cert-record" data-cert-cat="marketing-cloud">
+              <div class="record-degree" id="certDegree7" data-editable="true" data-edit-key="cert-degree-7">Microsoft Azure Essentials by Microsoft Press</div>
+              <div class="record-institution" id="certInst7" data-editable="true" data-edit-key="cert-inst-7">Microsoft · Issued Jun 2026</div>
+              <div class="record-dates" id="certDates7" data-editable="true" data-edit-key="cert-dates-7">Skills: Microsoft Azure, Cloud Architecture, Cloud Compute & Storage</div>
+            </div>
+
+            <!-- 8. Project Management Institute (PMI) - Accountability -->
+            <div class="info-record cert-record" data-cert-cat="leadership">
+              <div class="record-degree" id="certDegree8" data-editable="true" data-edit-key="cert-degree-8">Project Management Institute (PMI) - Accountability</div>
+              <div class="record-institution" id="certInst8" data-editable="true" data-edit-key="cert-inst-8">Project Management Institute (PMI) · Issued Jun 2026</div>
+              <div class="record-dates" id="certDates8" data-editable="true" data-edit-key="cert-dates-8">Credential ID: a42ce236c34f325ecb34f36a308c676ad7703f0e261de5300a9a7d32fcf6ee47<br>Skills: Project Management, Holding Yourself Accountable (2017) by Dorie Clark</div>
+            </div>
+
+            <!-- 9. Project Management Institute (PMI) - Overcoming Complexity -->
+            <div class="info-record cert-record" data-cert-cat="leadership">
+              <div class="record-degree" id="certDegree9" data-editable="true" data-edit-key="cert-degree-9">Project Management Institute (PMI) - Overcoming Complexity</div>
+              <div class="record-institution" id="certInst9" data-editable="true" data-edit-key="cert-inst-9">Project Management Institute (PMI) · Issued Apr 2026</div>
+              <div class="record-dates" id="certDates9" data-editable="true" data-edit-key="cert-dates-9">Credential ID: 1497bf2ffa977843a643bac126604ffbcc0e70da78a1cabbd2dfa5c109a4be68<br>Skills: Strategic Project Management, Systems Complexity & Execution</div>
+            </div>
+
+            <!-- 10. Delivering Results Effectively -->
+            <div class="info-record cert-record" data-cert-cat="leadership">
+              <div class="record-degree" id="certDegree10" data-editable="true" data-edit-key="cert-degree-10">Delivering Results Effectively</div>
+              <div class="record-institution" id="certInst10" data-editable="true" data-edit-key="cert-inst-10">National Association of State Boards of Accountancy (NASBA) · Issued Feb 2026</div>
+              <div class="record-dates" id="certDates10" data-editable="true" data-edit-key="cert-dates-10">Credential ID: 498b92585ed9052c54f27338ff398044ba821b57360e44d7687fb581b12d798f<br>Skills: Project Management, High-Impact Delivery & Leadership Accountability</div>
+            </div>
+
+            <!-- 11. Build a Personal Learning Plan and Stick with It -->
+            <div class="info-record cert-record" data-cert-cat="leadership">
+              <div class="record-degree" id="certDegree11" data-editable="true" data-edit-key="cert-degree-11">Build a Personal Learning Plan and Stick with It</div>
+              <div class="record-institution" id="certInst11" data-editable="true" data-edit-key="cert-inst-11">LinkedIn · Issued Jun 2026</div>
+              <div class="record-dates" id="certDates11" data-editable="true" data-edit-key="cert-dates-11">Skills: Career Management, Employee Learning & Development, Building a Learning-Focused Culture</div>
+            </div>
+
+            <!-- 12. Google Ads Search Certification -->
+            <div class="info-record cert-record" data-cert-cat="marketing-cloud">
+              <div class="record-degree" id="certDegree12" data-editable="true" data-edit-key="cert-degree-12">Google Ads Search Certification</div>
+              <div class="record-institution" id="certInst12" data-editable="true" data-edit-key="cert-inst-12">Google · Issued Mar 2023</div>
+              <div class="record-dates" id="certDates12" data-editable="true" data-edit-key="cert-dates-12">Skills: Google Search Ads, Search Engine Marketing (SEM), Smart Bidding & Keyword Discovery</div>
+            </div>
+
+            <!-- 13. Google Ads Display Certification -->
+            <div class="info-record cert-record" data-cert-cat="marketing-cloud">
+              <div class="record-degree" id="certDegree13" data-editable="true" data-edit-key="cert-degree-13">Google Ads Display Certification</div>
+              <div class="record-institution" id="certInst13" data-editable="true" data-edit-key="cert-inst-13">Google · Issued Feb 2023</div>
+              <div class="record-dates" id="certDates13" data-editable="true" data-edit-key="cert-dates-13">Credential ID: 88522320<br>Skills: Google Ads Certification (Display, Search & Performance Max)</div>
+            </div>
+
+            <!-- 14. Google App Search -->
+            <div class="info-record cert-record" data-cert-cat="marketing-cloud">
+              <div class="record-degree" id="certDegree14" data-editable="true" data-edit-key="cert-degree-14">Google App Search</div>
+              <div class="record-institution" id="certInst14" data-editable="true" data-edit-key="cert-inst-14">Google · Issued Apr 2023</div>
+              <div class="record-dates" id="certDates14" data-editable="true" data-edit-key="cert-dates-14">Skills: Google App Ads, Mobile App Growth, User Acquisition & Deep-Linking</div>
+            </div>
           </div>
 
           <button class="admin-add-btn" onclick="addEducation(this)">+ Add Certification Entry</button>
