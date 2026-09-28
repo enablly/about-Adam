@@ -657,20 +657,78 @@ section {
 }
 
 /* ========================================================
-   HERO & EXECUTIVE DOSSIER
+   HERO & EXECUTIVE DOSSIER (WITH 3D ORBITAL GLOBE BACKDROP)
    ======================================================== */
+#overview {
+  position: relative;
+  overflow: visible;
+}
+
+.hero-globe-backdrop {
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  max-width: 1600px;
+  height: 820px;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+#heroGlobeCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hero-globe-hud {
+  position: absolute;
+  top: 14px;
+  left: 28px;
+  right: 28px;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.9;
+}
+
+.hero-globe-hud .hud-tag {
+  color: var(--blue-core);
+  font-weight: 700;
+  display: block;
+}
+
+.hero-globe-hud .hud-data {
+  color: var(--text-faint);
+  font-size: 0.62rem;
+  display: block;
+  margin-top: 2px;
+}
+
 .hero-panel {
-  background: #ffffff;
-  border: 1px solid var(--border-subtle);
+  background: rgba(255, 255, 255, 0.76);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--border-medium);
   padding: 48px;
   position: relative;
-  box-shadow: var(--shadow-card);
+  z-index: 2;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(29, 99, 255, 0.04);
   transition: border-color 0.25s, box-shadow 0.25s;
 }
 
 .hero-panel:hover {
-  border-color: var(--border-medium);
-  box-shadow: var(--shadow-hover);
+  border-color: var(--blue-core);
+  box-shadow: 0 14px 40px rgba(29, 99, 255, 0.08);
 }
 
 .hero-panel::before {

@@ -31,6 +31,9 @@ window.addEventListener('DOMContentLoaded', () => {
   // Initialize 3D Slanted Geometry Globe (Box 3 GEO.AEO)
   initCadGlobe();
 
+  // Initialize 3D Executive Hero Globe with Airline Traffic Radar
+  initHeroGlobe();
+
   // Restore custom photo if previously uploaded
   const savedPhoto = localStorage.getItem(STORAGE_KEY_PHOTO);
   const profileImg = document.getElementById('profileImage');
@@ -703,35 +706,11 @@ function showToast(msg) {
   }, 4000);
 }
 
+
 // ----------------------------------------------------
-// 12. 3D SLANTED SPINNING GEOMETRY GLOBE (CAD VIEWPORT)
+// SHARED 3D GEOMETRY CONTINENTS DATA (USED BY GLOBES)
 // ----------------------------------------------------
-function initCadGlobe() {
-  const canvas = document.getElementById('cadGlobeCanvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-
-  let width = 0;
-  let height = 0;
-  let dpr = window.devicePixelRatio || 1;
-  let radius = 62;
-  let centerX = 0;
-  let centerY = 0;
-
-  // Geometry configuration: Earth's 23.5° axial tilt and slight 14° camera elevation
-  const TILT_Z = -23.5 * (Math.PI / 180);
-  const PITCH_X = 14 * (Math.PI / 180);
-  const cosT = Math.cos(TILT_Z), sinT = Math.sin(TILT_Z);
-  const cosP = Math.cos(PITCH_X), sinP = Math.sin(PITCH_X);
-
-  let rotation = 1.85; // Initial rotation angle
-  let spinSpeed = 0.005; // Smooth slow stately rotation
-  let isDragging = false;
-  let lastMouseX = 0;
-  let isVisible = true;
-
-  // Raw geographic polygons for continents & major landmasses [lon, lat]
-  const rawContinents = [
+const rawContinents = [
     // North America
     [
       [-168, 65], [-160, 71], [-140, 69], [-125, 69], [-95, 73], [-82, 65], [-76, 58],
@@ -819,7 +798,7 @@ function initCadGlobe() {
   ];
 
   // Densify polygons so lines hug spherical curvature seamlessly
-  function densify(polygon, maxDeg = 6) {
+function densify(polygon, maxDeg = 6) {
     const pts = [];
     for (let i = 0; i < polygon.length; i++) {
       const p1 = polygon[i];
@@ -839,7 +818,37 @@ function initCadGlobe() {
     return pts;
   }
 
-  const continents = rawContinents.map(poly => densify(poly));
+const SHARED_CONTINENTS = rawContinents.map(poly => densify(poly));
+
+// ----------------------------------------------------
+// 12. 3D SLANTED SPINNING GEOMETRY GLOBE (CAD VIEWPORT)
+// ----------------------------------------------------
+function initCadGlobe() {
+  const canvas = document.getElementById('cadGlobeCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  let width = 0;
+  let height = 0;
+  let dpr = window.devicePixelRatio || 1;
+  let radius = 62;
+  let centerX = 0;
+  let centerY = 0;
+
+  // Geometry configuration: Earth's 23.5° axial tilt and slight 14° camera elevation
+  const TILT_Z = -23.5 * (Math.PI / 180);
+  const PITCH_X = 14 * (Math.PI / 180);
+  const cosT = Math.cos(TILT_Z), sinT = Math.sin(TILT_Z);
+  const cosP = Math.cos(PITCH_X), sinP = Math.sin(PITCH_X);
+
+  let rotation = 1.85; // Initial rotation angle
+  let spinSpeed = 0.005; // Smooth slow stately rotation
+  let isDragging = false;
+  let lastMouseX = 0;
+  let isVisible = true;
+
+  // Raw geographic polygons for continents & major landmasses [lon, lat]
+  const continents = SHARED_CONTINENTS;
 
   // Major Country / Regional Tech & Fintech Hubs with Pulsing Blue Dots
   const hubs = [
@@ -1336,3 +1345,540 @@ function initCadGlobe() {
 
   requestAnimationFrame(render);
 }
+
+
+
+
+// ----------------------------------------------------
+// 13. 3D EXECUTIVE HERO GLOBE (ROTATING SPHERE WITH AIRLINE TRAFFIC & PULSING HUBS)
+// ----------------------------------------------------
+function initHeroGlobe() {
+  const canvas = document.getElementById('heroGlobeCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  let width = 0;
+  let height = 0;
+  let dpr = window.devicePixelRatio || 1;
+  let radius = 640;
+  let centerX = 0;
+  let centerY = 0;
+
+  // Earth 23.5° physical axial tilt and 14° camera elevation pitch
+  const TILT_Z = -23.5 * (Math.PI / 180);
+  const PITCH_X = 14 * (Math.PI / 180);
+  const cosT = Math.cos(TILT_Z), sinT = Math.sin(TILT_Z);
+  const cosP = Math.cos(PITCH_X), sinP = Math.sin(PITCH_X);
+
+  let rotation = -1.65; // Stately initial angle oriented towards Southeast Asia / Indian Ocean
+  let spinSpeed = 0.0016; // Elegant planetary rotation
+  let isDragging = false;
+  let lastMouseX = 0;
+  let isVisible = true;
+
+  // World Flight Hubs [lat, lon]
+  const hubs = [
+    { name: 'Kuala Lumpur', code: 'KUL', lat: 3.14, lon: 101.69, primary: true, tag: 'MY // KUL [APAC HQ]' },
+    { name: 'Singapore', code: 'SIN', lat: 1.35, lon: 103.82, primary: false, tag: 'SG // SIN' },
+    { name: 'Tokyo', code: 'TYO', lat: 35.68, lon: 139.76, primary: false, tag: 'JP // HND' },
+    { name: 'Sydney', code: 'SYD', lat: -33.87, lon: 151.21, primary: false, tag: 'AU // SYD' },
+    { name: 'Melbourne', code: 'MEL', lat: -37.81, lon: 144.96, primary: false, tag: 'AU // MEL' },
+    { name: 'Dubai', code: 'DXB', lat: 25.20, lon: 55.27, primary: false, tag: 'AE // DXB' },
+    { name: 'London', code: 'LHR', lat: 51.51, lon: -0.13, primary: false, tag: 'UK // LHR' },
+    { name: 'Frankfurt', code: 'FRA', lat: 50.11, lon: 8.68, primary: false, tag: 'DE // FRA' },
+    { name: 'New York', code: 'JFK', lat: 40.71, lon: -74.01, primary: false, tag: 'US // JFK' },
+    { name: 'San Francisco', code: 'SFO', lat: 37.77, lon: -122.42, primary: false, tag: 'US // SFO' },
+    { name: 'Hong Kong', code: 'HKG', lat: 22.31, lon: 114.17, primary: false, tag: 'HK // HKG' },
+    { name: 'Johannesburg', code: 'JNB', lat: -26.20, lon: 28.04, primary: false, tag: 'ZA // JNB' }
+  ];
+
+  // Convert lat/lon to 3D unit cartesian vector
+  function latLonToVec(lat, lon) {
+    const rLat = lat * Math.PI / 180;
+    const rLon = lon * Math.PI / 180;
+    return [
+      Math.cos(rLat) * Math.sin(rLon),
+      Math.sin(rLat),
+      Math.cos(rLat) * Math.cos(rLon)
+    ];
+  }
+
+  hubs.forEach(h => {
+    h.vec = latLonToVec(h.lat, h.lon);
+  });
+
+  // Spherical Linear Interpolation (SLERP) for geodesic flight arcs
+  function slerpVec(v1, v2, t) {
+    let dot = v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
+    dot = Math.max(-1, Math.min(1, dot));
+    const theta = Math.acos(dot);
+    if (Math.abs(theta) < 0.0001 || Math.sin(theta) === 0) {
+      return v1;
+    }
+    const s1 = Math.sin((1 - t) * theta) / Math.sin(theta);
+    const s2 = Math.sin(t * theta) / Math.sin(theta);
+    return [
+      s1 * v1[0] + s2 * v2[0],
+      s1 * v1[1] + s2 * v2[1],
+      s1 * v1[2] + s2 * v2[2]
+    ];
+  }
+
+  // Active Flight Corridors & Real-Time Aircraft
+  const flightRoutes = [
+    { from: 0, to: 6, callsign: 'MH001', alt: 'FL380', speed: 0.038, offset: 0.12 }, // KUL -> LHR
+    { from: 0, to: 5, callsign: 'MH161', alt: 'FL390', speed: 0.042, offset: 0.65 }, // KUL -> DXB
+    { from: 0, to: 2, callsign: 'MH088', alt: 'FL410', speed: 0.045, offset: 0.35 }, // KUL -> TYO
+    { from: 0, to: 4, callsign: 'MH149', alt: 'FL390', speed: 0.040, offset: 0.50 }, // KUL -> MEL
+    { from: 1, to: 3, callsign: 'SQ221', alt: 'FL400', speed: 0.038, offset: 0.82 }, // SIN -> SYD
+    { from: 1, to: 6, callsign: 'SQ322', alt: 'FL380', speed: 0.033, offset: 0.40 }, // SIN -> LHR
+    { from: 5, to: 7, callsign: 'EK045', alt: 'FL370', speed: 0.046, offset: 0.20 }, // DXB -> FRA
+    { from: 5, to: 11, callsign: 'EK761', alt: 'FL390', speed: 0.044, offset: 0.60 }, // DXB -> JNB
+    { from: 6, to: 8, callsign: 'BA178', alt: 'FL380', speed: 0.036, offset: 0.10 }, // LHR -> JFK
+    { from: 8, to: 9, callsign: 'UA234', alt: 'FL360', speed: 0.052, offset: 0.75 }, // JFK -> SFO
+    { from: 9, to: 2, callsign: 'UA857', alt: 'FL390', speed: 0.030, offset: 0.28 }, // SFO -> TYO
+    { from: 10, to: 0, callsign: 'CX723', alt: 'FL380', speed: 0.048, offset: 0.48 }  // HKG -> KUL
+  ];
+
+  // 3D Spherical Coordinate Transformation
+  function transformVec3D(vec, R, altFrac, rot) {
+    const curR = R * (1 + altFrac);
+    // Rotate around Earth polar Y axis
+    const sinR = Math.sin(rot), cosR = Math.cos(rot);
+    const x0 = curR * (vec[0] * cosR + vec[2] * sinR);
+    const y0 = curR * vec[1];
+    const z0 = curR * (-vec[0] * sinR + vec[2] * cosR);
+
+    // 1. Slanted Axis Tilt (around Z axis)
+    const x1 = x0 * cosT - y0 * sinT;
+    const y1 = x0 * sinT + y0 * cosT;
+    const z1 = z0;
+
+    // 2. Camera Elevation Pitch (around X axis)
+    const x2 = x1;
+    const y2 = y1 * cosP - z1 * sinP;
+    const z2 = y1 * sinP + z1 * cosP;
+
+    return {
+      x: centerX + x2,
+      y: centerY - y2,
+      z: z2,
+      rawX: x2,
+      rawY: y2
+    };
+  }
+
+  function project3D(lonDeg, latDeg, R, rot, altFrac = 0) {
+    const v = latLonToVec(latDeg, lonDeg);
+    return transformVec3D(v, R, altFrac, rot);
+  }
+
+  function projectAxisPoint(yDist) {
+    const x1 = -yDist * sinT;
+    const y1 = yDist * cosT;
+    const x2 = x1;
+    const y2 = y1 * cosP;
+    const z2 = y1 * sinP;
+    return {
+      x: centerX + x2,
+      y: centerY - y2,
+      z: z2
+    };
+  }
+
+  // Canvas Resize Handler
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    width = rect.width || window.innerWidth;
+    height = rect.height || 720;
+    dpr = window.devicePixelRatio || 1;
+
+    canvas.width = Math.floor(width * dpr);
+    canvas.height = Math.floor(height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    centerX = width / 2;
+    // Radius configuration: large globe where bottom 30-35% reaches into hero section
+    radius = Math.min(width * 0.62, 780);
+    // Center positioned high above so bottom 30% hangs down across hero
+    centerY = -radius * 0.38;
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+
+  // IntersectionObserver to pause rendering when offscreen
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      isVisible = entry.isIntersecting;
+    });
+  }, { threshold: 0.02 });
+  observer.observe(canvas);
+
+  // Mouse & Touch Interactivity (Drag to Rotate)
+  const heroSection = document.getElementById('overview');
+  if (heroSection) {
+    heroSection.addEventListener('mousedown', (e) => {
+      // Ignore if clicking on interactive buttons/links/inputs
+      if (e.target.closest('a, button, input, .photo-wrapper, .admin-controls')) return;
+      isDragging = true;
+      lastMouseX = e.clientX;
+    });
+  }
+
+  window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    const deltaX = e.clientX - lastMouseX;
+    rotation += deltaX * 0.0035;
+    lastMouseX = e.clientX;
+  });
+
+  window.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
+
+  // Animation Loop
+  function render(time) {
+    requestAnimationFrame(render);
+    if (!isVisible) return;
+
+    if (!isDragging) {
+      rotation += spinSpeed;
+    }
+
+    ctx.clearRect(0, 0, width, height);
+
+    // 1. Subtle CAD Crosshairs in Canvas Corners
+    ctx.save();
+    ctx.strokeStyle = 'rgba(29, 99, 255, 0.18)';
+    ctx.lineWidth = 0.8;
+    const ch = 10;
+    ctx.beginPath();
+    ctx.moveTo(24, 24 + ch); ctx.lineTo(24, 24); ctx.lineTo(24 + ch, 24);
+    ctx.moveTo(width - 24 - ch, 24); ctx.lineTo(width - 24, 24); ctx.lineTo(width - 24, 24 + ch);
+    ctx.stroke();
+    ctx.restore();
+
+    // 2. High-Altitude Orbital Ring with Moving Satellite
+    ctx.save();
+    ctx.strokeStyle = 'rgba(29, 99, 255, 0.15)';
+    ctx.lineWidth = 0.8;
+    ctx.setLineDash([4, 8]);
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius + 36, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+
+    // Orbiting Satellite Beacon on the outer ring
+    const satAngle = (time * 0.0004) % (Math.PI * 2);
+    const satX = centerX + Math.cos(satAngle) * (radius + 36);
+    const satY = centerY + Math.sin(satAngle) * (radius + 36);
+    if (satY > 0 && satY < height) {
+      ctx.save();
+      ctx.fillStyle = '#1d63ff';
+      ctx.beginPath();
+      ctx.arc(satX, satY, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+      // Satellite radio ping wave
+      const pingR = ((time * 0.002) % 1) * 16;
+      ctx.strokeStyle = `rgba(29, 99, 255, ${1 - pingR / 16})`;
+      ctx.lineWidth = 0.8;
+      ctx.beginPath();
+      ctx.arc(satX, satY, pingR, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // 3. Globe Base Sphere (Luminous Tech Blueprint Radial Atmosphere)
+    const baseGrad = ctx.createRadialGradient(
+      centerX, centerY + radius * 0.35, radius * 0.2,
+      centerX, centerY, radius
+    );
+    baseGrad.addColorStop(0, "rgba(255, 255, 255, 0.05)");
+    baseGrad.addColorStop(0.65, "rgba(29, 99, 255, 0.04)");
+    baseGrad.addColorStop(0.88, "rgba(29, 99, 255, 0.08)");
+    baseGrad.addColorStop(1, "rgba(29, 99, 255, 0.18)");
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+    ctx.fillStyle = baseGrad;
+    ctx.fill();
+
+    // Outer horizon silhouette border with vivid electric blue
+    ctx.strokeStyle = "rgba(29, 99, 255, 0.85)";
+    ctx.lineWidth = 2.2;
+    ctx.shadowColor = "rgba(29, 99, 255, 0.5)";
+    ctx.shadowBlur = 8;
+    ctx.stroke();
+    ctx.restore();
+
+    // 4. Slanted Polar Axis (23.5° physical tilt line)
+    const axisTop = projectAxisPoint(radius + 28);
+    const axisBottom = projectAxisPoint(-radius - 28);
+    ctx.save();
+    ctx.strokeStyle = 'rgba(29, 99, 255, 0.35)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 6]);
+    ctx.beginPath();
+    ctx.moveTo(axisTop.x, axisTop.y);
+    ctx.lineTo(axisBottom.x, axisBottom.y);
+    ctx.stroke();
+    ctx.restore();
+
+    // 5. Technical Graticule: Latitude Parallels (every 15°)
+    const lats = [-75, -60, -45, -30, -15, 0, 15, 30, 45, 60, 75];
+    lats.forEach(lat => {
+      const isEquator = lat === 0;
+      const isTropic = Math.abs(lat) === 23.5;
+      ctx.save();
+      ctx.strokeStyle = isEquator ? 'rgba(29, 99, 255, 0.55)' : 'rgba(226, 232, 240, 0.9)';
+      ctx.lineWidth = isEquator ? 1.2 : 0.7;
+      if (!isEquator) ctx.setLineDash([2, 5]);
+
+      ctx.beginPath();
+      let first = true;
+      for (let lon = -180; lon <= 180; lon += 5) {
+        const p = project3D(lon, lat, radius, rotation);
+        if (p.z > -radius * 0.08) {
+          if (first) {
+            ctx.moveTo(p.x, p.y);
+            first = false;
+          } else {
+            ctx.lineTo(p.x, p.y);
+          }
+        } else {
+          first = true;
+        }
+      }
+      ctx.stroke();
+      ctx.restore();
+    });
+
+    // 6. Technical Graticule: Longitude Meridians (every 15°, 24 meridians)
+    for (let lon = -180; lon < 180; lon += 15) {
+      const isPrime = lon === 0 || lon === 180;
+      ctx.save();
+      ctx.strokeStyle = isPrime ? 'rgba(29, 99, 255, 0.38)' : 'rgba(226, 232, 240, 0.75)';
+      ctx.lineWidth = isPrime ? 1 : 0.6;
+      ctx.setLineDash([2, 5]);
+
+      ctx.beginPath();
+      let first = true;
+      for (let lat = -85; lat <= 85; lat += 4) {
+        const p = project3D(lon, lat, radius, rotation);
+        if (p.z > -radius * 0.08) {
+          if (first) {
+            ctx.moveTo(p.x, p.y);
+            first = false;
+          } else {
+            ctx.lineTo(p.x, p.y);
+          }
+        } else {
+          first = true;
+        }
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // 7. Render Continents & Major Landmasses
+    const worldPolys = (typeof SHARED_CONTINENTS !== 'undefined') ? SHARED_CONTINENTS : [];
+    ctx.save();
+    worldPolys.forEach(poly => {
+      ctx.beginPath();
+      let active = false;
+      for (let i = 0; i < poly.length; i++) {
+        const pt = poly[i];
+        const p = project3D(pt[0], pt[1], radius, rotation);
+        if (p.z > -radius * 0.08) {
+          if (!active) {
+            ctx.moveTo(p.x, p.y);
+            active = true;
+          } else {
+            ctx.lineTo(p.x, p.y);
+          }
+        } else {
+          active = false;
+        }
+      }
+      ctx.strokeStyle = "rgba(29, 99, 255, 0.78)";
+      ctx.lineWidth = 1.6;
+      ctx.stroke();
+      ctx.fillStyle = "rgba(29, 99, 255, 0.08)";
+      ctx.fill();
+    });
+    ctx.restore();
+
+    // 8. Tracing Airline Traffic (3D Arcs + Active Aircraft Comets + Callsign Tags)
+    ctx.save();
+    flightRoutes.forEach(route => {
+      const hubA = hubs[route.from];
+      const hubB = hubs[route.to];
+      if (!hubA || !hubB) return;
+
+      // Draw 3D Geodesic Arc
+      const steps = 32;
+      ctx.beginPath();
+      let arcVisible = false;
+      let first = true;
+      for (let s = 0; s <= steps; s++) {
+        const t = s / steps;
+        const vt = slerpVec(hubA.vec, hubB.vec, t);
+        const altFrac = 0.12 * Math.sin(Math.PI * t);
+        const p = transformVec3D(vt, radius, altFrac, rotation);
+        if (p.z > -radius * 0.05) {
+          arcVisible = true;
+          if (first) {
+            ctx.moveTo(p.x, p.y);
+            first = false;
+          } else {
+            ctx.lineTo(p.x, p.y);
+          }
+        } else {
+          first = true;
+        }
+      }
+      ctx.strokeStyle = "rgba(2, 132, 199, 0.85)";
+      ctx.lineWidth = 1.8;
+      ctx.setLineDash([4, 4]);
+      ctx.stroke();
+
+      // Render Active Aircraft along the arc
+      const planeT = ((time * 0.0006 * route.speed) + route.offset) % 1;
+      const vPlane = slerpVec(hubA.vec, hubB.vec, planeT);
+      const planeAlt = 0.12 * Math.sin(Math.PI * planeT);
+      const planePos = transformVec3D(vPlane, radius, planeAlt, rotation);
+
+      if (planePos.z > -radius * 0.05) {
+        // Calculate tangent vector for aircraft heading
+        const vNext = slerpVec(hubA.vec, hubB.vec, Math.min(1, planeT + 0.02));
+        const nextAlt = 0.12 * Math.sin(Math.PI * Math.min(1, planeT + 0.02));
+        const nextPos = transformVec3D(vNext, radius, nextAlt, rotation);
+        const headingAngle = Math.atan2(nextPos.y - planePos.y, nextPos.x - planePos.x);
+
+        // Trailing Comet Particles (4 fading tail dots)
+        for (let tail = 1; tail <= 4; tail++) {
+          const tailT = Math.max(0, planeT - tail * 0.015);
+          const vTail = slerpVec(hubA.vec, hubB.vec, tailT);
+          const tailAlt = 0.12 * Math.sin(Math.PI * tailT);
+          const pTail = transformVec3D(vTail, radius, tailAlt, rotation);
+          if (pTail.z > -radius * 0.05) {
+            ctx.beginPath();
+            ctx.arc(pTail.x, pTail.y, 2.2 - tail * 0.35, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(2, 132, 199, ${0.7 - tail * 0.15})`;
+            ctx.fill();
+          }
+        }
+
+        // Draw Sleek Airplane Glyph
+        ctx.save();
+        ctx.translate(planePos.x, planePos.y);
+        ctx.rotate(headingAngle);
+        // Plane fuselage / chevron
+        ctx.fillStyle = '#1d63ff';
+        ctx.beginPath();
+        ctx.moveTo(5, 0);
+        ctx.lineTo(-4, -3.5);
+        ctx.lineTo(-2, 0);
+        ctx.lineTo(-4, 3.5);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+
+        // Pulsing altitude beacon ring
+        ctx.save();
+        const bRing = ((time * 0.003 + route.offset) % 1) * 8;
+        ctx.strokeStyle = `rgba(29, 99, 255, ${0.9 - bRing / 8})`;
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.arc(planePos.x, planePos.y, bRing, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Flight Callsign Micro-Tag
+        if (planePos.y > 0 && planePos.y < height && planePos.x > 20 && planePos.x < width - 20) {
+          ctx.font = '700 5.5px "JetBrains Mono", monospace';
+          ctx.fillStyle = '#0284c7';
+          ctx.fillText(`✈ ${route.callsign}`, planePos.x + 8, planePos.y - 4);
+        }
+        ctx.restore();
+      }
+    });
+    ctx.restore();
+
+    // 9. Pulsing World City Hubs
+    hubs.forEach((hub, idx) => {
+      const p = transformVec3D(hub.vec, radius, 0, rotation);
+      if (p.z > 0) {
+        const isKL = hub.primary;
+        const pulseCycle = ((time * 0.0016 + idx * 0.18) % 1);
+
+        ctx.save();
+        // Expanding Ripple Ring 1
+        const r1 = 3 + pulseCycle * (isKL ? 22 : 14);
+        ctx.strokeStyle = isKL
+          ? `rgba(29, 99, 255, ${0.9 - pulseCycle * 0.9})`
+          : `rgba(2, 132, 199, ${0.7 - pulseCycle * 0.7})`;
+        ctx.lineWidth = isKL ? 1.4 : 0.8;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, r1, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Expanding Ripple Ring 2 for KL
+        if (isKL) {
+          const pulseCycle2 = ((time * 0.0016 + idx * 0.18 + 0.5) % 1);
+          const r2 = 3 + pulseCycle2 * 22;
+          ctx.strokeStyle = `rgba(29, 99, 255, ${0.9 - pulseCycle2 * 0.9})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, r2, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+
+        // Solid Glowing Core Dot
+        ctx.fillStyle = isKL ? '#1d63ff' : '#0284c7';
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, isKL ? 4 : 2.8, 0, Math.PI * 2);
+        ctx.fill();
+
+        // CAD Leader Line & Hub Label
+        if (isKL || p.z > radius * 0.15) {
+          ctx.font = isKL ? '700 7px "JetBrains Mono", monospace' : '600 5.5px "JetBrains Mono", monospace';
+          ctx.fillStyle = isKL ? '#1d63ff' : '#475569';
+          ctx.strokeStyle = isKL ? 'rgba(29, 99, 255, 0.5)' : 'rgba(148, 163, 184, 0.4)';
+          ctx.lineWidth = 0.8;
+
+          const isRight = p.x < centerX + 20;
+          const lx1 = isRight ? p.x + 4 : p.x - 4;
+          const ly1 = p.y - 4;
+          const lx2 = isRight ? p.x + 14 : p.x - 14;
+          const ly2 = p.y - 12;
+          const lx3 = isRight ? lx2 + (isKL ? 44 : 24) : lx2 - (isKL ? 44 : 24);
+
+          ctx.beginPath();
+          ctx.moveTo(lx1, ly1);
+          ctx.lineTo(lx2, ly2);
+          ctx.lineTo(lx3, ly2);
+          ctx.stroke();
+
+          ctx.textAlign = isRight ? 'left' : 'right';
+          ctx.fillText(hub.tag, isRight ? lx2 + 2 : lx2 - 2, ly2 - 2);
+        }
+        ctx.restore();
+      }
+    });
+
+    // 10. CAD Outer Telemetry Micro-Readout
+    ctx.save();
+    ctx.font = '500 6.5px "JetBrains Mono", monospace';
+    ctx.fillStyle = '#94a3b8';
+    const deg = Math.floor(((rotation * 180 / Math.PI) % 360 + 360) % 360);
+    ctx.fillText(`θ: ${String(deg).padStart(3, '0')}° AZIMUTH`, 28, height - 16);
+    ctx.textAlign = 'right';
+    ctx.fillText('RADIUS: 6,371 KM // 23.5° TILT', width - 28, height - 16);
+    ctx.restore();
+  }
+
+  requestAnimationFrame(render);
+}
+
