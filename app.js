@@ -494,6 +494,8 @@ function saveAllChanges() {
     edits.push({
       index: index,
       tag: el.tagName,
+      id: el.id || '',
+      className: el.className || '',
       html: el.innerHTML
     });
   });
@@ -502,10 +504,33 @@ function saveAllChanges() {
 }
 
 function applySavedEdits(editsList) {
-  const editableElements = document.querySelectorAll('[data-editable="true"]');
+  if (!Array.isArray(editsList) || editsList.length === 0) return;
+  const editableElements = Array.from(document.querySelectorAll('[data-editable="true"]'));
+
+  // Migration safeguard for legacy saved data:
+  // In legacy data, index 2 was H1 ("Adam Lau") and index 1 was DIV (status-badge).
+  // If photo-badge is present at index 1, editableElements[1] is DIV (.photo-badge) and editableElements[2] is DIV (.status-badge).
+  const photoBadgeIndex = editableElements.findIndex(el => el.classList.contains('photo-badge') || el.id === 'photoBadge');
+  const isLegacyWithoutPhotoBadge = (
+    photoBadgeIndex !== -1 &&
+    editsList.length > 2 &&
+    editsList[2] && editsList[2].tag === 'H1' &&
+    editableElements[2] && editableElements[2].tagName !== 'H1'
+  );
+
   editsList.forEach(item => {
-    if (editableElements[item.index]) {
-      editableElements[item.index].innerHTML = item.html;
+    let targetEl = null;
+    if (isLegacyWithoutPhotoBadge) {
+      const adjustedIndex = item.index >= photoBadgeIndex ? item.index + 1 : item.index;
+      targetEl = editableElements[adjustedIndex];
+    } else if (item.id && document.getElementById(item.id)) {
+      targetEl = document.getElementById(item.id);
+    } else {
+      targetEl = editableElements[item.index];
+    }
+
+    if (targetEl) {
+      targetEl.innerHTML = item.html;
     }
   });
 }
