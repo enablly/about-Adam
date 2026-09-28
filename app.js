@@ -469,6 +469,17 @@ function activateAdminMode() {
     el.setAttribute('contenteditable', 'true');
     el.setAttribute('spellcheck', 'false');
   });
+
+  document.querySelectorAll('.matrix-tag-cloud .tag').forEach(tag => {
+    if (!tag._hasBlurHandler) {
+      tag._hasBlurHandler = true;
+      tag.addEventListener('blur', function() {
+        if (!this.textContent.trim()) {
+          this.remove();
+        }
+      });
+    }
+  });
 }
 
 function logoutAdmin() {
@@ -492,29 +503,124 @@ function logoutAdmin() {
 // 7. LIVE CONTENT PERSISTENCE & EXPORT
 // ----------------------------------------------------
 function saveAllChanges() {
+  // 1. Remove empty tag pills before saving
+  document.querySelectorAll('.matrix-tag-cloud .tag').forEach(tag => {
+    if (!tag.textContent.trim()) {
+      tag.remove();
+    }
+  });
+
+  // 2. Snapshot each skill column container independently by ID
+  const col1 = document.getElementById('skillsTagsCol1');
+  const col2 = document.getElementById('skillsTagsCol2');
+  const col3 = document.getElementById('skillsTagsCol3');
+
+  const skillsClouds = {
+    col1: col1 ? col1.innerHTML : '',
+    col2: col2 ? col2.innerHTML : '',
+    col3: col3 ? col3.innerHTML : ''
+  };
+  localStorage.setItem('adam_resume_skills_clouds_v2', JSON.stringify(skillsClouds));
+
+  // 3. Save all general editable elements, isolating dynamic skill tags from flat global indexing
   const edits = [];
   document.querySelectorAll('[data-editable="true"]').forEach((el, index) => {
+    if (el.closest('.matrix-tag-cloud')) {
+      return; // Skill tags are saved in their container snapshot
+    }
     edits.push({
       index: index,
       tag: el.tagName,
       id: el.id || '',
+      key: el.getAttribute('data-edit-key') || el.id || '',
       className: el.className || '',
       html: el.innerHTML
     });
   });
+
   localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(edits));
   showToast('All text modifications saved to browser storage!');
 }
 
 function applySavedEdits(editsList) {
-  if (!Array.isArray(editsList) || editsList.length === 0) return;
-  const editableElements = Array.from(document.querySelectorAll('[data-editable="true"]'));
+  // A. Restore dedicated skill column clouds if saved
+  const savedCloudsStr = localStorage.getItem('adam_resume_skills_clouds_v2');
+  if (savedCloudsStr) {
+    try {
+      const clouds = JSON.parse(savedCloudsStr);
+      if (clouds.col1 && document.getElementById('skillsTagsCol1')) {
+        document.getElementById('skillsTagsCol1').innerHTML = clouds.col1;
+      }
+      if (clouds.col2 && document.getElementById('skillsTagsCol2')) {
+        document.getElementById('skillsTagsCol2').innerHTML = clouds.col2;
+      }
+      if (clouds.col3 && document.getElementById('skillsTagsCol3')) {
+        document.getElementById('skillsTagsCol3').innerHTML = clouds.col3;
+      }
+    } catch(e) {
+      console.warn('Could not restore skills clouds:', e);
+    }
+  }
 
-  // 1. Direct ID matching first (most robust)
+  if (!Array.isArray(editsList) || editsList.length === 0) return;
+
+  // B. Auto-heal: detect if legacy editsList has shifted Section 3 items
+  const hasShiftedSkillsEdits = editsList.some(it => 
+    (it.html && (
+      it.html.includes('Claude Code') ||
+      it.html.includes('Ollama') ||
+      it.html.includes('Databricks') ||
+      it.html.includes('Paperclip') ||
+      it.html.includes('AI & FORWARD DEPLOYED ENGINEERING') ||
+      it.html.includes('AI & Technical Matrix') ||
+      it.html === '01' || it.html === '02' || it.html === '03' || it.html === '// 03'
+    ))
+  );
+
+  // If shifted legacy data exists and no clean cloud snapshot exists yet, initialize clean snapshot
+  if (hasShiftedSkillsEdits && !savedCloudsStr) {
+    const col1El = document.getElementById('skillsTagsCol1');
+    const col2El = document.getElementById('skillsTagsCol2');
+    const col3El = document.getElementById('skillsTagsCol3');
+    if (col1El && col2El && col3El) {
+      localStorage.setItem('adam_resume_skills_clouds_v2', JSON.stringify({
+        col1: col1El.innerHTML,
+        col2: col2El.innerHTML,
+        col3: col3El.innerHTML
+      }));
+    }
+  }
+
+  // Filter out any shifted skills tags/numbers from flat indexing so they cannot corrupt other sections
+  const sanitizedEdits = editsList.filter(item => {
+    // Preserve valid section headers and IDs
+    if (item.id === 'skillsHeading' || item.id === 'skillsSectionTag' || 
+        item.id === 'skillsCard1Title' || item.id === 'skillsCard2Title' || item.id === 'skillsCard3Title') {
+      return true;
+    }
+    // Filter out items that were tags or numbers inside skills
+    if (item.html && (
+      item.html.includes('Claude Code') ||
+      item.html.includes('Ollama') ||
+      item.html.includes('n8n Automation') ||
+      item.html.includes('Google Ads (Search') ||
+      item.html.includes('RedTrack') ||
+      item.html.includes('Databricks') ||
+      item.html.includes('Power Automate') ||
+      item.html.includes('Tableau') ||
+      item.html.includes('Paperclip') ||
+      item.html === '01' || item.html === '02' || item.html === '03' || item.html === '// 03'
+    )) {
+      return false;
+    }
+    return true;
+  });
+
+  // Direct ID matching first (most robust)
   const unhandledItems = [];
   const handledElements = new Set();
 
-  editsList.forEach(item => {
+  sanitizedEdits.forEach(item => {
     if (item.id && document.getElementById(item.id)) {
       const el = document.getElementById(item.id);
       el.innerHTML = item.html;
@@ -526,17 +632,18 @@ function applySavedEdits(editsList) {
 
   if (unhandledItems.length === 0) return;
 
-  // 2. Identify newly added editable landmarks in DOM
+  // Process remaining items against DOM elements that are NOT inside .matrix-tag-cloud
+  const targetElements = Array.from(document.querySelectorAll('[data-editable="true"]'))
+    .filter(el => !el.closest('.matrix-tag-cloud'));
+
+  // Landmark indices
   const photoBadgeEl = document.getElementById('photoBadge');
   const pillarsSectionTagEl = document.getElementById('pillarsSectionTag');
-  const photoBadgeIdx = editableElements.indexOf(photoBadgeEl);
-  const pillarsTagIdx = editableElements.indexOf(pillarsSectionTagEl);
+  const photoBadgeIdx = targetElements.indexOf(photoBadgeEl);
+  const pillarsTagIdx = targetElements.indexOf(pillarsSectionTagEl);
 
-  // Check if legacy data was saved before photo-badge was added:
-  const isLegacyBeforePhotoBadge = editsList.length > 2 && editsList[2] && editsList[2].tag === 'H1';
-
-  // Check if saved data contains pillarsSectionTag:
-  const hasPillarsTagInEdits = editsList.some(it => 
+  const isLegacyBeforePhotoBadge = sanitizedEdits.length > 2 && sanitizedEdits[2] && sanitizedEdits[2].tag === 'H1';
+  const hasPillarsTagInEdits = sanitizedEdits.some(it => 
     it.id === 'pillarsSectionTag' || 
     (it.html && it.html.includes('ARCHITECTURAL DISCIPLINES'))
   );
@@ -545,20 +652,16 @@ function applySavedEdits(editsList) {
     let targetIdx = item.index;
 
     if (isLegacyBeforePhotoBadge) {
-      if (photoBadgeIdx !== -1 && item.index >= photoBadgeIdx) {
-        targetIdx += 1;
-      }
-      if (!hasPillarsTagInEdits && pillarsTagIdx !== -1 && targetIdx >= pillarsTagIdx) {
-        targetIdx += 1;
-      }
+      if (photoBadgeIdx !== -1 && item.index >= photoBadgeIdx) targetIdx += 1;
+      if (!hasPillarsTagInEdits && pillarsTagIdx !== -1 && targetIdx >= pillarsTagIdx) targetIdx += 1;
     } else if (!hasPillarsTagInEdits && pillarsTagIdx !== -1 && item.index >= pillarsTagIdx) {
       targetIdx += 1;
     }
 
-    const targetEl = editableElements[targetIdx];
+    const targetEl = targetElements[targetIdx];
     if (targetEl && !handledElements.has(targetEl)) {
-      // Semantic sanity check: never put a multiline paragraph/headline into H1 if item tag wasn't H1
-      if (targetEl.tagName === 'H1' && item.tag && item.tag !== 'H1') {
+      if (targetEl.tagName === 'H1' && item.tag && item.tag !== 'H1') return;
+      if (targetEl.id && targetEl.id.startsWith('skills') && !item.html.toUpperCase().includes('MATRIX') && !item.html.toUpperCase().includes('STACK') && !item.html.toUpperCase().includes('ENGINEERING') && !item.html.toUpperCase().includes('GENERATION') && !item.html.toUpperCase().includes('MARTECH')) {
         return;
       }
       targetEl.innerHTML = item.html;
@@ -570,6 +673,7 @@ function applySavedEdits(editsList) {
 function resetToOriginalDefaults() {
   if (confirm('Are you sure you want to reset all customized text back to default?')) {
     localStorage.removeItem(STORAGE_KEY_DATA);
+    localStorage.removeItem('adam_resume_skills_clouds_v2');
     localStorage.removeItem(STORAGE_KEY_PHOTO);
     location.reload();
   }
@@ -725,9 +829,21 @@ function addTag(btn) {
   span.setAttribute('data-editable', 'true');
   span.setAttribute('contenteditable', 'true');
   span.innerText = 'New Tool / Skill';
+  span.addEventListener('blur', function() {
+    if (!this.textContent.trim()) {
+      this.remove();
+    }
+  });
   container.appendChild(span);
   span.focus();
-  showToast('Added new tech tag.');
+  try {
+    const range = document.createRange();
+    range.selectNodeContents(span);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  } catch(e) {}
+  showToast('Added new tech tag. Type name to customize.');
 }
 
 function addEducation(btn) {
