@@ -507,30 +507,59 @@ function applySavedEdits(editsList) {
   if (!Array.isArray(editsList) || editsList.length === 0) return;
   const editableElements = Array.from(document.querySelectorAll('[data-editable="true"]'));
 
-  // Migration safeguard for legacy saved data:
-  // In legacy data, index 2 was H1 ("Adam Lau") and index 1 was DIV (status-badge).
-  // If photo-badge is present at index 1, editableElements[1] is DIV (.photo-badge) and editableElements[2] is DIV (.status-badge).
-  const photoBadgeIndex = editableElements.findIndex(el => el.classList.contains('photo-badge') || el.id === 'photoBadge');
-  const isLegacyWithoutPhotoBadge = (
-    photoBadgeIndex !== -1 &&
-    editsList.length > 2 &&
-    editsList[2] && editsList[2].tag === 'H1' &&
-    editableElements[2] && editableElements[2].tagName !== 'H1'
-  );
+  // 1. Direct ID matching first (most robust)
+  const unhandledItems = [];
+  const handledElements = new Set();
 
   editsList.forEach(item => {
-    let targetEl = null;
-    if (isLegacyWithoutPhotoBadge) {
-      const adjustedIndex = item.index >= photoBadgeIndex ? item.index + 1 : item.index;
-      targetEl = editableElements[adjustedIndex];
-    } else if (item.id && document.getElementById(item.id)) {
-      targetEl = document.getElementById(item.id);
+    if (item.id && document.getElementById(item.id)) {
+      const el = document.getElementById(item.id);
+      el.innerHTML = item.html;
+      handledElements.add(el);
     } else {
-      targetEl = editableElements[item.index];
+      unhandledItems.push(item);
+    }
+  });
+
+  if (unhandledItems.length === 0) return;
+
+  // 2. Identify newly added editable landmarks in DOM
+  const photoBadgeEl = document.getElementById('photoBadge');
+  const pillarsSectionTagEl = document.getElementById('pillarsSectionTag');
+  const photoBadgeIdx = editableElements.indexOf(photoBadgeEl);
+  const pillarsTagIdx = editableElements.indexOf(pillarsSectionTagEl);
+
+  // Check if legacy data was saved before photo-badge was added:
+  const isLegacyBeforePhotoBadge = editsList.length > 2 && editsList[2] && editsList[2].tag === 'H1';
+
+  // Check if saved data contains pillarsSectionTag:
+  const hasPillarsTagInEdits = editsList.some(it => 
+    it.id === 'pillarsSectionTag' || 
+    (it.html && it.html.includes('ARCHITECTURAL DISCIPLINES'))
+  );
+
+  unhandledItems.forEach(item => {
+    let targetIdx = item.index;
+
+    if (isLegacyBeforePhotoBadge) {
+      if (photoBadgeIdx !== -1 && item.index >= photoBadgeIdx) {
+        targetIdx += 1;
+      }
+      if (!hasPillarsTagInEdits && pillarsTagIdx !== -1 && targetIdx >= pillarsTagIdx) {
+        targetIdx += 1;
+      }
+    } else if (!hasPillarsTagInEdits && pillarsTagIdx !== -1 && item.index >= pillarsTagIdx) {
+      targetIdx += 1;
     }
 
-    if (targetEl) {
+    const targetEl = editableElements[targetIdx];
+    if (targetEl && !handledElements.has(targetEl)) {
+      // Semantic sanity check: never put a multiline paragraph/headline into H1 if item tag wasn't H1
+      if (targetEl.tagName === 'H1' && item.tag && item.tag !== 'H1') {
+        return;
+      }
       targetEl.innerHTML = item.html;
+      handledElements.add(targetEl);
     }
   });
 }
