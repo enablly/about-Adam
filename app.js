@@ -323,7 +323,7 @@ function resetCounter(el) {
   el.innerHTML = `${prefix}${isFloat ? '0.0' : '0'}${midUnit}<span>${suffix}</span>`;
 }
 
-function animateCounter(el) {
+function animateCounter(el, staggeredDuration = null) {
   if (el.isContentEditable) return;
   parseMetricTarget(el);
 
@@ -339,16 +339,18 @@ function animateCounter(el) {
   }
 
   el.dataset.animating = 'true';
-  // 2.3 seconds duration: fast burst up to ~85% in first 600ms, then slow ticking through the final numbers
-  const duration = 2300;
+
+  // 30% slower towards the end + randomized staggered durations (2900ms - 4200ms)
+  // Each card receives a distinct, randomized duration so they never arrive at the end at the same time
+  const duration = staggeredDuration || (2900 + Math.random() * 1100);
   const startTime = performance.now();
 
   function update(now) {
     const elapsed = now - startTime;
     const progress = Math.min(elapsed / duration, 1);
     
-    // Ease-out with exponent 4.5 gives aggressive early rush and an elongated decelerating tail
-    const ease = 1 - Math.pow(1 - progress, 4.5);
+    // Ease-out with exponent 5.8: 30% slower deceleration curve at the end, ticking very slowly into final values
+    const ease = 1 - Math.pow(1 - progress, 5.8);
     const current = target * ease;
 
     if (progress < 1) {
@@ -378,15 +380,29 @@ function initNumberCounters() {
   });
 
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      const valEl = entry.target.querySelector('.metric-val');
-      if (!valEl) return;
+    const intersectingEntries = entries.filter(e => e.isIntersecting);
 
-      if (entry.isIntersecting) {
-        animateCounter(valEl);
-      } else {
-        resetCounter(valEl);
+    if (intersectingEntries.length > 0) {
+      // Create a randomly shuffled set of staggered durations (ranging from ~2900ms to ~4100ms)
+      // to ensure all cards feel staggered and never arrive at the finish at the same time
+      const baseTimes = [2900, 3220, 3540, 3860, 4150];
+      // Fisher-Yates shuffle base times for unpredictable arrival order
+      for (let i = baseTimes.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [baseTimes[i], baseTimes[j]] = [baseTimes[j], baseTimes[i]];
       }
+
+      intersectingEntries.forEach((entry, idx) => {
+        const valEl = entry.target.querySelector('.metric-val');
+        if (!valEl) return;
+        const duration = (baseTimes[idx % baseTimes.length] || 3100) + Math.floor(Math.random() * 120);
+        animateCounter(valEl, duration);
+      });
+    }
+
+    entries.filter(e => !e.isIntersecting).forEach(entry => {
+      const valEl = entry.target.querySelector('.metric-val');
+      if (valEl) resetCounter(valEl);
     });
   }, { threshold: 0.2 });
 
