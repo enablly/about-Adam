@@ -270,59 +270,127 @@ function initScrollAnimations() {
 }
 
 // ----------------------------------------------------
-// 5. ANIMATED NUMBERS COUNTER
+// LINKEDIN SMALL POPUP WINDOW HELPER
 // ----------------------------------------------------
-function initNumberCounters() {
-  const metricCards = document.querySelectorAll('.metric-card');
-  const observer = new IntersectionObserver((entries, obs) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const valEl = entry.target.querySelector('.metric-val');
-        if (valEl && !valEl.dataset.counted) {
-          valEl.dataset.counted = 'true';
-          animateCounter(valEl);
-        }
-        obs.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.5 });
-
-  metricCards.forEach(c => observer.observe(c));
+function openLinkedInPopup(e) {
+  if (e) e.preventDefault();
+  const width = 640;
+  const height = 750;
+  const left = Math.max(0, Math.floor((window.screen.width - width) / 2));
+  const top = Math.max(0, Math.floor((window.screen.height - height) / 2));
+  const url = 'https://www.linkedin.com/in/adam-enablly';
+  const popup = window.open(
+    url,
+    'linkedinPopup',
+    `width=${width},height=${height},top=${top},left=${left},scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no,location=yes`
+  );
+  if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  } else {
+    popup.focus();
+  }
+  return false;
 }
 
-function animateCounter(el) {
+// ----------------------------------------------------
+// 5. ANIMATED NUMBERS COUNTER (FAST-TO-SLOW DECAY, RE-ANIMATES ON REFRESH & RE-ENTRY)
+// ----------------------------------------------------
+function parseMetricTarget(el) {
+  if (el.dataset.targetNum !== undefined) return;
   const rawText = el.innerText.trim();
   const matchNum = rawText.match(/\d+(\.\d+)?/);
   if (!matchNum) return;
 
-  const target = parseFloat(matchNum[0]);
-  const isFloat = rawText.includes('.');
-  const prefix = rawText.startsWith('$') ? '$' : '';
-  const hasM = rawText.includes('M') || rawText.includes('m');
-  const hasK = rawText.includes('k') || rawText.includes('K');
-  const midUnit = hasM ? 'M' : hasK ? 'k' : '';
-  const suffix = rawText.includes('%') ? '%' : rawText.includes('+') ? '+' : '';
+  el.dataset.targetNum = matchNum[0];
+  el.dataset.isFloat = rawText.includes('.') ? 'true' : 'false';
+  el.dataset.prefix = rawText.startsWith('$') ? '$' : '';
+  el.dataset.midUnit = (rawText.includes('M') || rawText.includes('m')) ? 'M' : (rawText.includes('k') || rawText.includes('K')) ? 'k' : '';
+  el.dataset.suffix = rawText.includes('%') ? '%' : rawText.includes('+') ? '+' : '';
+}
 
-  let start = 0;
-  const duration = 1200;
+function resetCounter(el) {
+  if (el._animId) {
+    cancelAnimationFrame(el._animId);
+    el._animId = null;
+  }
+  el.dataset.animating = 'false';
+  if (el.isContentEditable) return;
+  parseMetricTarget(el);
+  const prefix = el.dataset.prefix || '';
+  const midUnit = el.dataset.midUnit || '';
+  const suffix = el.dataset.suffix || '';
+  const isFloat = el.dataset.isFloat === 'true';
+  el.innerHTML = `${prefix}${isFloat ? '0.0' : '0'}${midUnit}<span>${suffix}</span>`;
+}
+
+function animateCounter(el) {
+  if (el.isContentEditable) return;
+  parseMetricTarget(el);
+
+  const target = parseFloat(el.dataset.targetNum || '0');
+  const isFloat = el.dataset.isFloat === 'true';
+  const prefix = el.dataset.prefix || '';
+  const midUnit = el.dataset.midUnit || '';
+  const suffix = el.dataset.suffix || '';
+
+  if (el._animId) {
+    cancelAnimationFrame(el._animId);
+    el._animId = null;
+  }
+
+  el.dataset.animating = 'true';
+  // 2.3 seconds duration: fast burst up to ~85% in first 600ms, then slow ticking through the final numbers
+  const duration = 2300;
   const startTime = performance.now();
 
   function update(now) {
     const elapsed = now - startTime;
     const progress = Math.min(elapsed / duration, 1);
-    // Ease-out cubic
-    const ease = 1 - Math.pow(1 - progress, 3);
-    const current = start + (target - start) * ease;
-
-    el.innerHTML = `${prefix}${isFloat ? current.toFixed(1) : Math.floor(current)}${midUnit}<span>${suffix}</span>`;
+    
+    // Ease-out with exponent 4.5 gives aggressive early rush and an elongated decelerating tail
+    const ease = 1 - Math.pow(1 - progress, 4.5);
+    const current = target * ease;
 
     if (progress < 1) {
-      requestAnimationFrame(update);
+      if (isFloat) {
+        el.innerHTML = `${prefix}${current.toFixed(1)}${midUnit}<span>${suffix}</span>`;
+      } else {
+        el.innerHTML = `${prefix}${Math.floor(current)}${midUnit}<span>${suffix}</span>`;
+      }
+      el._animId = requestAnimationFrame(update);
     } else {
-      el.innerHTML = `${prefix}${target}${midUnit}<span>${suffix}</span>`;
+      el.innerHTML = `${prefix}${isFloat ? target.toFixed(1) : target}${midUnit}<span>${suffix}</span>`;
+      el.dataset.animating = 'false';
+      el._animId = null;
     }
   }
-  requestAnimationFrame(update);
+
+  el._animId = requestAnimationFrame(update);
+}
+
+function initNumberCounters() {
+  const metricCards = document.querySelectorAll('.metric-card');
+  if (!metricCards.length) return;
+
+  metricCards.forEach(card => {
+    const valEl = card.querySelector('.metric-val');
+    if (valEl) parseMetricTarget(valEl);
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const valEl = entry.target.querySelector('.metric-val');
+      if (!valEl) return;
+
+      if (entry.isIntersecting) {
+        animateCounter(valEl);
+      } else {
+        resetCounter(valEl);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  metricCards.forEach(c => observer.observe(c));
 }
 
 // ----------------------------------------------------
