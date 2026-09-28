@@ -452,7 +452,7 @@ function submitAdminLogin() {
     activateAdminMode();
     showToast('Admin Mode Active. Click any text to edit or hover over your portrait to upload.');
   } else {
-    alert('Authentication error. Default email: adamlau.creatif@gmail.com | Demo password: admin123');
+    alert('Authentication error. Invalid email or password.');
   }
 }
 
