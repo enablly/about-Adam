@@ -1864,3 +1864,255 @@ footer.site-footer {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* ========================================================
+   DARK & TRANSLUCENT TREATMENT: STRATEGIC PILLARS & CAREER EXPERIENCE
+   ======================================================== */
+
+/* STRATEGIC PILLARS CARDS */
+.pillar-box {
+  background: rgba(8, 12, 22, 0.86);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(29, 99, 255, 0.08);
+}
+
+.pillar-box:hover {
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5), 0 0 20px rgba(29, 99, 255, 0.15);
+}
+
+.pillar-title {
+  color: #ffffff;
+}
+
+.pillar-body {
+  color: #94a3b8;
+}
+
+.pillar-cad-viewport {
+  background: rgba(10, 14, 25, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.cad-header-strip {
+  background: rgba(15, 23, 42, 0.92);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+}
+
+.cad-header-strip .cad-id {
+  color: #38bdf8;
+}
+
+.cad-header-strip .cad-metric {
+  color: #94a3b8;
+}
+
+.cad-canvas-area {
+  background-color: #070a13;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+}
+
+.cad-footer-strip {
+  background: rgba(15, 23, 42, 0.92);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+}
+
+.pill-micro {
+  background: rgba(22, 30, 49, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+}
+
+.pillar-box:hover .pill-micro {
+  border-color: var(--blue-core);
+  color: #ffffff;
+}
+
+/* CAREER EXPERIENCE CARDS */
+.filter-tab {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #94a3b8;
+}
+
+.filter-tab:hover {
+  border-color: #38bdf8;
+  color: #ffffff;
+  background: rgba(29, 99, 255, 0.18);
+}
+
+.filter-tab.active {
+  background: var(--blue-core, #1d63ff);
+  border-color: #1d63ff;
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(29, 99, 255, 0.35);
+}
+
+.interactive-hint {
+  color: #38bdf8;
+}
+
+.job-card {
+  background: rgba(8, 12, 22, 0.86);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(29, 99, 255, 0.08);
+}
+
+.job-card:hover {
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55), 0 0 20px rgba(29, 99, 255, 0.18);
+}
+
+.job-card.current {
+  border-left: 4px solid var(--blue-core);
+}
+
+.job-title-group h3 {
+  color: #ffffff;
+}
+
+.job-employer {
+  color: #38bdf8;
+}
+
+.job-location-tag {
+  color: #64748b;
+}
+
+.job-period-badge {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+}
+
+.job-overview-text {
+  color: #cbd5e1;
+}
+
+.job-bullets-list li {
+  color: #94a3b8;
+}
+
+.job-bullets-list li:hover {
+  color: #f1f5f9;
+}
+
+.job-bullets-list li::before {
+  color: var(--blue-core);
+}
+
+.job-details-toggle {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: #38bdf8;
+}
+
+.job-details-toggle:hover {
+  border-color: #38bdf8;
+  background: rgba(29, 99, 255, 0.22);
+  color: #ffffff;
+}
+
+.job-expanded-dossier {
+  background: rgba(12, 17, 29, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 3px solid var(--blue-core);
+  color: #94a3b8;
+}
+
+.dossier-subheading {
+  color: #ffffff;
+}
+
+.job-tech-bar {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.job-tech-bar .pill-micro,
+.job-tech-bar .skill-tag,
+.job-tech-bar span {
+  background: rgba(22, 30, 49, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+}
+
+.job-tech-bar .pill-micro:hover,
+.job-tech-bar .skill-tag:hover,
+.job-tech-bar span:hover {
+  border-color: var(--blue-core);
+  color: #ffffff;
+  background: rgba(29, 99, 255, 0.25);
+}
+
+/* CAD VIEWPORT IN JOB CARD */
+.job-cad-viewport {
+  background: rgba(10, 14, 25, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.job-cad-canvas {
+  background-color: #070a13;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+}
+
+/* CAD SVG ELEMENTS (DARK BLUEPRINT REFACTOR) */
+.job-cad-svg rect[fill="#ffffff"],
+.job-cad-svg polygon[fill="#ffffff"] {
+  fill: #0c1220 !important;
+  stroke: rgba(255, 255, 255, 0.18) !important;
+}
+
+.job-cad-svg circle[fill="#ffffff"] {
+  fill: #0c1220 !important;
+}
+
+.job-cad-svg text {
+  fill: #cbd5e1 !important;
+}
+
+.job-cad-svg text[fill="#1d63ff"],
+.job-cad-svg text[fill="#0284c7"] {
+  fill: #38bdf8 !important;
+}
+
+.job-cad-svg path[stroke="#090d16"],
+.job-cad-svg line[stroke="#090d16"],
+.job-cad-svg rect[stroke="#090d16"] {
+  stroke: rgba(255, 255, 255, 0.25) !important;
+}
+
+.cad-svg rect[fill="#ffffff"],
+.cad-svg polygon[fill="#ffffff"] {
+  fill: #0c1220 !important;
+  stroke: rgba(255, 255, 255, 0.18) !important;
+}
+
+.cad-svg circle[fill="#ffffff"] {
+  fill: #0c1220 !important;
+}
+
+.cad-svg text {
+  fill: #cbd5e1 !important;
+}
+
+.cad-svg text[fill="#1d63ff"],
+.cad-svg text[fill="#0284c7"] {
+  fill: #38bdf8 !important;
+}
+
+.cad-svg path[stroke="#090d16"],
+.cad-svg line[stroke="#090d16"],
+.cad-svg rect[stroke="#090d16"] {
+  stroke: rgba(255, 255, 255, 0.25) !important;
+}
