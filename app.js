@@ -8,7 +8,7 @@
 // ----------------------------------------------------
 let isAdmin = false;
 const STORAGE_KEY_AUTH = 'adam_resume_admin_session';
-const STORAGE_KEY_DATA = 'adam_resume_edited_content_v1';
+const STORAGE_KEY_DATA = 'adam_resume_edited_content_v3';
 const STORAGE_KEY_PHOTO = 'adam_resume_custom_photo_v1';
 let toastTimer = null;
 
@@ -19,6 +19,10 @@ const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/20
 // 2. INITIALIZATION
 // ----------------------------------------------------
 window.addEventListener('DOMContentLoaded', () => {
+  // Immediately purge corrupted legacy v1/v2 storage data
+  ['adam_resume_edited_content_v1', 'adam_resume_edited_content_v2', 'adam_resume_skills_clouds_v1', 'adam_resume_skills_clouds_v2'].forEach(k => {
+    if (localStorage.getItem(k)) localStorage.removeItem(k);
+  });
   // Initialize AI/Tech Line Canvas Background
   initTechBackgroundCanvas();
 
@@ -520,31 +524,30 @@ function saveAllChanges() {
     col2: col2 ? col2.innerHTML : '',
     col3: col3 ? col3.innerHTML : ''
   };
-  localStorage.setItem('adam_resume_skills_clouds_v2', JSON.stringify(skillsClouds));
+  localStorage.setItem('adam_resume_skills_clouds_v3', JSON.stringify(skillsClouds));
 
-  // 3. Save all general editable elements, isolating dynamic skill tags from flat global indexing
-  const edits = [];
+  // 3. Save all editable elements into a strict Map by key/id
+  const editsMap = {};
   document.querySelectorAll('[data-editable="true"]').forEach((el, index) => {
     if (el.closest('.matrix-tag-cloud')) {
-      return; // Skill tags are saved in their container snapshot
+      return; // Skill tags are saved in skillsClouds
     }
-    edits.push({
-      index: index,
+    const key = el.id || el.getAttribute('data-edit-key') || ('dom_' + el.tagName + '_' + index);
+    editsMap[key] = {
       tag: el.tagName,
       id: el.id || '',
-      key: el.getAttribute('data-edit-key') || el.id || '',
-      className: el.className || '',
+      key: key,
       html: el.innerHTML
-    });
+    };
   });
 
-  localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(edits));
+  localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(editsMap));
   showToast('All text modifications saved to browser storage!');
 }
 
-function applySavedEdits(editsList) {
+function applySavedEdits(savedData) {
   // A. Restore dedicated skill column clouds if saved
-  const savedCloudsStr = localStorage.getItem('adam_resume_skills_clouds_v2');
+  const savedCloudsStr = localStorage.getItem('adam_resume_skills_clouds_v3');
   if (savedCloudsStr) {
     try {
       const clouds = JSON.parse(savedCloudsStr);
@@ -562,110 +565,27 @@ function applySavedEdits(editsList) {
     }
   }
 
-  if (!Array.isArray(editsList) || editsList.length === 0) return;
+  if (!savedData || typeof savedData !== 'object') return;
 
-  // B. Auto-heal: detect if legacy editsList has shifted Section 3 items
-  const hasShiftedSkillsEdits = editsList.some(it => 
-    (it.html && (
-      it.html.includes('Claude Code') ||
-      it.html.includes('Ollama') ||
-      it.html.includes('Databricks') ||
-      it.html.includes('Paperclip') ||
-      it.html.includes('AI & FORWARD DEPLOYED ENGINEERING') ||
-      it.html.includes('AI & Technical Matrix') ||
-      it.html === '01' || it.html === '02' || it.html === '03' || it.html === '// 03'
-    ))
-  );
-
-  // If shifted legacy data exists and no clean cloud snapshot exists yet, initialize clean snapshot
-  if (hasShiftedSkillsEdits && !savedCloudsStr) {
-    const col1El = document.getElementById('skillsTagsCol1');
-    const col2El = document.getElementById('skillsTagsCol2');
-    const col3El = document.getElementById('skillsTagsCol3');
-    if (col1El && col2El && col3El) {
-      localStorage.setItem('adam_resume_skills_clouds_v2', JSON.stringify({
-        col1: col1El.innerHTML,
-        col2: col2El.innerHTML,
-        col3: col3El.innerHTML
-      }));
-    }
+  // Strict Map-based restoring (v3):
+  if (!Array.isArray(savedData)) {
+    Object.entries(savedData).forEach(([key, item]) => {
+      let targetEl = null;
+      if (item.id) targetEl = document.getElementById(item.id);
+      if (!targetEl && key) {
+        targetEl = document.getElementById(key) || document.querySelector(`[data-edit-key="${key}"]`);
+      }
+      if (targetEl && item.html) {
+        targetEl.innerHTML = item.html;
+      }
+    });
+    return;
   }
 
-  // Filter out any shifted skills tags/numbers from flat indexing so they cannot corrupt other sections
-  const sanitizedEdits = editsList.filter(item => {
-    // Preserve valid section headers and IDs
-    if (item.id === 'skillsHeading' || item.id === 'skillsSectionTag' || 
-        item.id === 'skillsCard1Title' || item.id === 'skillsCard2Title' || item.id === 'skillsCard3Title') {
-      return true;
-    }
-    // Filter out items that were tags or numbers inside skills
-    if (item.html && (
-      item.html.includes('Claude Code') ||
-      item.html.includes('Ollama') ||
-      item.html.includes('n8n Automation') ||
-      item.html.includes('Google Ads (Search') ||
-      item.html.includes('RedTrack') ||
-      item.html.includes('Databricks') ||
-      item.html.includes('Power Automate') ||
-      item.html.includes('Tableau') ||
-      item.html.includes('Paperclip') ||
-      item.html === '01' || item.html === '02' || item.html === '03' || item.html === '// 03'
-    )) {
-      return false;
-    }
-    return true;
-  });
-
-  // Direct ID matching first (most robust)
-  const unhandledItems = [];
-  const handledElements = new Set();
-
-  sanitizedEdits.forEach(item => {
+  // Legacy array fallback: ONLY apply if element has matching ID, never blind numeric index
+  savedData.forEach(item => {
     if (item.id && document.getElementById(item.id)) {
-      const el = document.getElementById(item.id);
-      el.innerHTML = item.html;
-      handledElements.add(el);
-    } else {
-      unhandledItems.push(item);
-    }
-  });
-
-  if (unhandledItems.length === 0) return;
-
-  // Process remaining items against DOM elements that are NOT inside .matrix-tag-cloud
-  const targetElements = Array.from(document.querySelectorAll('[data-editable="true"]'))
-    .filter(el => !el.closest('.matrix-tag-cloud'));
-
-  // Landmark indices
-  const photoBadgeEl = document.getElementById('photoBadge');
-  const pillarsSectionTagEl = document.getElementById('pillarsSectionTag');
-  const photoBadgeIdx = targetElements.indexOf(photoBadgeEl);
-  const pillarsTagIdx = targetElements.indexOf(pillarsSectionTagEl);
-
-  const isLegacyBeforePhotoBadge = sanitizedEdits.length > 2 && sanitizedEdits[2] && sanitizedEdits[2].tag === 'H1';
-  const hasPillarsTagInEdits = sanitizedEdits.some(it => 
-    it.id === 'pillarsSectionTag' || 
-    (it.html && it.html.includes('ARCHITECTURAL DISCIPLINES'))
-  );
-
-  unhandledItems.forEach(item => {
-    let targetIdx = item.index;
-
-    if (isLegacyBeforePhotoBadge) {
-      if (photoBadgeIdx !== -1 && item.index >= photoBadgeIdx) targetIdx += 1;
-      if (!hasPillarsTagInEdits && pillarsTagIdx !== -1 && targetIdx >= pillarsTagIdx) targetIdx += 1;
-    } else if (!hasPillarsTagInEdits && pillarsTagIdx !== -1 && item.index >= pillarsTagIdx) {
-      targetIdx += 1;
-    }
-
-    const targetEl = targetElements[targetIdx];
-    if (targetEl && !handledElements.has(targetEl)) {
-      if (targetEl.tagName === 'H1' && item.tag && item.tag !== 'H1') return;
-      if (targetEl.id && targetEl.id.startsWith('skills') && !item.html.toUpperCase().includes('MATRIX') && !item.html.toUpperCase().includes('STACK') && !item.html.toUpperCase().includes('ENGINEERING') && !item.html.toUpperCase().includes('GENERATION') && !item.html.toUpperCase().includes('MARTECH')) {
-        return;
-      }
-      targetEl.innerHTML = item.html;
-      handledElements.add(targetEl);
+      document.getElementById(item.id).innerHTML = item.html;
     }
   });
 }
@@ -673,6 +593,7 @@ function applySavedEdits(editsList) {
 function resetToOriginalDefaults() {
   if (confirm('Are you sure you want to reset all customized text back to default?')) {
     localStorage.removeItem(STORAGE_KEY_DATA);
+    localStorage.removeItem('adam_resume_skills_clouds_v3');
     localStorage.removeItem('adam_resume_skills_clouds_v2');
     localStorage.removeItem(STORAGE_KEY_PHOTO);
     location.reload();
