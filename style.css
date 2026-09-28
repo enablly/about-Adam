@@ -1291,11 +1291,21 @@ section {
   .job-visual-col {
     position: static;
   }
+  .job-cad-viewport {
+    height: 380px;
+    min-height: 380px;
+  }
+  .job-cad-canvas {
+    height: 310px;
+    min-height: 310px;
+  }
 }
 
 .job-cad-viewport {
   position: relative;
   width: 100%;
+  height: 480px;
+  min-height: 480px;
   background: #ffffff;
   border: 1px solid var(--border-medium);
   display: flex;
@@ -1337,8 +1347,8 @@ section {
 .job-cad-canvas {
   position: relative;
   width: 100%;
-  height: 200px;
-  min-height: 200px;
+  height: 410px;
+  min-height: 410px;
   background-color: #fafbfc;
   background-image: 
     linear-gradient(to right, rgba(0, 0, 0, 0.035) 1px, transparent 1px),
@@ -1347,7 +1357,7 @@ section {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px;
+  padding: 8px;
   box-sizing: border-box;
 }
 
