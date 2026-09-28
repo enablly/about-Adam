@@ -2365,37 +2365,6 @@ footer.site-footer {
   letter-spacing: 0.04em;
 }
 
-.job-cad-dimension-strip {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--mono);
-  font-size: 0.56rem;
-  color: var(--cad-grey-text-dim);
-  padding: 3px 10px;
-  background: #f8fafc;
-  border: 1px solid var(--border-subtle);
-  border-bottom: none;
-  margin-bottom: 0;
-}
-
-.job-cad-dimension-strip .j-dots {
-  flex: 1;
-  height: 0;
-  border-top: 1px dotted var(--border-medium);
-}
-
-.job-cad-dimension-strip .j-tick {
-  width: 1px;
-  height: 8px;
-  background: var(--cad-grey-line);
-}
-
-.job-cad-dimension-strip .j-dim-text {
-  font-weight: 500;
-  color: var(--cad-grey-text-dim);
-  letter-spacing: 0.03em;
-}
 
 /* CAD Corner Bracket Hairlighting on Cards */
 .pillar-box::before, .job-card::before {
