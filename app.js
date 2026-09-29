@@ -13,7 +13,7 @@ const STORAGE_KEY_PHOTO = 'adam_resume_custom_photo_v1';
 let toastTimer = null;
 
 // Clean light-mode placeholder avatar
-const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='480' viewBox='0 0 400 480'><rect width='400' height='480' fill='%23f1f5f9'/><circle cx='200' cy='180' r='60' fill='%231d63ff' opacity='0.12'/><circle cx='200' cy='170' r='45' fill='%231d63ff' opacity='0.25'/><path d='M100 360 C100 270, 300 270, 300 360 Z' fill='%231d63ff' opacity='0.18'/><text x='200' y='420' font-family='monospace' font-size='14' fill='%231d63ff' text-anchor='middle'>ADAM LAU // PORTRAIT</text></svg>";
+const DEFAULT_AVATAR = "data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='480' viewBox='0 0 400 480'%3E%3Crect width='400' height='480' fill='%23090d16'/%3E%3Ccircle cx='200' cy='180' r='60' fill='%231d63ff' opacity='0.25'/%3E%3Ccircle cx='200' cy='170' r='45' fill='%2338bdf8' opacity='0.4'/%3E%3Cpath d='M100 360 C100 270, 300 270, 300 360 Z' fill='%231d63ff' opacity='0.3'/%3E%3Ctext x='200' y='420' font-family='monospace' font-size='14' fill='%2338bdf8' text-anchor='middle'%3EADAM LAU // PORTRAIT%3C/text%3E%3C/svg%3E";
 
 // ----------------------------------------------------
 // 2. INITIALIZATION
@@ -464,7 +464,17 @@ function submitAdminLogin() {
   const email = emailInput ? emailInput.value.trim() : '';
   const pass = passInput ? passInput.value.trim() : '';
 
-  if ((email.toLowerCase() === 'adamlau.creatif@gmail.com' || email.includes('@')) && (pass === 'admin123' || pass.length >= 4)) {
+  if (email.toLowerCase() === 'adamlau.creatif@gmail.com' && pass === 'admin123') {
+    // If Firebase Auth is loaded and active, authenticate to Firebase
+    if (typeof firebase !== 'undefined' && firebase.auth) {
+      try {
+        firebase.auth().signInWithEmailAndPassword(email, pass).catch(err => {
+          console.log('[FirebaseAuth] Optional cloud auth notification:', err.message);
+        });
+      } catch (e) {
+        // Safe fallback
+      }
+    }
     localStorage.setItem(STORAGE_KEY_AUTH, 'true');
     closeLoginModal();
     activateAdminMode();
@@ -520,21 +530,40 @@ function logoutAdmin() {
 // ----------------------------------------------------
 // 7. LIVE CONTENT PERSISTENCE & EXPORT
 // ----------------------------------------------------
+
+/**
+ * Strips executable scripts, event handlers, and javascript: protocols
+ * from HTML before rendering into the DOM to eliminate XSS risks.
+ */
+function sanitizeHtml(dirty) {
+  if (!dirty || typeof dirty !== 'string') return '';
+  return dirty
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/\s*on\w+\s*=\s*(['"]).*?\1/gi, '')
+    .replace(/\s*on\w+\s*=\s*[^>\s]+/gi, '')
+    .replace(/javascript:/gi, '');
+}
+
 function applySavedSkillsClouds(clouds) {
   if (!clouds || typeof clouds !== 'object') return;
   if (clouds.col1 && document.getElementById('skillsTagsCol1')) {
-    document.getElementById('skillsTagsCol1').innerHTML = clouds.col1;
+    document.getElementById('skillsTagsCol1').innerHTML = sanitizeHtml(clouds.col1);
   }
   if (clouds.col2 && document.getElementById('skillsTagsCol2')) {
-    document.getElementById('skillsTagsCol2').innerHTML = clouds.col2;
+    document.getElementById('skillsTagsCol2').innerHTML = sanitizeHtml(clouds.col2);
   }
   if (clouds.col3 && document.getElementById('skillsTagsCol3')) {
-    document.getElementById('skillsTagsCol3').innerHTML = clouds.col3;
+    document.getElementById('skillsTagsCol3').innerHTML = sanitizeHtml(clouds.col3);
   }
 }
 
 function applySavedPhoto(photoDataUrl) {
-  if (!photoDataUrl) return;
+  if (!photoDataUrl || typeof photoDataUrl !== 'string') return;
+  // Security: only allow data:image/ or http(s):// image URLs
+  if (!photoDataUrl.startsWith('data:image/') && !photoDataUrl.startsWith('http://') && !photoDataUrl.startsWith('https://')) {
+    console.warn('[Security] Rejected invalid photo URL payload');
+    return;
+  }
   const profileImg = document.getElementById('profileImage');
   if (profileImg) {
     profileImg.src = photoDataUrl;
@@ -699,7 +728,7 @@ function applySavedEdits(savedData) {
         targetEl = document.getElementById(key) || document.querySelector(`[data-edit-key="${key}"]`);
       }
       if (targetEl && item.html) {
-        targetEl.innerHTML = item.html;
+        targetEl.innerHTML = sanitizeHtml(item.html);
       }
     });
     return;
@@ -708,7 +737,7 @@ function applySavedEdits(savedData) {
   // Legacy array fallback: ONLY apply if element has matching ID, never blind numeric index
   savedData.forEach(item => {
     if (item.id && document.getElementById(item.id)) {
-      document.getElementById(item.id).innerHTML = item.html;
+      document.getElementById(item.id).innerHTML = sanitizeHtml(item.html);
     }
   });
 }
@@ -767,9 +796,19 @@ function handlePhotoUpload(event) {
     return;
   }
 
+  // Security & Cloud Quota Protection: Maximum 800KB to fit within Firestore 1MB doc limit
+  if (file.size > 800 * 1024) {
+    alert('Photo file size exceeds 800KB. Please select an optimized image under 800KB to comply with cloud document storage limits.');
+    return;
+  }
+
   const reader = new FileReader();
   reader.onload = function(e) {
     const dataUrl = e.target.result;
+    if (typeof dataUrl !== 'string' || !dataUrl.startsWith('data:image/')) {
+      alert('Invalid image format.');
+      return;
+    }
     const img = document.getElementById('profileImage');
     if (img) img.src = dataUrl;
     localStorage.setItem(STORAGE_KEY_PHOTO, dataUrl);

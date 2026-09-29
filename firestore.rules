@@ -1,10 +1,35 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Portfolio Resume Collection: Public read access for all viewers
-    match /portfolio/{document=**} {
+
+    // ==============================================================================
+    // SECURITY DEFINITIONS FOR ADAM LAU EXECUTIVE RESUME DOSSIER
+    // ==============================================================================
+
+    // Check if the request is from the verified admin account
+    function isVerifiedAdmin() {
+      return request.auth != null &&
+             request.auth.token.email.lower() == 'adamlau.creatif@gmail.com' &&
+             request.auth.token.email_verified == true;
+    }
+
+    // Schema & Payload Sanity Check (Protects against 1MB Document Quota Exhaustion)
+    function isValidResumePayload() {
+      return (!('photo' in request.resource.data) || (request.resource.data.photo is string && request.resource.data.photo.size() < 900000)) &&
+             (!('editsMap' in request.resource.data) || request.resource.data.editsMap is map) &&
+             (!('skillsClouds' in request.resource.data) || request.resource.data.skillsClouds is map) &&
+             (!('updatedAt' in request.resource.data) || request.resource.data.updatedAt is timestamp);
+    }
+
+    // Portfolio Resume Collection
+    match /portfolio/{docId} {
+      // 1. PUBLIC READ: All recruiters, visitors, and hiring teams have global read access
       allow read: if true;
-      allow write: if true;
+
+      // 2. PRODUCTION ADMIN WRITE: Only Adam Lau can modify, save, or update resume data
+      // To activate: Enable Email/Password Auth in Firebase Console for adamlau.creatif@gmail.com
+      allow create, update: if isVerifiedAdmin() && isValidResumePayload();
+      allow delete: if isVerifiedAdmin();
     }
   }
 }
