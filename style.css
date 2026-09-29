@@ -2107,7 +2107,8 @@ footer.site-footer {
   .status-badge,
   .status-ping,
   .contact-buttons-row,
-  .photo-wrapper,
+  .photo-upload-overlay,
+  .photo-badge,
   .cert-category-filters,
   .cert-filter-pills,
   .cert-filter-btn,
@@ -2174,6 +2175,58 @@ footer.site-footer {
     border: none !important;
     box-shadow: none !important;
     padding: 0 !important;
+  }
+
+  .hero-panel::before {
+    display: none !important;
+    content: none !important;
+  }
+
+  .hero-top-row {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    gap: 14pt !important;
+    margin-bottom: 6pt !important;
+  }
+
+  .photo-wrapper {
+    display: block !important;
+    visibility: visible !important;
+    width: 80pt !important;
+    height: 100pt !important;
+    min-width: 80pt !important;
+    max-width: 80pt !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 2pt !important;
+    overflow: hidden !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .photo-wrapper::before,
+  .photo-wrapper::after,
+  .photo-upload-overlay,
+  .photo-badge {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  #profileImage {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+    visibility: visible !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .hero-text-block {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
   }
 
   .hero-name {
