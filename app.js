@@ -324,19 +324,58 @@ function openLinkedInPopup(e) {
 // ----------------------------------------------------
 // 5. ANIMATED NUMBERS COUNTER (FAST-TO-SLOW DECAY, RE-ANIMATES ON REFRESH & RE-ENTRY)
 // ----------------------------------------------------
+const METRIC_DEFAULTS = {
+  'metricVal1': '16<span>+</span>',
+  'metricVal2': '$2.5M<span>+</span>',
+  'metricVal3': '200<span>%</span>',
+  'metricVal4': '25<span>+</span>',
+  'metricVal5': '30.6k<span>+</span>',
+  'metric-val-1': '16<span>+</span>',
+  'metric-val-2': '$2.5M<span>+</span>',
+  'metric-val-3': '200<span>%</span>',
+  'metric-val-4': '25<span>+</span>',
+  'metric-val-5': '30.6k<span>+</span>'
+};
+
+function isZeroMetricValue(htmlStr) {
+  if (!htmlStr) return true;
+  const cleaned = htmlStr.replace(/<[^>]*>/g, '').trim();
+  const match = cleaned.match(/\d+(\.\d+)?/);
+  return !match || parseFloat(match[0]) === 0;
+}
+
 function parseMetricTarget(el, forceReparse = false) {
-  if (!forceReparse && el.dataset.targetNum !== undefined) return;
+  // If already parsed with a valid non-zero target and no re-parse requested, do nothing
+  if (!forceReparse && el.dataset.targetNum !== undefined && parseFloat(el.dataset.targetNum) > 0) return;
 
   let sourceText = '';
-  // If user is editing or force reparsing, read innerText directly
-  if (el.isContentEditable || forceReparse) {
+
+  // 1. If actively being edited by user in admin mode, read directly from contenteditable DOM
+  if (el.isContentEditable) {
     sourceText = el.innerText.trim();
-    el.dataset.fullTarget = el.innerHTML;
-  } else if (el.dataset.fullTarget && (el.dataset.animating === 'true' || el.innerText.trim().startsWith('0'))) {
+    if (sourceText && !isZeroMetricValue(sourceText)) {
+      el.dataset.fullTarget = el.innerHTML;
+    }
+  }
+
+  // 2. If fullTarget is stored and non-zero, prefer it as source of truth
+  if (!sourceText && el.dataset.fullTarget && !isZeroMetricValue(el.dataset.fullTarget)) {
     sourceText = el.dataset.fullTarget.replace(/<[^>]*>/g, '').trim();
-  } else {
+  }
+
+  // 3. If element currently displays a non-zero number, read and preserve it
+  if (!sourceText && el.innerText && !isZeroMetricValue(el.innerText)) {
     sourceText = el.innerText.trim();
     el.dataset.fullTarget = el.innerHTML;
+  }
+
+  // 4. Fallback to hardcoded default target if empty, reset, or corrupted to zero
+  if (!sourceText || isZeroMetricValue(sourceText)) {
+    const fallback = METRIC_DEFAULTS[el.id] || METRIC_DEFAULTS[el.getAttribute('data-edit-key')] || '';
+    if (fallback) {
+      sourceText = fallback.replace(/<[^>]*>/g, '').trim();
+      el.dataset.fullTarget = fallback;
+    }
   }
 
   const matchNum = sourceText.match(/\d+(\.\d+)?/);
@@ -356,6 +395,7 @@ function resetCounter(el) {
   }
   el.dataset.animating = 'false';
   if (el.isContentEditable) return;
+
   parseMetricTarget(el, false);
   const prefix = el.dataset.prefix || '';
   const midUnit = el.dataset.midUnit || '';
@@ -369,6 +409,8 @@ function animateCounter(el, staggeredDuration = null) {
   parseMetricTarget(el, false);
 
   const target = parseFloat(el.dataset.targetNum || '0');
+  if (target <= 0) return;
+
   const isFloat = el.dataset.isFloat === 'true';
   const prefix = el.dataset.prefix || '';
   const midUnit = el.dataset.midUnit || '';
@@ -433,12 +475,16 @@ function initNumberCounters() {
       
       // Auto-reparse target number whenever the user edits the metric
       valEl.addEventListener('input', () => {
-        valEl.dataset.fullTarget = valEl.innerHTML;
-        parseMetricTarget(valEl, true);
+        if (!isZeroMetricValue(valEl.innerText)) {
+          valEl.dataset.fullTarget = valEl.innerHTML;
+          parseMetricTarget(valEl, true);
+        }
       });
       valEl.addEventListener('blur', () => {
-        valEl.dataset.fullTarget = valEl.innerHTML;
-        parseMetricTarget(valEl, true);
+        if (!isZeroMetricValue(valEl.innerText)) {
+          valEl.dataset.fullTarget = valEl.innerHTML;
+          parseMetricTarget(valEl, true);
+        }
       });
     }
   });
@@ -468,7 +514,7 @@ function initNumberCounters() {
       const valEl = entry.target.querySelector('.metric-val');
       if (valEl) resetCounter(valEl);
     });
-  }, { threshold: 0.2 });
+  }, { threshold: 0.15 });
 
   metricCards.forEach(c => observer.observe(c));
 }
@@ -708,8 +754,14 @@ function saveAllChanges() {
 
   // 3. Save all editable elements into a strict Map by key/id
   document.querySelectorAll('.metric-val').forEach(el => {
-    el.dataset.fullTarget = el.innerHTML;
-    parseMetricTarget(el, true);
+    if (el.isContentEditable) {
+      if (!isZeroMetricValue(el.innerText)) {
+        el.dataset.fullTarget = el.innerHTML;
+        parseMetricTarget(el, true);
+      }
+    } else {
+      parseMetricTarget(el, false);
+    }
   });
 
   const editsMap = {};
@@ -719,8 +771,12 @@ function saveAllChanges() {
     }
     const key = el.id || el.getAttribute('data-edit-key') || ('dom_' + el.tagName + '_' + index);
     let htmlToSave = el.innerHTML;
-    if (el.classList.contains('metric-val') && el.dataset.fullTarget && !el.isContentEditable) {
-      htmlToSave = el.dataset.fullTarget;
+    if (el.classList.contains('metric-val')) {
+      // NEVER save a zero reset or mid-animation intermediate frame!
+      htmlToSave = el.dataset.fullTarget || el.innerHTML;
+      if (isZeroMetricValue(htmlToSave)) {
+        htmlToSave = METRIC_DEFAULTS[el.id] || METRIC_DEFAULTS[el.getAttribute('data-edit-key')] || htmlToSave;
+      }
     }
     editsMap[key] = {
       tag: el.tagName,
@@ -771,10 +827,24 @@ function applySavedEdits(savedData) {
         targetEl = document.getElementById(key) || document.querySelector(`[data-edit-key="${key}"]`);
       }
       if (targetEl && item.html) {
-        targetEl.innerHTML = sanitizeHtml(item.html);
         if (targetEl.classList.contains('metric-val')) {
-          targetEl.dataset.fullTarget = targetEl.innerHTML;
+          // If stored value is zero (corrupted by older bug), ignore it!
+          if (isZeroMetricValue(item.html)) {
+            console.log(`[Metrics] Ignored corrupted zero metric for ${key}:`, item.html);
+            return;
+          }
+          targetEl.dataset.fullTarget = item.html;
           parseMetricTarget(targetEl, true);
+          // If in view, animate; if not in view, reset
+          const rect = targetEl.getBoundingClientRect();
+          const inView = (rect.top < window.innerHeight && rect.bottom > 0);
+          if (inView) {
+            animateCounter(targetEl);
+          } else {
+            resetCounter(targetEl);
+          }
+        } else {
+          targetEl.innerHTML = sanitizeHtml(item.html);
         }
       }
     });
@@ -785,10 +855,16 @@ function applySavedEdits(savedData) {
   savedData.forEach(item => {
     if (item.id && document.getElementById(item.id)) {
       const el = document.getElementById(item.id);
-      el.innerHTML = sanitizeHtml(item.html);
       if (el.classList.contains('metric-val')) {
-        el.dataset.fullTarget = el.innerHTML;
+        if (isZeroMetricValue(item.html)) return;
+        el.dataset.fullTarget = item.html;
         parseMetricTarget(el, true);
+        const rect = el.getBoundingClientRect();
+        const inView = (rect.top < window.innerHeight && rect.bottom > 0);
+        if (inView) animateCounter(el);
+        else resetCounter(el);
+      } else {
+        el.innerHTML = sanitizeHtml(item.html);
       }
     }
   });
