@@ -762,27 +762,25 @@ function handlePhotoUpload(event) {
     const img = document.getElementById('profileImage');
     if (img) img.src = dataUrl;
     localStorage.setItem(STORAGE_KEY_PHOTO, dataUrl);
-    showToast('Portrait photo updated & saved! You can also download it for your GitHub repo.');
+    if (firestoreDocRef) {
+      firestoreDocRef.set({ photo: dataUrl }, { merge: true })
+        .then(() => showToast('Portrait photo updated & synced to Firestore Cloud!'))
+        .catch(err => console.warn('Photo cloud sync error:', err));
+    } else {
+      showToast('Portrait photo updated & saved! You can also download it for your GitHub repo.');
+    }
   };
   reader.readAsDataURL(file);
-}
-
-function downloadProfilePhoto() {
-  const img = document.getElementById('profileImage');
-  if (!img) return;
-  const a = document.createElement('a');
-  a.href = img.src;
-  a.download = 'profile.jpg';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  showToast('Downloaded profile.jpg! Place this into your repository folder.');
 }
 
 function resetProfilePhoto() {
   localStorage.removeItem(STORAGE_KEY_PHOTO);
   const img = document.getElementById('profileImage');
   if (img) img.src = DEFAULT_AVATAR;
+  if (firestoreDocRef) {
+    firestoreDocRef.set({ photo: '' }, { merge: true })
+      .catch(err => console.warn('Photo cloud reset error:', err));
+  }
   showToast('Portrait image reset to default graphic.');
 }
 
