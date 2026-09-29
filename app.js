@@ -324,18 +324,29 @@ function openLinkedInPopup(e) {
 // ----------------------------------------------------
 // 5. ANIMATED NUMBERS COUNTER (FAST-TO-SLOW DECAY, RE-ANIMATES ON REFRESH & RE-ENTRY)
 // ----------------------------------------------------
-function parseMetricTarget(el) {
-  if (el.dataset.targetNum !== undefined) return;
-  const rawText = el.innerText.trim();
-  el.dataset.fullTarget = el.innerHTML;
-  const matchNum = rawText.match(/\d+(\.\d+)?/);
+function parseMetricTarget(el, forceReparse = false) {
+  if (!forceReparse && el.dataset.targetNum !== undefined) return;
+
+  let sourceText = '';
+  // If user is editing or force reparsing, read innerText directly
+  if (el.isContentEditable || forceReparse) {
+    sourceText = el.innerText.trim();
+    el.dataset.fullTarget = el.innerHTML;
+  } else if (el.dataset.fullTarget && (el.dataset.animating === 'true' || el.innerText.trim().startsWith('0'))) {
+    sourceText = el.dataset.fullTarget.replace(/<[^>]*>/g, '').trim();
+  } else {
+    sourceText = el.innerText.trim();
+    el.dataset.fullTarget = el.innerHTML;
+  }
+
+  const matchNum = sourceText.match(/\d+(\.\d+)?/);
   if (!matchNum) return;
 
   el.dataset.targetNum = matchNum[0];
-  el.dataset.isFloat = rawText.includes('.') ? 'true' : 'false';
-  el.dataset.prefix = rawText.startsWith('$') ? '$' : '';
-  el.dataset.midUnit = (rawText.includes('M') || rawText.includes('m')) ? 'M' : (rawText.includes('k') || rawText.includes('K')) ? 'k' : '';
-  el.dataset.suffix = rawText.includes('%') ? '%' : rawText.includes('+') ? '+' : '';
+  el.dataset.isFloat = matchNum[0].includes('.') ? 'true' : 'false';
+  el.dataset.prefix = sourceText.startsWith('$') ? '$' : '';
+  el.dataset.midUnit = (sourceText.includes('M') || sourceText.includes('m')) ? 'M' : (sourceText.includes('k') || sourceText.includes('K')) ? 'k' : '';
+  el.dataset.suffix = sourceText.includes('%') ? '%' : sourceText.includes('+') ? '+' : '';
 }
 
 function resetCounter(el) {
@@ -345,7 +356,7 @@ function resetCounter(el) {
   }
   el.dataset.animating = 'false';
   if (el.isContentEditable) return;
-  parseMetricTarget(el);
+  parseMetricTarget(el, false);
   const prefix = el.dataset.prefix || '';
   const midUnit = el.dataset.midUnit || '';
   const suffix = el.dataset.suffix || '';
@@ -355,7 +366,7 @@ function resetCounter(el) {
 
 function animateCounter(el, staggeredDuration = null) {
   if (el.isContentEditable) return;
-  parseMetricTarget(el);
+  parseMetricTarget(el, false);
 
   const target = parseFloat(el.dataset.targetNum || '0');
   const isFloat = el.dataset.isFloat === 'true';
@@ -376,6 +387,12 @@ function animateCounter(el, staggeredDuration = null) {
   const startTime = performance.now();
 
   function update(now) {
+    if (el.isContentEditable) {
+      // User started editing while counter was running - stop animation immediately
+      el.dataset.animating = 'false';
+      el._animId = null;
+      return;
+    }
     const elapsed = now - startTime;
     const progress = Math.min(elapsed / duration, 1);
     
@@ -391,7 +408,12 @@ function animateCounter(el, staggeredDuration = null) {
       }
       el._animId = requestAnimationFrame(update);
     } else {
-      el.innerHTML = `${prefix}${isFloat ? target.toFixed(1) : target}${midUnit}<span>${suffix}</span>`;
+      if (isFloat) {
+        el.innerHTML = `${prefix}${target.toFixed(1)}${midUnit}<span>${suffix}</span>`;
+      } else {
+        el.innerHTML = `${prefix}${target}${midUnit}<span>${suffix}</span>`;
+      }
+      el.dataset.fullTarget = el.innerHTML;
       el.dataset.animating = 'false';
       el._animId = null;
     }
@@ -406,7 +428,19 @@ function initNumberCounters() {
 
   metricCards.forEach(card => {
     const valEl = card.querySelector('.metric-val');
-    if (valEl) parseMetricTarget(valEl);
+    if (valEl) {
+      parseMetricTarget(valEl, false);
+      
+      // Auto-reparse target number whenever the user edits the metric
+      valEl.addEventListener('input', () => {
+        valEl.dataset.fullTarget = valEl.innerHTML;
+        parseMetricTarget(valEl, true);
+      });
+      valEl.addEventListener('blur', () => {
+        valEl.dataset.fullTarget = valEl.innerHTML;
+        parseMetricTarget(valEl, true);
+      });
+    }
   });
 
   const observer = new IntersectionObserver((entries) => {
@@ -673,17 +707,26 @@ function saveAllChanges() {
   localStorage.setItem('adam_resume_skills_clouds_v3', JSON.stringify(skillsClouds));
 
   // 3. Save all editable elements into a strict Map by key/id
+  document.querySelectorAll('.metric-val').forEach(el => {
+    el.dataset.fullTarget = el.innerHTML;
+    parseMetricTarget(el, true);
+  });
+
   const editsMap = {};
   document.querySelectorAll('[data-editable="true"]').forEach((el, index) => {
     if (el.closest('.matrix-tag-cloud')) {
       return; // Skill tags are saved in skillsClouds
     }
     const key = el.id || el.getAttribute('data-edit-key') || ('dom_' + el.tagName + '_' + index);
+    let htmlToSave = el.innerHTML;
+    if (el.classList.contains('metric-val') && el.dataset.fullTarget && !el.isContentEditable) {
+      htmlToSave = el.dataset.fullTarget;
+    }
     editsMap[key] = {
       tag: el.tagName,
       id: el.id || '',
       key: key,
-      html: el.innerHTML
+      html: htmlToSave
     };
   });
 
@@ -729,6 +772,10 @@ function applySavedEdits(savedData) {
       }
       if (targetEl && item.html) {
         targetEl.innerHTML = sanitizeHtml(item.html);
+        if (targetEl.classList.contains('metric-val')) {
+          targetEl.dataset.fullTarget = targetEl.innerHTML;
+          parseMetricTarget(targetEl, true);
+        }
       }
     });
     return;
@@ -737,7 +784,12 @@ function applySavedEdits(savedData) {
   // Legacy array fallback: ONLY apply if element has matching ID, never blind numeric index
   savedData.forEach(item => {
     if (item.id && document.getElementById(item.id)) {
-      document.getElementById(item.id).innerHTML = sanitizeHtml(item.html);
+      const el = document.getElementById(item.id);
+      el.innerHTML = sanitizeHtml(item.html);
+      if (el.classList.contains('metric-val')) {
+        el.dataset.fullTarget = el.innerHTML;
+        parseMetricTarget(el, true);
+      }
     }
   });
 }
