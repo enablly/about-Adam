@@ -67,6 +67,9 @@ window.addEventListener('DOMContentLoaded', () => {
     activateAdminMode();
   }
 
+  // Initialize Firestore Live Cloud Synchronization
+  initFirestoreSync();
+
   // Global keyboard shortcuts
   window.addEventListener('keydown', (e) => {
     if ((e.metaKey || e.ctrlKey) && e.key === 's') {
@@ -506,6 +509,109 @@ function logoutAdmin() {
 // ----------------------------------------------------
 // 7. LIVE CONTENT PERSISTENCE & EXPORT
 // ----------------------------------------------------
+function applySavedSkillsClouds(clouds) {
+  if (!clouds || typeof clouds !== 'object') return;
+  if (clouds.col1 && document.getElementById('skillsTagsCol1')) {
+    document.getElementById('skillsTagsCol1').innerHTML = clouds.col1;
+  }
+  if (clouds.col2 && document.getElementById('skillsTagsCol2')) {
+    document.getElementById('skillsTagsCol2').innerHTML = clouds.col2;
+  }
+  if (clouds.col3 && document.getElementById('skillsTagsCol3')) {
+    document.getElementById('skillsTagsCol3').innerHTML = clouds.col3;
+  }
+}
+
+function applySavedPhoto(photoDataUrl) {
+  if (!photoDataUrl) return;
+  const profileImg = document.getElementById('profileImage');
+  if (profileImg) {
+    profileImg.src = photoDataUrl;
+  }
+}
+
+function updateCloudStatusUI(statusText, color = '#10b981') {
+  const el = document.getElementById('cloudSyncStatus');
+  if (el) {
+    el.textContent = `● CLOUD: ${statusText}`;
+    el.style.color = color;
+    el.style.borderColor = color;
+    el.style.background = color === '#10b981' ? 'rgba(16, 185, 129, 0.1)' : (color === '#ef4444' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(245, 158, 11, 0.1)');
+  }
+}
+
+// ----------------------------------------------------
+// 8. FIRESTORE REAL-TIME CLOUD PERSISTENCE
+// ----------------------------------------------------
+let firestoreDb = null;
+let firestoreDocRef = null;
+let isFirestoreLive = false;
+
+function initFirestoreSync() {
+  if (typeof firebase === 'undefined' || !window.FIREBASE_CONFIG) {
+    console.log('[Firestore] Firebase SDK or config not loaded. Local storage active.');
+    updateCloudStatusUI('LOCAL ONLY', '#f59e0b');
+    return;
+  }
+
+  const cfg = window.FIREBASE_CONFIG;
+  if (!cfg.apiKey || cfg.apiKey === 'YOUR_API_KEY' || !cfg.projectId || cfg.projectId === 'YOUR_PROJECT_ID') {
+    console.log('[Firestore] Awaiting Firebase credentials in firebase-config.js');
+    updateCloudStatusUI('AWAITING CONFIG', '#f59e0b');
+    return;
+  }
+
+  try {
+    if (!firebase.apps || !firebase.apps.length) {
+      firebase.initializeApp(cfg);
+    }
+    firestoreDb = firebase.firestore();
+    firestoreDocRef = firestoreDb.collection('portfolio').doc('resume');
+
+    // Real-time snapshot listener: Updates immediately on any visitor device
+    firestoreDocRef.onSnapshot((docSnap) => {
+      if (docSnap && docSnap.exists) {
+        const remoteData = docSnap.data();
+        if (remoteData.editsMap) {
+          applySavedEdits(remoteData.editsMap);
+        }
+        if (remoteData.skillsClouds) {
+          applySavedSkillsClouds(remoteData.skillsClouds);
+        }
+        if (remoteData.photo) {
+          applySavedPhoto(remoteData.photo);
+        }
+        isFirestoreLive = true;
+        updateCloudStatusUI('FIRESTORE LIVE', '#10b981');
+        console.log('[Firestore] Live cloud snapshot synced successfully.');
+      } else {
+        isFirestoreLive = true;
+        updateCloudStatusUI('CONNECTED (READY)', '#10b981');
+      }
+    }, (error) => {
+      console.warn('[Firestore] Real-time listener notice:', error.message);
+      updateCloudStatusUI('PERMISSION / OFFLINE', '#ef4444');
+    });
+
+  } catch (err) {
+    console.error('[Firestore] Initialization error:', err);
+    updateCloudStatusUI('ERROR', '#ef4444');
+  }
+}
+
+function syncToFirestore(editsMap, skillsClouds) {
+  if (!firestoreDocRef) {
+    return Promise.resolve(false);
+  }
+  const payload = {
+    editsMap: editsMap,
+    skillsClouds: skillsClouds,
+    photo: localStorage.getItem(STORAGE_KEY_PHOTO) || '',
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  return firestoreDocRef.set(payload, { merge: true });
+}
+
 function saveAllChanges() {
   // 1. Remove empty tag pills before saving
   document.querySelectorAll('.matrix-tag-cloud .tag').forEach(tag => {
@@ -542,26 +648,32 @@ function saveAllChanges() {
   });
 
   localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(editsMap));
-  showToast('All text modifications saved to browser storage!');
+
+  if (firestoreDocRef) {
+    showToast('Syncing to Firestore Cloud...');
+    syncToFirestore(editsMap, skillsClouds)
+      .then(() => {
+        showToast('Saved & Synced globally via Firestore Cloud!');
+        updateCloudStatusUI('SYNCED', '#10b981');
+      })
+      .catch((err) => {
+        console.error('[Firestore] Sync failed:', err);
+        showToast('Saved to browser. Cloud error: ' + err.message);
+        updateCloudStatusUI('SYNC ERROR', '#ef4444');
+      });
+  } else {
+    showToast('All text modifications saved to browser storage!');
+  }
 }
 
 function applySavedEdits(savedData) {
-  // A. Restore dedicated skill column clouds if saved
+  // A. Restore dedicated skill column clouds if saved in local storage
   const savedCloudsStr = localStorage.getItem('adam_resume_skills_clouds_v3');
   if (savedCloudsStr) {
     try {
-      const clouds = JSON.parse(savedCloudsStr);
-      if (clouds.col1 && document.getElementById('skillsTagsCol1')) {
-        document.getElementById('skillsTagsCol1').innerHTML = clouds.col1;
-      }
-      if (clouds.col2 && document.getElementById('skillsTagsCol2')) {
-        document.getElementById('skillsTagsCol2').innerHTML = clouds.col2;
-      }
-      if (clouds.col3 && document.getElementById('skillsTagsCol3')) {
-        document.getElementById('skillsTagsCol3').innerHTML = clouds.col3;
-      }
+      applySavedSkillsClouds(JSON.parse(savedCloudsStr));
     } catch(e) {
-      console.warn('Could not restore skills clouds:', e);
+      console.warn('Could not restore local skills clouds:', e);
     }
   }
 
@@ -596,6 +708,9 @@ function resetToOriginalDefaults() {
     localStorage.removeItem('adam_resume_skills_clouds_v3');
     localStorage.removeItem('adam_resume_skills_clouds_v2');
     localStorage.removeItem(STORAGE_KEY_PHOTO);
+    if (firestoreDocRef) {
+      firestoreDocRef.delete().catch(e => console.warn('Firestore reset warning:', e));
+    }
     location.reload();
   }
 }

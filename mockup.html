@@ -29,10 +29,11 @@
        ADMIN DOCK (ACTIVATES WHEN LOGGED IN)
        ======================================================== -->
   <div id="adminDock">
-    <div style="display: flex; align-items: center; gap: 12px;">
+    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
       <span class="admin-pill">ADMIN ACTIVE</span>
       <span id="adminUserDisplay" style="color: #fff;">adamlau.creatif@gmail.com</span>
       <span style="color: var(--text-faint);">| Direct Click to Edit Any Text</span>
+      <span id="cloudSyncStatus" style="font-size: 0.72rem; color: #10b981; font-family: 'JetBrains Mono', monospace; padding: 2px 8px; background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981;">● CLOUD: INITIALIZING</span>
     </div>
     <div class="admin-controls">
       <button class="btn btn-sm btn-primary" onclick="saveAllChanges()">Save Changes</button>
@@ -2602,6 +2603,11 @@
     <span style="color: var(--blue-core); font-weight: bold;">[ SYSTEM ]</span>
     <span id="toastMsg">Notification message</span>
   </div>
+
+  <!-- Firebase SDK & Live Firestore Cloud Sync -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
 
   <!-- Core JavaScript Engine -->
   <script src="app.js"></script>
