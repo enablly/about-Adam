@@ -2062,20 +2062,434 @@ footer.site-footer {
 }
 
 /* ========================================================
-   PRINT STYLES FOR EXPORT PDF
+   PRINT STYLES FOR CLEAN TEXT-BASED RESUME PDF EXPORT
+   (NO ANIMATIONS, NO SVGS, NO CANVASES, CLEAN EXECUTIVE TYPOGRAPHY)
    ======================================================== */
 @media print {
-  #adminDock, .photo-upload-overlay, .filter-wrapper, .job-details-toggle, .hero-actions, .nav-right-actions, .modal-overlay, #toastNotice, .admin-add-btn, #techCanvas, .blueprint-grid-overlay {
+  @page {
+    size: letter portrait;
+    margin: 10mm 14mm;
+  }
+
+  /* 1. HIDE ALL WEB CHROME, BACKGROUNDS, BUTTONS, OVERLAYS & CAD DRAFTING RIGS */
+  .site-header,
+  .site-footer,
+  #adminDock,
+  .photo-upload-overlay,
+  .filter-wrapper,
+  .job-details-toggle,
+  .hero-actions,
+  .nav-right-actions,
+  .modal-overlay,
+  #toastNotice,
+  .admin-add-btn,
+  #techCanvas,
+  .blueprint-grid-overlay,
+  .cad-hero-drafting-rig,
+  .cad-crosshair-reticle,
+  .cad-coordinate-tag,
+  .hero-flight-radar,
+  .pillar-cad-viewport,
+  .pillar-cad-corner-datum,
+  .cad-callout-pill,
+  .cad-corner-pill,
+  .brand-cube,
+  .hero-cad-datum,
+  .verified-badge-row,
+  .verified-brand-strip,
+  .client-strip,
+  .hero-badge-tag,
+  .status-badge,
+  .status-ping,
+  .contact-buttons-row,
+  .photo-wrapper,
+  .cert-category-filters,
+  .cert-filter-pills,
+  .cert-filter-btn,
+  .cert-search-row,
+  .cert-search-box,
+  .cert-count-badge,
+  .cert-status-pill,
+  .pillar-cad-coord,
+  svg,
+  canvas {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  /* 2. BASE DOCUMENT RESET & FORCE VISIBILITY FOR ALL SECTIONS */
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  .reveal-init {
+    opacity: 1 !important;
+    transform: none !important;
+    visibility: visible !important;
+  }
+
+  html, body {
+    background: #ffffff !important;
+    color: #111827 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+    font-size: 8.5pt !important;
+    line-height: 1.35 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  section {
+    opacity: 1 !important;
+    transform: none !important;
+    visibility: visible !important;
+    display: block !important;
+    padding: 4pt 0 !important;
+    margin: 0 !important;
+  }
+
+  .container {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* 3. HERO / RESUME HEADER */
+  #overview {
+    padding: 0 0 8pt 0 !important;
+    margin-bottom: 6pt !important;
+    border-bottom: 1.5pt solid #111827 !important;
+    page-break-after: avoid !important;
+  }
+
+  .hero-panel {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  .hero-name {
+    font-size: 18pt !important;
+    font-weight: 800 !important;
+    color: #111827 !important;
+    letter-spacing: -0.5px !important;
+    margin: 0 0 2pt 0 !important;
+    text-transform: uppercase !important;
+  }
+
+  .hero-title,
+  .hero-headline {
+    font-size: 10pt !important;
+    font-weight: 600 !important;
+    color: #1d63ff !important;
+    margin-bottom: 4pt !important;
+    line-height: 1.25 !important;
+  }
+
+  .hero-bio,
+  .hero-summary {
+    font-size: 8pt !important;
+    color: #111827 !important;
+    line-height: 1.4 !important;
+    margin-bottom: 5pt !important;
+  }
+
+  /* Print Contact Header Line */
+  .hero-panel::after {
+    content: "Kuala Lumpur, Malaysia  •  adamlau.creatif@gmail.com  •  +6012-345-8846  •  linkedin.com/in/adam-enablly";
+    display: block;
+    font-size: 8pt;
+    font-weight: 600;
+    color: #4b5563;
+    margin-top: 3pt;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* METRICS ROW (Clean compact horizontal summary) */
+  .metric-grid {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    justify-content: space-between !important;
+    gap: 6pt !important;
+    margin: 4pt 0 0 0 !important;
+    padding-top: 4pt !important;
+    border-top: 1px solid #e5e7eb !important;
+  }
+
+  .metric-card {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    flex: 1 1 0 !important;
+  }
+
+  .metric-card .metric-val {
+    font-size: 11pt !important;
+    font-weight: 800 !important;
+    color: #111827 !important;
+  }
+
+  .metric-card .metric-desc {
+    font-size: 6.5pt !important;
+    font-weight: 600 !important;
+    color: #4b5563 !important;
+    text-transform: uppercase !important;
+  }
+
+  /* 4. SECTION HEADINGS */
+  .section-header-tag {
+    font-size: 10pt !important;
+    font-weight: 800 !important;
+    color: #111827 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    border-bottom: 1.2pt solid #111827 !important;
+    padding-bottom: 2pt !important;
+    margin: 8pt 0 4pt 0 !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+
+  /* 5. STRATEGIC PILLARS (Clean text list) */
+  .pillars-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 6pt !important;
+    margin-bottom: 6pt !important;
+  }
+
+  .pillar-box {
+    background: #f9fafb !important;
+    border: 1px solid #e5e7eb !important;
+    padding: 4pt 6pt !important;
+    box-shadow: none !important;
+    break-inside: avoid !important;
+  }
+
+  .pillar-code {
+    font-size: 6.5pt !important;
+    font-weight: 700 !important;
+    color: #1d63ff !important;
+    margin-bottom: 1pt !important;
+  }
+
+  .pillar-title {
+    font-size: 8.5pt !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+    margin-bottom: 2pt !important;
+  }
+
+  .pillar-body {
+    font-size: 7.5pt !important;
+    color: #4b5563 !important;
+    line-height: 1.3 !important;
+  }
+
+  .pillar-subskills {
     display: none !important;
   }
-  body {
-    background: #ffffff !important;
-    color: #000000 !important;
+
+  /* 6. CAREER EXPERIENCE (Standard professional resume layout) */
+  .jobs-stack,
+  .experience-timeline {
+    display: block !important;
   }
-  .hero-panel, .job-card, .pillar-box, .matrix-card, .info-pane, .contact-box {
+
+  .job-card {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 1px dashed #cbd5e1 !important;
+    padding: 6pt 0 8pt 0 !important;
+    margin-bottom: 6pt !important;
     box-shadow: none !important;
-    border: 1px solid #cccccc !important;
-    page-break-inside: avoid;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    display: block !important;
+  }
+
+  .job-visual-col,
+  .job-cad-viewport,
+  .job-cad-corner-target,
+  .job-cad-coord {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  .job-layout-grid {
+    display: block !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  .job-content-col {
+    width: 100% !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+
+  .job-top-bar {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: baseline !important;
+    margin-bottom: 3pt !important;
+  }
+
+  .job-title-group h3 {
+    font-size: 10.5pt !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+    margin: 0 0 2pt 0 !important;
+  }
+
+  .job-employer {
+    font-size: 9pt !important;
+    font-weight: 600 !important;
+    color: #1d63ff !important;
+  }
+
+  .job-period-badge {
+    font-size: 7.5pt !important;
+    font-weight: 600 !important;
+    color: #6b7280 !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+
+  .job-overview-text {
+    font-size: 8.5pt !important;
+    color: #374151 !important;
+    line-height: 1.4 !important;
+    margin: 3pt 0 4pt 0 !important;
+  }
+
+  .job-bullets-list {
+    padding-left: 14pt !important;
+    margin: 3pt 0 6pt 0 !important;
+    display: block !important;
+  }
+
+  .job-bullets-list li {
+    font-size: 8pt !important;
+    color: #374151 !important;
+    line-height: 1.35 !important;
+    margin-bottom: 2pt !important;
+  }
+
+  .job-tags-row {
+    display: none !important;
+  }
+
+  /* 7. TECHNICAL SKILLS MATRIX */
+  .tech-matrix-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr 1fr !important;
+    gap: 6pt !important;
+    break-inside: avoid !important;
+  }
+
+  .matrix-card {
+    background: #f9fafb !important;
+    border: 1px solid #e5e7eb !important;
+    padding: 4pt 6pt !important;
+    box-shadow: none !important;
+  }
+
+  .matrix-title {
+    font-size: 8pt !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+    border-bottom: 1px solid #d1d5db !important;
+    padding-bottom: 2pt !important;
+    margin-bottom: 3pt !important;
+  }
+
+  .matrix-tag-cloud {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 2pt !important;
+  }
+
+  .matrix-tag-cloud .tag {
+    background: #ffffff !important;
+    color: #374151 !important;
+    border: 1px solid #d1d5db !important;
+    font-size: 6.5pt !important;
+    padding: 1pt 2.5pt !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* 8. EDUCATION & CERTIFICATIONS */
+  .split-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8pt !important;
+    break-inside: avoid !important;
+  }
+
+  .info-pane {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .info-record {
+    border-left: 2pt solid #1d63ff !important;
+    padding-left: 5pt !important;
+    margin-bottom: 3pt !important;
+    break-inside: avoid !important;
+  }
+
+  .record-degree {
+    font-size: 8pt !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+  }
+
+  .record-institution {
+    font-size: 7.5pt !important;
+    color: #4b5563 !important;
+    font-weight: 500 !important;
+  }
+
+  .record-dates {
+    font-size: 6.5pt !important;
+    color: #6b7280 !important;
+    font-family: 'JetBrains Mono', monospace !important;
+  }
+
+  /* 9. CONTACT SECTION */
+  #contact {
+    margin-top: 6pt !important;
+    border-top: 1pt solid #e5e7eb !important;
+    padding-top: 4pt !important;
+    break-inside: avoid !important;
+  }
+
+  .contact-box {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    text-align: left !important;
+  }
+
+  .contact-headline {
+    font-size: 8.5pt !important;
+    font-weight: 700 !important;
+    margin-bottom: 2pt !important;
+  }
+
+  .contact-blurb {
+    font-size: 7.5pt !important;
+    color: #4b5563 !important;
   }
 }
 

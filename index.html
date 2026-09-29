@@ -62,7 +62,7 @@
       </ul>
       <div class="nav-right-actions">
         <button id="adminLoginBtn" class="btn btn-sm btn-blue-outline" onclick="openLoginModal()">Admin Login</button>
-        <button class="btn btn-sm btn-primary" onclick="window.print()">Export PDF</button>
+        <button class="btn btn-sm btn-primary" onclick="openExportModal()">Export PDF</button>
       </div>
     </div>
   </header>
@@ -2594,6 +2594,47 @@
       </div>
       <div style="display: flex; justify-content: flex-end; align-items: center; margin-top: 24px;">
         <button class="btn btn-primary" onclick="submitAdminLogin()">Login & Edit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL: EXPORT EXECUTIVE RESUME (CLEAN TEXT-BASED PDF & TXT)
+       ======================================================== -->
+  <div id="exportResumeModal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 520px;">
+      <div class="modal-header">
+        <div class="modal-title">Export Executive Dossier</div>
+        <button class="btn btn-sm" onclick="closeExportModal()">✕</button>
+      </div>
+      <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 22px; line-height: 1.5;">
+        Generate a text-based, recruiter-ready version of Adam Lau's executive resume. All SVGs, 3D globes, and animations are excluded for ATS parsing and print compliance.
+      </p>
+
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <button class="btn btn-primary" onclick="triggerCleanPdfExport()" style="padding: 16px; text-align: left; display: flex; justify-content: space-between; align-items: center; border-radius: 0;">
+          <div>
+            <div style="font-weight: 700; font-size: 0.95rem; color: #ffffff;">📄 Print / Save Text-Based PDF</div>
+            <div style="font-size: 0.74rem; color: rgba(255,255,255,0.85); margin-top: 3px;">
+              Clean monochrome layout • Zero animations or SVGs • 100% searchable text
+            </div>
+          </div>
+          <span style="font-size: 1.2rem; margin-left: 12px; color: #ffffff;">➔</span>
+        </button>
+
+        <button class="btn btn-blue-outline" onclick="triggerTextFileExport()" style="padding: 16px; text-align: left; display: flex; justify-content: space-between; align-items: center; border-radius: 0;">
+          <div>
+            <div style="font-weight: 700; font-size: 0.95rem;">📝 Download Plain Text Resume (.txt)</div>
+            <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 3px;">
+              Clean ASCII formatted text document for applicant tracking systems (ATS)
+            </div>
+          </div>
+          <span style="font-size: 1.2rem; margin-left: 12px;">➔</span>
+        </button>
+      </div>
+
+      <div style="margin-top: 20px; font-size: 0.72rem; color: var(--text-faint); font-family: 'JetBrains Mono', monospace; text-align: center;">
+        FORMATTED FOR ATS • CHROME / SAFARI / EDGE COMPLIANT
       </div>
     </div>
   </div>

@@ -80,7 +80,17 @@ window.addEventListener('DOMContentLoaded', () => {
     }
     if (e.key === 'Escape') {
       closeLoginModal();
+      closeExportModal();
     }
+  });
+
+  // Modal overlay click outside to close
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) {
+        overlay.classList.remove('active');
+      }
+    });
   });
 });
 
@@ -317,6 +327,7 @@ function openLinkedInPopup(e) {
 function parseMetricTarget(el) {
   if (el.dataset.targetNum !== undefined) return;
   const rawText = el.innerText.trim();
+  el.dataset.fullTarget = el.innerHTML;
   const matchNum = rawText.match(/\d+(\.\d+)?/);
   if (!matchNum) return;
 
@@ -2890,4 +2901,176 @@ function initMarketingAiCanvas() {
       rightHud.textContent = `32 NODES ACTIVE • ${tokens} TOKENS/SEC • LATENCY: ${latency}ms`;
     }
   }, 2200);
+}
+
+// ----------------------------------------------------
+// 10. CLEAN TEXT-BASED RESUME & EXPORT PDF ENGINE
+// ----------------------------------------------------
+function prepareForPrint() {
+  // 1. Force reveal on all content elements
+  document.querySelectorAll('.reveal-init').forEach(el => {
+    el.classList.add('revealed');
+  });
+
+  // 2. Restore full target numbers on metric counters
+  document.querySelectorAll('.metric-val').forEach(el => {
+    if (el.dataset.fullTarget) {
+      el.innerHTML = el.dataset.fullTarget;
+    }
+  });
+
+  // 3. Force expand all job details so nothing is clipped
+  document.querySelectorAll('.job-body, .job-details').forEach(el => {
+    el.style.display = 'block';
+    el.style.maxHeight = 'none';
+    el.style.opacity = '1';
+    el.style.visibility = 'visible';
+  });
+}
+
+window.addEventListener('beforeprint', prepareForPrint);
+
+function openExportModal() {
+  const modal = document.getElementById('exportResumeModal');
+  if (modal) {
+    modal.classList.add('active');
+  } else {
+    // Fallback if modal not present: trigger clean print directly
+    triggerCleanPdfExport();
+  }
+}
+
+function closeExportModal() {
+  const modal = document.getElementById('exportResumeModal');
+  if (modal) modal.classList.remove('active');
+}
+
+function triggerCleanPdfExport() {
+  closeExportModal();
+  prepareForPrint();
+  setTimeout(() => {
+    window.print();
+  }, 100);
+}
+
+function generateCleanTextResume() {
+  const name = document.querySelector('.hero-name')?.innerText.trim() || 'ADAM LAU';
+  const title = document.querySelector('.hero-headline')?.innerText.trim() || document.querySelector('.hero-title')?.innerText.trim() || 'Regional Digital Growth Leader | Forward Deployed Engineer (FDE)';
+  const bio = document.querySelector('.hero-summary')?.innerText.trim() || document.querySelector('.hero-bio')?.innerText.trim() || '';
+
+  let txt = `================================================================================\n`;
+  txt += `${name.toUpperCase()}\n`;
+  txt += `${title}\n`;
+  txt += `================================================================================\n\n`;
+  txt += `Location: Greater Kuala Lumpur, Malaysia / Global\n`;
+  txt += `Email:    adamlau.creatif@gmail.com\n`;
+  txt += `Phone:    +6012-345-8846\n`;
+  txt += `LinkedIn: https://www.linkedin.com/in/adam-enablly\n\n`;
+
+  txt += `--------------------------------------------------------------------------------\n`;
+  txt += `EXECUTIVE PROFILE\n`;
+  txt += `--------------------------------------------------------------------------------\n`;
+  txt += `${bio}\n\n`;
+
+  txt += `--------------------------------------------------------------------------------\n`;
+  txt += `KEY IMPACT METRICS\n`;
+  txt += `--------------------------------------------------------------------------------\n`;
+  document.querySelectorAll('.metric-card').forEach(card => {
+    const val = card.querySelector('.metric-val')?.dataset.fullTarget?.replace(/<[^>]*>/g, '').trim() || card.querySelector('.metric-val')?.innerText.trim() || '';
+    const desc = card.querySelector('.metric-desc')?.innerText.trim() || '';
+    if (val && desc) {
+      txt += `• ${val} — ${desc}\n`;
+    }
+  });
+  txt += `\n`;
+
+  txt += `--------------------------------------------------------------------------------\n`;
+  txt += `STRATEGIC CORE PILLARS\n`;
+  txt += `--------------------------------------------------------------------------------\n`;
+  document.querySelectorAll('.pillar-box').forEach((box, i) => {
+    const code = box.querySelector('.pillar-code')?.innerText.trim() || '';
+    const pTitle = box.querySelector('.pillar-title')?.innerText.trim() || '';
+    const body = box.querySelector('.pillar-body')?.innerText.trim() || '';
+    txt += `${i + 1}. ${pTitle.toUpperCase()} [${code}]\n`;
+    txt += `   ${body}\n\n`;
+  });
+
+  txt += `--------------------------------------------------------------------------------\n`;
+  txt += `PROFESSIONAL CAREER EXPERIENCE\n`;
+  txt += `--------------------------------------------------------------------------------\n`;
+  document.querySelectorAll('.job-card').forEach(job => {
+    const jTitle = job.querySelector('.job-title-group h3')?.innerText.trim() || '';
+    const employer = job.querySelector('.job-employer')?.innerText.trim() || '';
+    const period = job.querySelector('.job-period-badge')?.innerText.trim() || '';
+    const overview = job.querySelector('.job-overview-text')?.innerText.trim() || '';
+
+    txt += `${jTitle.toUpperCase()}\n`;
+    txt += `${employer} | ${period}\n`;
+    if (overview) txt += `${overview}\n`;
+
+    const bullets = job.querySelectorAll('.job-bullets-list li');
+    if (bullets.length > 0) {
+      bullets.forEach(b => {
+        txt += `  • ${b.innerText.trim()}\n`;
+      });
+    }
+
+    const tags = Array.from(job.querySelectorAll('.job-tags-row .tag')).map(t => t.innerText.trim()).filter(Boolean);
+    if (tags.length > 0) {
+      txt += `  Skills: ${tags.join(', ')}\n`;
+    }
+    txt += `\n`;
+  });
+
+  txt += `--------------------------------------------------------------------------------\n`;
+  txt += `TECHNICAL SKILLS & INFRASTRUCTURE MATRIX\n`;
+  txt += `--------------------------------------------------------------------------------\n`;
+  document.querySelectorAll('.matrix-card').forEach(card => {
+    const mTitle = card.querySelector('.matrix-card-header span:first-child')?.innerText.trim() || card.querySelector('.matrix-title')?.innerText.trim() || '';
+    const tags = Array.from(card.querySelectorAll('.matrix-tag-cloud .tag')).map(t => t.innerText.trim()).filter(Boolean);
+    if (mTitle) {
+      txt += `${mTitle}:\n`;
+      txt += `  ${tags.join(' • ')}\n\n`;
+    }
+  });
+
+  txt += `--------------------------------------------------------------------------------\n`;
+  txt += `FORMAL EDUCATION\n`;
+  txt += `--------------------------------------------------------------------------------\n`;
+  document.querySelectorAll('#credentials .split-grid > .info-pane:first-child .info-record').forEach(rec => {
+    const deg = rec.querySelector('.record-degree')?.innerText.trim() || '';
+    const inst = rec.querySelector('.record-institution')?.innerText.trim() || '';
+    const dates = rec.querySelector('.record-dates')?.innerText.trim() || '';
+    txt += `• ${deg}\n  ${inst} | ${dates}\n\n`;
+  });
+
+  txt += `--------------------------------------------------------------------------------\n`;
+  txt += `PROFESSIONAL CERTIFICATIONS & ACCREDITATIONS (14 VERIFIED)\n`;
+  txt += `--------------------------------------------------------------------------------\n`;
+  document.querySelectorAll('#certRecordsContainer .cert-record, #credentials .split-grid > .info-pane:last-child .cert-record').forEach((rec, idx) => {
+    const deg = rec.querySelector('.record-degree')?.innerText.trim() || '';
+    const inst = rec.querySelector('.record-institution')?.innerText.trim() || '';
+    const dates = rec.querySelector('.record-dates')?.innerText.trim() || '';
+    txt += `${idx + 1}. ${deg}\n   ${inst}\n   ${dates.replace(/\n+/g, ' ')}\n\n`;
+  });
+
+  txt += `================================================================================\n`;
+  txt += `END OF RESUME DOSSIER — ADAM LAU\n`;
+  txt += `================================================================================\n`;
+  return txt;
+}
+
+function triggerTextFileExport() {
+  closeExportModal();
+  const textContent = generateCleanTextResume();
+  const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Adam_Lau_Executive_Resume.txt';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Downloaded Adam_Lau_Executive_Resume.txt!');
 }
